@@ -3,7 +3,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [Header("Projectile Settings")]
-    [SerializeField] private float damage = 10f;
+    [SerializeField] private float damage = 1f;
     [SerializeField] private LayerMask hitLayers;
 
     private GameObject player;
@@ -13,20 +13,22 @@ public class Projectile : MonoBehaviour
         player = playerRef;
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
         // Don't collide with player
-        if (collision.gameObject == player)
-        {
-            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+        if (other.CompareTag("Player"))
             return;
-        }
 
         // Handle hit logic here
-        HandleHit(collision.gameObject);
+        HandleHit(other.gameObject);
 
         // Destroy projectile on impact
-        Destroy(gameObject);
+
+        if (other.CompareTag("Enemy"))
+        {
+            other.GetComponent<EnemyBehavior>().TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
 
     void HandleHit(GameObject hitObject)
