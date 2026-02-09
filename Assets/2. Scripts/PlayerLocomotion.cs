@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerLocomotion : MonoBehaviour
 {
-    InputManager inputManager;
+    private InputManagerPlayer1 inputManagerP1;
+    private InputManagerPlayer2 inputManagerP2;
 
     Vector3 moveDirection;
     Transform cameraObject;
@@ -10,9 +11,32 @@ public class PlayerLocomotion : MonoBehaviour
 
     public float movementSpeed = 7;
     public float rotationSpeed = 15;
+
+    private float VerticalInput
+    {
+        get
+        {
+            if (inputManagerP1 != null) return inputManagerP1.verticalInput;
+            if (inputManagerP2 != null) return inputManagerP2.verticalInput;
+            return 0f;
+        }
+    }
+
+    private float HorizontalInput
+    {
+        get
+        {
+            if (inputManagerP1 != null) return inputManagerP1.horizontalInput;
+            if (inputManagerP2 != null) return inputManagerP2.horizontalInput;
+            return 0f;
+        }
+    }
+
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
+        inputManagerP1 = GetComponent<InputManagerPlayer1>();
+        inputManagerP2 = GetComponent<InputManagerPlayer2>();
+        
         playerRigidbody = GetComponent<Rigidbody>();
         cameraObject = Camera.main.transform;
     }
@@ -22,10 +46,11 @@ public class PlayerLocomotion : MonoBehaviour
         HandleMovement();
         HandleRotation();
     }
+
     private void HandleMovement()
     {
-        moveDirection = cameraObject.forward * inputManager.verticalInput;
-        moveDirection = moveDirection + cameraObject.right * inputManager.horizontalInput;
+        moveDirection = cameraObject.forward * VerticalInput;
+        moveDirection = moveDirection + cameraObject.right * HorizontalInput;
         moveDirection.Normalize();
         moveDirection.y = 0;
         moveDirection = moveDirection * movementSpeed;
@@ -33,12 +58,13 @@ public class PlayerLocomotion : MonoBehaviour
         Vector3 movementVelocity = moveDirection;
         playerRigidbody.linearVelocity = movementVelocity;
     }
+
     private void HandleRotation()
     {
         Vector3 targetDirection = Vector3.zero;
 
-        targetDirection = cameraObject.forward * inputManager.verticalInput;
-        targetDirection = targetDirection + cameraObject.right * inputManager.horizontalInput;
+        targetDirection = cameraObject.forward * VerticalInput;
+        targetDirection = targetDirection + cameraObject.right * HorizontalInput;
         targetDirection.Normalize();
         targetDirection.y = 0;
 
@@ -49,6 +75,5 @@ public class PlayerLocomotion : MonoBehaviour
         Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
         transform.rotation = playerRotation;
-    
     }
 }
