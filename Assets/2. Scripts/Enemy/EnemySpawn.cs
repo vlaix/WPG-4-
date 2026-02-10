@@ -6,9 +6,12 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField] private Collider SpawnCollider;
     [SerializeField] private float SpawnTime;
     private float BufferTime;
+    [SerializeField] private int MaxSpawn;
+    private int SpawnCount;
     
     void Start()
     {
+        SpawnCount = 0;
         SetSpawnTime();
     }
 
@@ -17,9 +20,12 @@ public class EnemySpawn : MonoBehaviour
         BufferTime -= Time.deltaTime;
 
         if(BufferTime <= 0f) {
-            Vector3 SpawnPosition = GetPosition();
-            Instantiate(enemy, SpawnPosition, Quaternion.identity);
-            SetSpawnTime();
+            if(SpawnCount < MaxSpawn) {
+                Vector3 SpawnPosition = GetPosition();
+                Instantiate(enemy, SpawnPosition, Quaternion.identity);
+                SpawnCount += 1;
+                SetSpawnTime();
+            }
         }
     }
 

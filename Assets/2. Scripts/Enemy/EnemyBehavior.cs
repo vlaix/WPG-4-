@@ -10,13 +10,20 @@ public class EnemyBehavior : MonoBehaviour
     void Start()
     {
         healthpoint = 3f;
+        float randomizer;
 
-        GameObject playerObj = GameObject.FindWithTag("Player");
-    
-        if (playerObj != null)
-        {
-            Player = playerObj.transform;
-        }
+        GameObject playerObj1 = GameObject.FindWithTag("Player");
+        GameObject playerObj2 = GameObject.FindWithTag("Player2");
+
+        randomizer = Random.Range(0f, 2f);
+        Debug.Log("Randomizer = " + randomizer);
+
+        if(randomizer < 1) {
+
+            Player = playerObj2.transform;
+        } else {
+            Player = playerObj1.transform;
+        }        
     }
 
     void Update()
