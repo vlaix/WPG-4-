@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 8213784890179647924}
   - component: {fileID: 1712327340663106937}
   - component: {fileID: 5170779759360635102}
-  - component: {fileID: -6091996839358389490}
   m_Layer: 0
-  m_Name: Scrap
+  m_Name: BridgePlank
   m_TagString: Loot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,20 +108,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-6091996839358389490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3827336590551632495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aace805e8a39f924e885b21803b71402, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: Scrap
-  quantity: 1
-  collectionRange: 2
-  collectionSound: {fileID: 0}
-  collectionEffect: {fileID: 0}

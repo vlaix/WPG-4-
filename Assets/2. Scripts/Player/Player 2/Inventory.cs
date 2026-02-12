@@ -39,9 +39,44 @@ public class Inventory : MonoBehaviour
         }
 
         Debug.Log($"Added {quantity}x {itemName} to inventory");
-        
+
         // Notify UI to update
         onInventoryChanged?.Invoke();
+    }
+
+    // Remove item from inventory (for building system)
+    public bool RemoveItem(string itemName, int quantity = 1)
+    {
+        if (items.ContainsKey(itemName))
+        {
+            if (items[itemName] >= quantity)
+            {
+                items[itemName] -= quantity;
+
+                // Remove from dictionary if quantity reaches 0
+                if (items[itemName] <= 0)
+                {
+                    items.Remove(itemName);
+                }
+
+                Debug.Log($"Removed {quantity}x {itemName} from inventory");
+
+                // Notify UI to update
+                onInventoryChanged?.Invoke();
+
+                return true;
+            }
+            else
+            {
+                Debug.Log($"Not enough {itemName}! Have {items[itemName]}, need {quantity}");
+                return false;
+            }
+        }
+        else
+        {
+            Debug.Log($"Item {itemName} not found in inventory!");
+            return false;
+        }
     }
 
     // Get quantity of specific item
@@ -64,6 +99,12 @@ public class Inventory : MonoBehaviour
     public bool HasItem(string itemName)
     {
         return items.ContainsKey(itemName);
+    }
+
+    // Check if inventory has enough of specific item
+    public bool HasEnough(string itemName, int amount)
+    {
+        return GetItemCount(itemName) >= amount;
     }
 
     // Clear entire inventory
