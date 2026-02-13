@@ -2,86 +2,59 @@
 using TMPro;
 using UnityEngine.UI;
 
-public class BridgeBlueprintUI : MonoBehaviour
+public class BridgeBuildUI : MonoBehaviour
 {
     [Header("UI References")]
-    [Tooltip("Panel yang berisi semua UI elements")]
-    public GameObject uiPanel;
-
-    [Tooltip("Text untuk nama blueprint")]
-    public TextMeshProUGUI blueprintNameText;
-
-    [Tooltip("Text untuk progress percentage")]
+    public TextMeshProUGUI bridgeNameText;
     public TextMeshProUGUI progressText;
-
-    [Tooltip("Progress bar fill image")]
     public Image progressBarFill;
-
-    [Tooltip("Text untuk resource requirements")]
     public TextMeshProUGUI requirementsText;
-
-    [Tooltip("Text untuk interaction prompt")]
-    public TextMeshProUGUI interactionPromptText;
+    public TextMeshProUGUI actionText;
 
     [Header("Settings")]
-    [Tooltip("Update interval in seconds")]
     public float updateInterval = 0.1f;
 
-    private BridgeBlueprintData blueprint;
+    private BridgeBuildingSystem bridge;
     private float updateTimer = 0f;
 
-    private void Start()
+    public void SetBridge(BridgeBuildingSystem bridgeSystem)
     {
-        // Find blueprint this UI belongs to
-        blueprint = GetComponentInParent<BridgeBlueprintData>();
-
-        if (blueprint == null)
-        {
-            Debug.LogError("BridgeBlueprintUI tidak menemukan BridgeBlueprintData parent!");
-            return;
-        }
-
+        bridge = bridgeSystem;
         UpdateUI();
     }
 
     private void Update()
     {
-        if (blueprint == null) return;
+        if (bridge == null) return;
 
+        // Always face camera
+        if (Camera.main != null)
+        {
+            transform.LookAt(Camera.main.transform);
+            transform.Rotate(0, 180, 0);
+        }
+
+        // Update UI periodically
         updateTimer += Time.deltaTime;
         if (updateTimer >= updateInterval)
         {
             updateTimer = 0f;
             UpdateUI();
         }
-
-        // Always face camera
-        if (Camera.main != null)
-        {
-            transform.LookAt(Camera.main.transform);
-            transform.Rotate(0, 180, 0); // Flip to face camera
-        }
     }
 
-    /// <summary>
-    /// Update all UI elements
-    /// </summary>
     private void UpdateUI()
     {
-        if (blueprint.IsCompleted)
-        {
-            ShowCompletedState();
-            return;
-        }
+        if (bridge == null) return;
 
-        // Update blueprint name
-        if (blueprintNameText != null)
+        // Update bridge name
+        if (bridgeNameText != null)
         {
-            blueprintNameText.text = blueprint.blueprintName;
+            bridgeNameText.text = bridge.bridgeName;
         }
 
         // Update progress
-        float progress = blueprint.BuildProgress;
+        float progress = bridge.BuildProgress;
 
         if (progressText != null)
         {
@@ -99,77 +72,43 @@ public class BridgeBlueprintUI : MonoBehaviour
             requirementsText.text = GetRequirementsText();
         }
 
-        // Update interaction prompt
-        if (interactionPromptText != null)
+        // Update action text
+        if (actionText != null)
         {
-            interactionPromptText.text = $"Press [{blueprint.interactKey}] to Build";
+            if (bridge.IsCompleted)
+            {
+                actionText.text = "COMPLETED!";
+            }
+            else
+            {
+                actionText.text = $"Hold [{bridge.buildKey}] to Build";
+            }
         }
     }
 
-    /// <summary>
-    /// Get formatted requirements text
-    /// </summary>
     private string GetRequirementsText()
     {
-        string text = "Requirements:\n";
+        string text = "";
 
-        foreach (var req in blueprint.requiredResources)
+        foreach (var req in bridge.requiredResources)
         {
-            bool hasEnough = req.currentAmount >= req.requiredAmount;
+            bool hasEnough = req.currentAmount >= req.totalRequired;
             string checkmark = hasEnough ? "✓" : "○";
 
-            text += $"{checkmark} {req.resourceName}: {req.currentAmount}/{req.requiredAmount}\n";
+            // Show current inventory count
+            int inInventory = Inventory.Instance != null ?
+                             Inventory.Instance.GetItemCount(req.resourceName) : 0;
+
+            text += $"{checkmark} {req.resourceName}: {req.currentAmount}/{req.totalRequired}";
+
+            if (!hasEnough)
+            {
+                text += $" (Have: {inInventory})";
+            }
+
+            text += "\n";
         }
 
         return text;
-    }
-
-    /// <summary>
-    /// Show completed state
-    /// </summary>
-    private void ShowCompletedState()
-    {
-        if (blueprintNameText != null)
-        {
-            blueprintNameText.text = $"{blueprint.blueprintName} - COMPLETED";
-        }
-
-        if (progressText != null)
-        {
-            progressText.text = "100%";
-        }
-
-        if (progressBarFill != null)
-        {
-            progressBarFill.fillAmount = 1f;
-        }
-
-        if (requirementsText != null)
-        {
-            requirementsText.text = "All requirements met!";
-        }
-
-        if (interactionPromptText != null)
-        {
-            interactionPromptText.text = "";
-        }
-
-        // Optional: Hide UI after completion
-        // Invoke("HideUI", 2f);
-    }
-
-    /// <summary>
-    /// Hide UI panel
-    /// </summary>
-    private void HideUI()
-    {
-        if (uiPanel != null)
-        {
-            uiPanel.SetActive(false);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
     }
 }
