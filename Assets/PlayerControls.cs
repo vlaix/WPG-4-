@@ -616,11 +616,20 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""shooting"",
+                    ""type"": ""Value"",
+                    ""id"": ""09ea0227-d7a2-461d-8732-28f4f4e96c1b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""2D Vector"",
+                    ""name"": ""Keyboard"",
                     ""id"": ""52b0399c-f754-4a38-b1e2-6f6a214a3308"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
@@ -673,6 +682,83 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Gamepad"",
+                    ""id"": ""3239af91-c411-4f68-8404-c4cadeedc606"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""05c62875-5c04-4e0e-910e-153c6a22f542"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""318ca312-28c8-4403-a1ac-87f2c2496c95"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""1d7159f7-bb8a-4533-8392-5679de777b41"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""29b45784-a9bb-4a73-831d-eefd67b9a7b0"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5891e0d2-d285-4616-9c7e-487991ff0d0c"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""shooting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0973175c-6772-42de-a2c5-2f4046de53bf"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""shooting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -827,6 +913,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         // Player1Movement
         m_Player1Movement = asset.FindActionMap("Player1Movement", throwIfNotFound: true);
         m_Player1Movement_Movement = m_Player1Movement.FindAction("Movement", throwIfNotFound: true);
+        m_Player1Movement_shooting = m_Player1Movement.FindAction("shooting", throwIfNotFound: true);
         // Player2Movement
         m_Player2Movement = asset.FindActionMap("Player2Movement", throwIfNotFound: true);
         m_Player2Movement_Movement = m_Player2Movement.FindAction("Movement", throwIfNotFound: true);
@@ -1108,6 +1195,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player1Movement;
     private List<IPlayer1MovementActions> m_Player1MovementActionsCallbackInterfaces = new List<IPlayer1MovementActions>();
     private readonly InputAction m_Player1Movement_Movement;
+    private readonly InputAction m_Player1Movement_shooting;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player1Movement".
     /// </summary>
@@ -1123,6 +1211,10 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player1Movement/Movement".
         /// </summary>
         public InputAction @Movement => m_Wrapper.m_Player1Movement_Movement;
+        /// <summary>
+        /// Provides access to the underlying input action "Player1Movement/shooting".
+        /// </summary>
+        public InputAction @shooting => m_Wrapper.m_Player1Movement_shooting;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1152,6 +1244,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @shooting.started += instance.OnShooting;
+            @shooting.performed += instance.OnShooting;
+            @shooting.canceled += instance.OnShooting;
         }
 
         /// <summary>
@@ -1166,6 +1261,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @shooting.started -= instance.OnShooting;
+            @shooting.performed -= instance.OnShooting;
+            @shooting.canceled -= instance.OnShooting;
         }
 
         /// <summary>
@@ -1452,6 +1550,13 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMovement(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "shooting" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShooting(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player2Movement" which allows adding and removing callbacks.
