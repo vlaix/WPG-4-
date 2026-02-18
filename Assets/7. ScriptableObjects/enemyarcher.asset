@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1ff26b237529b479b57ad71a528ce0, type: 3}
+  m_Name: enemyarcher
+  m_EditorClassIdentifier: 
+  speed: 2
+  healthPoint: 3
+  stopDistance: 50
+  fireRate: 3
+  prefab: {fileID: 8765610706870686038, guid: b9f4f419358db9248be767c8669a6331, type: 3}
+  peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}

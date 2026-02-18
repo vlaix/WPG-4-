@@ -3,13 +3,14 @@ using UnityEngine;
 public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] private Transform Player;
-    [SerializeField] private float speed;
     [SerializeField] private GameObject loot;
+    [SerializeField] private EnemyData data;
     public float healthpoint;
+    [SerializeField] private float BufferShoot;
 
     void Start()
     {
-        healthpoint = 3f;
+        healthpoint = data.healthPoint;
         float randomizer;
 
         GameObject playerObj1 = GameObject.FindWithTag("Player");
@@ -28,10 +29,26 @@ public class EnemyBehavior : MonoBehaviour
 
     void Update()
     {
+        bool isStop = false;
         Vector3 PlayerPosition = new Vector3(Player.position.x, transform.position.y, Player.position.z);
+        transform.LookAt(new Vector3(Player.position.x, transform.position.y, Player.position.z));
+
+        float distance = Vector3.Distance(transform.position, Player.position);
+
+        if(distance <= data.stopDistance && data.stopDistance != 0) {
+           if (Time.time >= BufferShoot) {
+                isStop = true;
+                Shoot();
+                BufferShoot = Time.time + data.fireRate;
+            } else {
+                isStop = false;
+            }
+        }
 
         if (healthpoint != 0f) {
-            transform.position = Vector3.MoveTowards(transform.position, PlayerPosition, speed * Time.deltaTime);
+            if(isStop == false) {
+                transform.position = Vector3.MoveTowards(transform.position, PlayerPosition, data.speed * Time.deltaTime);
+            }
         }
     }
 
@@ -53,5 +70,12 @@ public class EnemyBehavior : MonoBehaviour
     void SpawnLoot()
     {
         Instantiate(loot, transform.position, Quaternion.identity);
+    }
+
+    void Shoot() {
+        GameObject peluru = Instantiate(data.peluru, transform.position, Quaternion.identity);
+
+        Vector3 direction = (Player.position - transform.position).normalized;
+        peluru.GetComponent<Rigidbody>().linearVelocity = direction * 20;
     }
 }
