@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: enemytank
   m_EditorClassIdentifier: 
   speed: 2
-  healthPoint: 3
+  healthPoint: 6
   stopDistance: 0
   fireRate: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 5534270234629031914, guid: 19dcfdb69b21866439bcca155a3d174c, type: 3}
   peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}
