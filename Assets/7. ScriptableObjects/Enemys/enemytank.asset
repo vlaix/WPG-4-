@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c1ff26b237529b479b57ad71a528ce0, type: 3}
   m_Name: enemytank
   m_EditorClassIdentifier: 
-  speed: 2
-  healthPoint: 6
+  speed: 1
+  healthPoint: 1
   stopDistance: 0
   fireRate: 0
   prefab: {fileID: 5534270234629031914, guid: 19dcfdb69b21866439bcca155a3d174c, type: 3}

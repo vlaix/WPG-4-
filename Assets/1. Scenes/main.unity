@@ -155,7 +155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 19.900024, y: -20.5}
+  m_AnchoredPosition: {x: 19.899902, y: -20.5}
   m_SizeDelta: {x: 769.5117, y: 432.8503}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &202795612
@@ -495,12 +495,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy: {fileID: 6453985559881473216, guid: 44956d5a15a0c01488406b3c7337ff79, type: 3}
   SpawnCollider: {fileID: 477164624}
-  SpawnTime: 4.5
+  SpawnTime: 5
   data:
   - {fileID: 11400000, guid: 719dd8d0f0e9d2e46b7f3f74b1ab038c, type: 2}
   - {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
   - {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
-  Normal: 2
+  Normal: 3
   Tank: 2
   Archer: 0
 --- !u!65 &477164624
@@ -1783,7 +1783,6 @@ MonoBehaviour:
     currentAmount: 0
   buildSpeed: 1
   buildRange: 4
-  buildKey: 101
   bridgeRenderer: {fileID: 2485649657968210665}
   blueprintColor: {r: 1, g: 1, b: 1, a: 0}
   buildingColor: {r: 1, g: 1, b: 1, a: 0}

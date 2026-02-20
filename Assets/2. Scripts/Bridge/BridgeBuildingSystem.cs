@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 public enum BridgeBuildState
@@ -33,9 +34,6 @@ public class BridgeBuildingSystem : MonoBehaviour
     [Tooltip("Jarak player untuk bisa build")]
     public float buildRange = 3f;
 
-    [Tooltip("Key untuk build (hold)")]
-    public KeyCode buildKey = KeyCode.E;
-
     [Header("Visual Settings")]
     [Tooltip("Renderer jembatan (untuk ganti warna)")]
     public Renderer bridgeRenderer;
@@ -65,6 +63,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     public GameObject buildUI;
 
     // Private variables
+    private PlayerControl playerControls;
     private Transform player2Transform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
@@ -73,11 +72,38 @@ public class BridgeBuildingSystem : MonoBehaviour
     private float buildTimer = 0f;
     private bool isPlayerInRange = false;
     private bool isBuilding = false;
+    private bool isBuildButtonPressed = false;
 
     // Properties
     public BridgeBuildState State => currentState;
     public float BuildProgress => buildProgress;
     public bool IsCompleted => currentState == BridgeBuildState.Completed;
+
+    private void Awake()
+    {
+        // Initialize input system
+        playerControls = new PlayerControl();
+    }
+
+    private void OnEnable()
+    {
+        // Enable Player2Movement action map
+        playerControls.Player2Movement.Enable();
+
+        // Subscribe to Build action
+        playerControls.Player2Movement.Build.performed += OnBuildPressed;
+        playerControls.Player2Movement.Build.canceled += OnBuildReleased;
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe from Build action
+        playerControls.Player2Movement.Build.performed -= OnBuildPressed;
+        playerControls.Player2Movement.Build.canceled -= OnBuildReleased;
+
+        // Disable Player2Movement action map
+        playerControls.Player2Movement.Disable();
+    }
 
     private void Start()
     {
@@ -91,6 +117,22 @@ public class BridgeBuildingSystem : MonoBehaviour
         CheckPlayerProximity();
         HandleBuildInput();
         UpdateVisual();
+    }
+
+    /// <summary>
+    /// Input callback when Build button is pressed
+    /// </summary>
+    private void OnBuildPressed(InputAction.CallbackContext context)
+    {
+        isBuildButtonPressed = true;
+    }
+
+    /// <summary>
+    /// Input callback when Build button is released
+    /// </summary>
+    private void OnBuildReleased(InputAction.CallbackContext context)
+    {
+        isBuildButtonPressed = false;
     }
 
     /// <summary>
@@ -187,7 +229,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Handle input untuk building (HOLD E)
+    /// Handle input untuk building (HOLD Build button)
     /// </summary>
     private void HandleBuildInput()
     {
@@ -200,8 +242,8 @@ public class BridgeBuildingSystem : MonoBehaviour
             return;
         }
 
-        // HOLD E untuk build
-        if (Input.GetKey(buildKey))
+        // HOLD Build button untuk build
+        if (isBuildButtonPressed)
         {
             if (!isBuilding)
             {
@@ -497,11 +539,11 @@ public class BridgeBuildingSystem : MonoBehaviour
         {
             if (isBuilding)
             {
-                info += $"\n[Holding {buildKey}] Building...";
+                info += "\n[Holding Build] Building...";
             }
             else
             {
-                info += $"\nHold [{buildKey}] to Build";
+                info += "\nHold [Build] to Build";
             }
         }
 

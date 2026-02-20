@@ -15,14 +15,14 @@ public class WeaponShoot : MonoBehaviour
     [Header("Player Reference")]
     [SerializeField] private GameObject player;
 
-    // Reference to your PlayerControls
-    private PlayerControls playerControls;
+    // Reference to your PlayerControl
+    private PlayerControl playerControls;
     private float nextFireTime = 0f;
 
     void Awake()
     {
-        // Create instance of your PlayerControls
-        playerControls = new PlayerControls();
+        // Create instance of your PlayerControl
+        playerControls = new PlayerControl();
     }
 
     void Start()
@@ -43,18 +43,18 @@ public class WeaponShoot : MonoBehaviour
 
     void OnEnable()
     {
-        // Enable the Player Movement action map
-        playerControls.PlayerMovement.Enable();
+        // Enable the Player1Movement action map
+        playerControls.Player1Movement.Enable();
 
-        // Subscribe to the Shoot action
-        playerControls.PlayerMovement.Shoot.performed += OnShoot;
+        // Subscribe to the shooting action
+        playerControls.Player1Movement.shooting.performed += OnShoot;
     }
 
     void OnDisable()
     {
         // Unsubscribe and disable
-        playerControls.PlayerMovement.Shoot.performed -= OnShoot;
-        playerControls.PlayerMovement.Disable();
+        playerControls.Player1Movement.shooting.performed -= OnShoot;
+        playerControls.Player1Movement.Disable();
     }
 
     private void OnShoot(InputAction.CallbackContext context)

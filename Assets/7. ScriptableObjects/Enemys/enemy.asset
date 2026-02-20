@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: enemy
   m_EditorClassIdentifier: 
   speed: 2
-  healthPoint: 3
+  healthPoint: 1
   stopDistance: 0
   fireRate: 0
   prefab: {fileID: 6453985559881473216, guid: 44956d5a15a0c01488406b3c7337ff79, type: 3}

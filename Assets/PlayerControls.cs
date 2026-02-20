@@ -752,7 +752,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0973175c-6772-42de-a2c5-2f4046de53bf"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -774,6 +774,15 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Build"",
+                    ""type"": ""Button"",
+                    ""id"": ""a8b9c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -831,6 +840,39 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Build"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Build"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Build"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -917,6 +959,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         // Player2Movement
         m_Player2Movement = asset.FindActionMap("Player2Movement", throwIfNotFound: true);
         m_Player2Movement_Movement = m_Player2Movement.FindAction("Movement", throwIfNotFound: true);
+        m_Player2Movement_Build = m_Player2Movement.FindAction("Build", throwIfNotFound: true);
     }
 
     ~@PlayerControl()
@@ -1302,6 +1345,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player2Movement;
     private List<IPlayer2MovementActions> m_Player2MovementActionsCallbackInterfaces = new List<IPlayer2MovementActions>();
     private readonly InputAction m_Player2Movement_Movement;
+    private readonly InputAction m_Player2Movement_Build;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player2Movement".
     /// </summary>
@@ -1317,6 +1361,10 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player2Movement/Movement".
         /// </summary>
         public InputAction @Movement => m_Wrapper.m_Player2Movement_Movement;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2Movement/Build".
+        /// </summary>
+        public InputAction @Build => m_Wrapper.m_Player2Movement_Build;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1346,6 +1394,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @Build.started += instance.OnBuild;
+            @Build.performed += instance.OnBuild;
+            @Build.canceled += instance.OnBuild;
         }
 
         /// <summary>
@@ -1360,6 +1411,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @Build.started -= instance.OnBuild;
+            @Build.performed -= instance.OnBuild;
+            @Build.canceled -= instance.OnBuild;
         }
 
         /// <summary>
@@ -1572,5 +1626,12 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMovement(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Build" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuild(InputAction.CallbackContext context);
     }
 }

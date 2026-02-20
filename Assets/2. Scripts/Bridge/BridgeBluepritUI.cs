@@ -81,7 +81,7 @@ public class BridgeBuildUI : MonoBehaviour
             }
             else
             {
-                actionText.text = $"Hold [{bridge.buildKey}] to Build";
+                actionText.text = "Hold [Build] to Build";
             }
         }
     }
