@@ -16,13 +16,13 @@ public class WeaponShoot : MonoBehaviour
     [SerializeField] private GameObject player;
 
     // Reference to your PlayerControl
-    private PlayerControl playerControls;
+    private PlayerInput playerControls;
     private float nextFireTime = 0f;
 
     void Awake()
     {
         // Create instance of your PlayerControl
-        playerControls = new PlayerControl();
+        playerControls = new PlayerInput();
     }
 
     void Start()

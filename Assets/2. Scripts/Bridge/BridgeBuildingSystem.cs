@@ -47,7 +47,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     // Runtime data
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
-    private PlayerControl playerControls;
+    private PlayerInput playerControls;
     private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
@@ -68,7 +68,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     private void Awake()
     {
         // Initialize input system
-        playerControls = new PlayerControl();
+        playerControls = new PlayerInput();
     }
 
     private void OnEnable()

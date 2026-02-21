@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class InputManagerPlayer1 : MonoBehaviour
 {
-    PlayerControl playerControls; // Ubah dari PlayerControls ke PlayerControl
+    PlayerInput playerControls; // Ubah dari PlayerControls ke PlayerControl
     public Vector2 movementInput;
     public float verticalInput;
     public float horizontalInput;
@@ -11,7 +11,7 @@ public class InputManagerPlayer1 : MonoBehaviour
     {
         if (playerControls == null) 
         {
-            playerControls = new PlayerControl(); // Ubah dari PlayerControls ke PlayerControl
+            playerControls = new PlayerInput(); // Ubah dari PlayerControls ke PlayerControl
             playerControls.Player1Movement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.Player1Movement.Movement.canceled += i => movementInput = Vector2.zero;
         }
