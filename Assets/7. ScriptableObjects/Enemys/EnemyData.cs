@@ -7,7 +7,8 @@ public class EnemyData : ScriptableObject
     public float speed;
     public float healthPoint;
     public float stopDistance;
-    public float fireRate;
+    public float Cooldown;
+    public int damage;
 
     [HeaderAttribute("Visual")]
     public GameObject prefab;

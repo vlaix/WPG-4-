@@ -3,29 +3,22 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float lifeTime = 3f;
+    [SerializeField] Health Health;
+    [SerializeField] EnemyData archer;
 
     void Start()
     {
-        Destroy(gameObject, lifeTime); 
+        Destroy(gameObject, lifeTime);
+        Health = Health.Instance;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("Player2"))
         {
-            // Tambahkan logika damage ke Player di sini
-            Debug.Log("Player 1 terkena tembakan!");
+            Health.Hurt(archer.damage);
             
             Destroy(gameObject); 
         }
-
-        if (other.CompareTag("Player2"))
-        {
-            // Tambahkan logika damage ke Player di sini
-            Debug.Log("Player 2 terkena tembakan!");
-            
-            Destroy(gameObject); 
-        }
-
     }
 }

@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeTime: 3
+  Health: {fileID: 0}
+  archer: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
 --- !u!54 &3729726483141544879
 Rigidbody:
   m_ObjectHideFlags: 0
