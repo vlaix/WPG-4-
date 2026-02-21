@@ -55,7 +55,14 @@ public class PlayerLocomotion : MonoBehaviour
         moveDirection.y = 0;
         moveDirection = moveDirection * movementSpeed;
 
+        // AMBIL velocity Y yang saat ini sedang diproses oleh gravitasi
+        float currentYVelocity = playerRigidbody.linearVelocity.y;
+
         Vector3 movementVelocity = moveDirection;
+
+        // PERTAHANKAN nilai Y-nya, jangan dipaksa jadi 0
+        movementVelocity.y = currentYVelocity;
+
         playerRigidbody.linearVelocity = movementVelocity;
     }
 

@@ -47,10 +47,10 @@ public class BridgeBuildUI : MonoBehaviour
     {
         if (bridge == null) return;
 
-        // Update bridge name
+        // FIXED: Menggunakan properti 'BridgeName' (bukan bridgeName)
         if (bridgeNameText != null)
         {
-            bridgeNameText.text = bridge.bridgeName;
+            bridgeNameText.text = bridge.BridgeName;
         }
 
         // Update progress
@@ -90,7 +90,9 @@ public class BridgeBuildUI : MonoBehaviour
     {
         string text = "";
 
-        foreach (var req in bridge.requiredResources)
+        // FIXED: Menggunakan properti 'RuntimeResources' (bukan requiredResources)
+        // Dan menyesuaikan nama variabel (totalRequired & currentAmount)
+        foreach (var req in bridge.RuntimeResources)
         {
             bool hasEnough = req.currentAmount >= req.totalRequired;
             string checkmark = hasEnough ? "✓" : "○";

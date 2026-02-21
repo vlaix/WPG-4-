@@ -522,8 +522,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9998103, y: 1, z: 1}
-  m_Center: {x: -0.000093671326, y: 0, z: 0}
+  m_Size: {x: 0.92477494, y: 1, z: 0.8612657}
+  m_Center: {x: 0.0012903973, y: 0, z: 0.0059603313}
 --- !u!23 &477164625
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -991,7 +991,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1001 &1093508732
@@ -1762,8 +1762,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 7.774484, y: 0.6566366, z: 14.69468}
-  m_Center: {x: 0.29449534, y: -0.1716817, z: 6.84734}
+  m_Size: {x: 7.774484, y: 0.6566366, z: 14.994563}
+  m_Center: {x: 0.29449534, y: -0.1716817, z: 6.9972816}
 --- !u!114 &1829133830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1776,21 +1776,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccb571280042c046833af1bff3dd192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bridgeName: Wooden Bridge
-  requiredResources:
-  - resourceName: Scrap
-    totalRequired: 5
-    currentAmount: 0
-  buildSpeed: 1
-  buildRange: 4
+  bridgeData: {fileID: 11400000, guid: a8a13a5e1934fc24496a641b528b6d45, type: 2}
   bridgeRenderer: {fileID: 2485649657968210665}
-  blueprintColor: {r: 1, g: 1, b: 1, a: 0}
-  buildingColor: {r: 1, g: 1, b: 1, a: 0}
-  completedColor: {r: 0.6, g: 0.4, b: 0.2, a: 1}
   bridgeCollider: {fileID: 1829133829}
-  buildingSound: {fileID: 0}
-  completeSound: {fileID: 0}
   buildUI: {fileID: 0}
+  showDebugLogs: 1
 --- !u!4 &1829133831
 Transform:
   m_ObjectHideFlags: 0
@@ -1800,7 +1790,7 @@ Transform:
   m_GameObject: {fileID: 1829133828}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 12.62}
+  m_LocalPosition: {x: 0, y: 0.12, z: 12.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -10,65 +10,49 @@ public enum BridgeBuildState
 }
 
 [System.Serializable]
-public class ResourceRequirement
+public class RuntimeResourceRequirement
 {
-    public string resourceName;     // Nama resource (e.g., "Scrap")
-    public int totalRequired;       // Total yang dibutuhkan
-    [HideInInspector]
-    public int currentAmount;       // Jumlah yang sudah dipasang
+    public string resourceName;
+    public int totalRequired;
+    public int currentAmount;
+
+    public RuntimeResourceRequirement(string name, int required)
+    {
+        resourceName = name;
+        totalRequired = required;
+        currentAmount = 0;
+    }
 }
 
 public class BridgeBuildingSystem : MonoBehaviour
 {
-    [Header("Bridge Info")]
-    public string bridgeName = "Wooden Bridge";
+    [Header("Bridge Data")]
+    [Tooltip("Drag BridgeData ScriptableObject here")]
+    public BridgeData bridgeData;
 
-    [Header("Resource Requirements")]
-    [Tooltip("Resource yang dibutuhkan untuk build jembatan")]
-    public List<ResourceRequirement> requiredResources = new List<ResourceRequirement>();
-
-    [Header("Building Settings")]
-    [Tooltip("Berapa resource dipasang per detik saat hold E")]
-    public float buildSpeed = 2f; // 2 resource per detik
-
-    [Tooltip("Jarak player untuk bisa build")]
-    public float buildRange = 3f;
-
-    [Header("Visual Settings")]
-    [Tooltip("Renderer jembatan (untuk ganti warna)")]
+    [Header("Runtime References")]
+    [Tooltip("Renderer jembatan (auto-find jika kosong)")]
     public Renderer bridgeRenderer;
 
-    [Tooltip("Warna saat blueprint (wireframe)")]
-    public Color blueprintColor = new Color(1f, 1f, 1f, 0.3f);
-
-    [Tooltip("Warna saat building (progress)")]
-    public Color buildingColor = new Color(1f, 0.8f, 0f, 0.7f); // Orange
-
-    [Tooltip("Warna saat completed")]
-    public Color completedColor = new Color(0.6f, 0.4f, 0.2f, 1f); // Brown
-
-    [Header("Collision Settings")]
-    [Tooltip("Collider jembatan (disabled sampai selesai)")]
+    [Tooltip("Collider jembatan (auto-find jika kosong)")]
     public Collider bridgeCollider;
-
-    [Header("Audio")]
-    [Tooltip("Sound loop saat building")]
-    public AudioClip buildingSound;
-
-    [Tooltip("Sound saat complete")]
-    public AudioClip completeSound;
 
     [Header("UI (Optional)")]
     [Tooltip("UI prefab yang muncul saat player di radius")]
     public GameObject buildUI;
 
-    // Private variables
+    [Header("Debug")]
+    [Tooltip("Show debug logs")]
+    public bool showDebugLogs = true;
+
+    // Runtime data
+    private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     private PlayerControl playerControls;
-    private Transform player2Transform;
+    private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
-    private float buildProgress = 0f; // 0 - 1
+    private float buildProgress = 0f;
     private float buildTimer = 0f;
     private bool isPlayerInRange = false;
     private bool isBuilding = false;
@@ -78,6 +62,8 @@ public class BridgeBuildingSystem : MonoBehaviour
     public BridgeBuildState State => currentState;
     public float BuildProgress => buildProgress;
     public bool IsCompleted => currentState == BridgeBuildState.Completed;
+    public string BridgeName => bridgeData != null ? bridgeData.bridgeName : "Unknown Bridge";
+    public List<RuntimeResourceRequirement> RuntimeResources => runtimeResources;
 
     private void Awake()
     {
@@ -107,9 +93,11 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     private void Start()
     {
+        ValidateBridgeData();
+        InitializeRuntimeResources();
         InitializeBridge();
         SetupAudio();
-        FindPlayer2();
+        FindPlayer();
     }
 
     private void Update()
@@ -119,71 +107,107 @@ public class BridgeBuildingSystem : MonoBehaviour
         UpdateVisual();
     }
 
-    /// <summary>
-    /// Input callback when Build button is pressed
-    /// </summary>
     private void OnBuildPressed(InputAction.CallbackContext context)
     {
         isBuildButtonPressed = true;
     }
 
-    /// <summary>
-    /// Input callback when Build button is released
-    /// </summary>
     private void OnBuildReleased(InputAction.CallbackContext context)
     {
         isBuildButtonPressed = false;
     }
 
-    /// <summary>
-    /// Initialize bridge state
-    /// </summary>
+    private void ValidateBridgeData()
+    {
+        if (bridgeData == null)
+        {
+            Debug.LogError($"❌ BridgeData is NULL! Please assign a BridgeData ScriptableObject to {gameObject.name}");
+            enabled = false;
+        }
+    }
+
+    private void InitializeRuntimeResources()
+    {
+        if (bridgeData == null) return;
+
+        runtimeResources.Clear();
+
+        foreach (var req in bridgeData.requiredResources)
+        {
+            runtimeResources.Add(new RuntimeResourceRequirement(req.resourceName, req.amount));
+        }
+
+        if (showDebugLogs)
+        {
+            Debug.Log($"📋 '{BridgeName}' requires:");
+            foreach (var req in runtimeResources)
+            {
+                Debug.Log($"  • {req.resourceName}: {req.totalRequired}");
+            }
+        }
+    }
+
     private void InitializeBridge()
     {
+        if (bridgeData == null) return;
+
+        // Auto-find renderer
+        if (bridgeRenderer == null)
+        {
+            bridgeRenderer = GetComponentInChildren<Renderer>();
+        }
+
         // Set initial blueprint color
         if (bridgeRenderer != null)
         {
-            SetBridgeColor(blueprintColor);
+            SetBridgeColor(bridgeData.blueprintColor);
         }
-        else
+
+        // Auto-find or setup collider
+        if (bridgeCollider == null)
         {
-            // Auto-find renderer jika tidak di-assign
-            bridgeRenderer = GetComponentInChildren<Renderer>();
-            if (bridgeRenderer != null)
+            bridgeCollider = GetComponent<BoxCollider>();
+
+            if (bridgeCollider == null)
             {
-                SetBridgeColor(blueprintColor);
+                // Create box collider dari data
+                BoxCollider boxCol = gameObject.AddComponent<BoxCollider>();
+                boxCol.size = bridgeData.colliderSize;
+                boxCol.center = bridgeData.colliderCenter;
+                bridgeCollider = boxCol;
+
+                if (showDebugLogs)
+                {
+                    Debug.Log($"✅ Auto-created Box Collider for '{BridgeName}'");
+                }
             }
         }
 
         // Disable collider saat blueprint
-        if (bridgeCollider == null)
-        {
-            bridgeCollider = GetComponent<Collider>();
-        }
-
         if (bridgeCollider != null)
         {
             bridgeCollider.enabled = false;
-            Debug.Log($"🔧 '{bridgeName}': Collider DISABLED - Player akan jatuh!");
-        }
 
-        // Initialize resource current amounts
-        foreach (var req in requiredResources)
-        {
-            req.currentAmount = 0;
+            if (showDebugLogs)
+            {
+                Debug.Log($"🔧 '{BridgeName}': Collider DISABLED - Player akan jatuh!");
+            }
         }
 
         currentState = BridgeBuildState.Blueprint;
-        Debug.Log($"🏗️ '{bridgeName}' initialized as Blueprint");
+
+        if (showDebugLogs)
+        {
+            Debug.Log($"🏗️ '{BridgeName}' initialized as Blueprint");
+        }
     }
 
-    /// <summary>
-    /// Setup audio source
-    /// </summary>
     private void SetupAudio()
     {
+        if (bridgeData == null) return;
+
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null && (buildingSound != null || completeSound != null))
+        if (audioSource == null && (bridgeData.buildingSound != null || bridgeData.completeSound != null))
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
@@ -191,31 +215,32 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Find Player 2
-    /// </summary>
-    private void FindPlayer2()
+    private void FindPlayer()
     {
-        GameObject player2 = GameObject.FindGameObjectWithTag("Player2");
-        if (player2 != null)
+        if (bridgeData == null) return;
+
+        GameObject player = GameObject.FindGameObjectWithTag(bridgeData.requiredPlayerTag);
+        if (player != null)
         {
-            player2Transform = player2.transform;
+            playerTransform = player.transform;
+
+            if (showDebugLogs)
+            {
+                Debug.Log($"✅ Found player with tag '{bridgeData.requiredPlayerTag}' for '{BridgeName}'");
+            }
         }
         else
         {
-            Debug.LogWarning("⚠️ Player2 tidak ditemukan! Pastikan tag 'Player2' ada.");
+            Debug.LogWarning($"⚠️ Player with tag '{bridgeData.requiredPlayerTag}' not found for '{BridgeName}'!");
         }
     }
 
-    /// <summary>
-    /// Check apakah player di radius build
-    /// </summary>
     private void CheckPlayerProximity()
     {
-        if (player2Transform == null || IsCompleted) return;
+        if (bridgeData == null || playerTransform == null || IsCompleted) return;
 
-        float distance = Vector3.Distance(transform.position, player2Transform.position);
-        isPlayerInRange = distance <= buildRange;
+        float distance = Vector3.Distance(transform.position, playerTransform.position);
+        isPlayerInRange = distance <= bridgeData.buildRange;
 
         // Show/hide UI
         if (isPlayerInRange && !IsCompleted)
@@ -228,12 +253,9 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handle input untuk building (HOLD Build button)
-    /// </summary>
     private void HandleBuildInput()
     {
-        if (!isPlayerInRange || IsCompleted || player2Transform == null)
+        if (bridgeData == null || !isPlayerInRange || IsCompleted || playerTransform == null)
         {
             if (isBuilding)
             {
@@ -261,49 +283,49 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Mulai building
-    /// </summary>
     private void StartBuilding()
     {
         isBuilding = true;
         currentState = BridgeBuildState.Building;
 
         // Play building sound loop
-        if (audioSource != null && buildingSound != null)
+        if (audioSource != null && bridgeData.buildingSound != null)
         {
-            audioSource.clip = buildingSound;
+            audioSource.clip = bridgeData.buildingSound;
             audioSource.loop = true;
             audioSource.Play();
         }
 
-        Debug.Log($"🔨 Mulai membangun '{bridgeName}'...");
+        if (showDebugLogs)
+        {
+            Debug.Log($"🔨 Mulai membangun '{BridgeName}'...");
+        }
     }
 
-    /// <summary>
-    /// Stop building
-    /// </summary>
     private void StopBuilding()
     {
         isBuilding = false;
 
         // Stop building sound
-        if (audioSource != null && audioSource.isPlaying && audioSource.clip == buildingSound)
+        if (audioSource != null && audioSource.isPlaying && audioSource.clip == bridgeData.buildingSound)
         {
             audioSource.Stop();
         }
 
-        Debug.Log($"⏸️ Berhenti membangun '{bridgeName}'");
+        if (showDebugLogs)
+        {
+            Debug.Log($"⏸️ Berhenti membangun '{BridgeName}'");
+        }
     }
 
-    /// <summary>
-    /// Process building - consume resources
-    /// </summary>
     private void ProcessBuilding()
     {
-        if (Inventory.Instance == null)
+        if (bridgeData == null || Inventory.Instance == null)
         {
-            Debug.LogError("❌ Inventory tidak ditemukan!");
+            if (Inventory.Instance == null)
+            {
+                Debug.LogError("❌ Inventory tidak ditemukan!");
+            }
             StopBuilding();
             return;
         }
@@ -312,13 +334,13 @@ public class BridgeBuildingSystem : MonoBehaviour
         buildTimer += Time.deltaTime;
 
         // Calculate berapa resource yang harus dipasang berdasarkan build speed
-        float resourcesPerSecond = buildSpeed;
+        float resourcesPerSecond = bridgeData.buildSpeed;
         float resourcesThisFrame = resourcesPerSecond * Time.deltaTime;
 
         // Try consume resources
         bool anyResourceConsumed = false;
 
-        foreach (var req in requiredResources)
+        foreach (var req in runtimeResources)
         {
             if (req.currentAmount >= req.totalRequired)
             {
@@ -342,13 +364,19 @@ public class BridgeBuildingSystem : MonoBehaviour
                     req.currentAmount += intToConsume;
                     anyResourceConsumed = true;
 
-                    Debug.Log($"🔧 Memasang {intToConsume}x {req.resourceName} ({req.currentAmount}/{req.totalRequired})");
+                    if (showDebugLogs)
+                    {
+                        Debug.Log($"🔧 Memasang {intToConsume}x {req.resourceName} ({req.currentAmount}/{req.totalRequired})");
+                    }
                 }
             }
             else
             {
                 // Tidak punya resource ini
-                Debug.Log($"⚠️ Tidak punya {req.resourceName}! Butuh {req.totalRequired - req.currentAmount} lagi.");
+                if (showDebugLogs)
+                {
+                    Debug.Log($"⚠️ Tidak punya {req.resourceName}! Butuh {req.totalRequired - req.currentAmount} lagi.");
+                }
             }
         }
 
@@ -368,15 +396,12 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Update build progress (0-1)
-    /// </summary>
     private void UpdateBuildProgress()
     {
         int totalRequired = 0;
         int totalCurrent = 0;
 
-        foreach (var req in requiredResources)
+        foreach (var req in runtimeResources)
         {
             totalRequired += req.totalRequired;
             totalCurrent += req.currentAmount;
@@ -385,34 +410,28 @@ public class BridgeBuildingSystem : MonoBehaviour
         buildProgress = totalRequired > 0 ? (float)totalCurrent / totalRequired : 0f;
     }
 
-    /// <summary>
-    /// Update visual based on state
-    /// </summary>
     private void UpdateVisual()
     {
-        if (bridgeRenderer == null) return;
+        if (bridgeData == null || bridgeRenderer == null) return;
 
         switch (currentState)
         {
             case BridgeBuildState.Blueprint:
-                SetBridgeColor(blueprintColor);
+                SetBridgeColor(bridgeData.blueprintColor);
                 break;
 
             case BridgeBuildState.Building:
                 // Lerp color based on progress
-                Color buildColor = Color.Lerp(blueprintColor, buildingColor, buildProgress);
+                Color buildColor = Color.Lerp(bridgeData.blueprintColor, bridgeData.buildingColor, buildProgress);
                 SetBridgeColor(buildColor);
                 break;
 
             case BridgeBuildState.Completed:
-                SetBridgeColor(completedColor);
+                SetBridgeColor(bridgeData.completedColor);
                 break;
         }
     }
 
-    /// <summary>
-    /// Set bridge color/material
-    /// </summary>
     private void SetBridgeColor(Color color)
     {
         if (bridgeRenderer != null)
@@ -424,7 +443,7 @@ public class BridgeBuildingSystem : MonoBehaviour
             if (color.a < 1f)
             {
                 // Transparent mode
-                bridgeRenderer.material.SetFloat("_Mode", 3); // Transparent
+                bridgeRenderer.material.SetFloat("_Mode", 3);
                 bridgeRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                 bridgeRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                 bridgeRenderer.material.SetInt("_ZWrite", 0);
@@ -436,7 +455,7 @@ public class BridgeBuildingSystem : MonoBehaviour
             else
             {
                 // Opaque mode
-                bridgeRenderer.material.SetFloat("_Mode", 0); // Opaque
+                bridgeRenderer.material.SetFloat("_Mode", 0);
                 bridgeRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                 bridgeRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                 bridgeRenderer.material.SetInt("_ZWrite", 1);
@@ -448,9 +467,6 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Complete bridge
-    /// </summary>
     private void CompleteBridge()
     {
         currentState = BridgeBuildState.Completed;
@@ -464,30 +480,37 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
 
         // Play complete sound
-        if (audioSource != null && completeSound != null)
+        if (audioSource != null && bridgeData != null && bridgeData.completeSound != null)
         {
-            audioSource.PlayOneShot(completeSound);
+            audioSource.PlayOneShot(bridgeData.completeSound);
         }
 
         // Enable collider
         if (bridgeCollider != null)
         {
             bridgeCollider.enabled = true;
-            Debug.Log($"✅ '{bridgeName}' collider ENABLED - Player bisa lewat!");
+
+            if (showDebugLogs)
+            {
+                Debug.Log($"✅ '{BridgeName}' collider ENABLED - Player bisa lewat!");
+            }
         }
 
         // Set final color
-        SetBridgeColor(completedColor);
+        if (bridgeData != null)
+        {
+            SetBridgeColor(bridgeData.completedColor);
+        }
 
         // Hide UI
         HideBuildUI();
 
-        Debug.Log($"🎉 '{bridgeName}' SELESAI DIBANGUN!");
+        if (showDebugLogs)
+        {
+            Debug.Log($"🎉 '{BridgeName}' SELESAI DIBANGUN!");
+        }
     }
 
-    /// <summary>
-    /// Show build UI
-    /// </summary>
     private void ShowBuildUI()
     {
         if (buildUI != null && uiInstance == null)
@@ -504,9 +527,6 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Hide build UI
-    /// </summary>
     private void HideBuildUI()
     {
         if (uiInstance != null)
@@ -516,21 +536,20 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Get info text for UI
-    /// </summary>
     public string GetInfoText()
     {
+        if (bridgeData == null) return "No Bridge Data";
+
         if (IsCompleted)
         {
-            return $"{bridgeName}\nCOMPLETED";
+            return $"{BridgeName}\nCOMPLETED";
         }
 
-        string info = $"{bridgeName}\n";
+        string info = $"{BridgeName}\n";
         info += $"Progress: {Mathf.FloorToInt(buildProgress * 100)}%\n\n";
 
         info += "Required:\n";
-        foreach (var req in requiredResources)
+        foreach (var req in runtimeResources)
         {
             info += $"• {req.resourceName}: {req.currentAmount}/{req.totalRequired}\n";
         }
@@ -550,18 +569,23 @@ public class BridgeBuildingSystem : MonoBehaviour
         return info;
     }
 
-    /// <summary>
-    /// Visualize build range
-    /// </summary>
     private void OnDrawGizmosSelected()
     {
+        if (bridgeData == null) return;
+
         // Build range
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, buildRange);
+        Gizmos.DrawWireSphere(transform.position, bridgeData.buildRange);
+
+        // Collider preview
+        Gizmos.color = new Color(0, 1, 0, 0.3f);
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawCube(bridgeData.colliderCenter, bridgeData.colliderSize);
 
         // Progress indicator
         if (Application.isPlaying && buildProgress > 0f && buildProgress < 1f)
         {
+            Gizmos.matrix = Matrix4x4.identity;
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position + Vector3.up * 2f, 0.5f * buildProgress);
         }
