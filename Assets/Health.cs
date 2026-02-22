@@ -10,8 +10,15 @@ public class Health : MonoBehaviour
     private int currentHP;
     public static Health Instance;
 
-    void Awake() {
+    [Header("Shield Integration")]
+    private PlayerShield playerShield;
+
+    void Awake()
+    {
         Instance = this;
+
+        // Get PlayerShield component if exists
+        playerShield = GetComponent<PlayerShield>();
     }
 
     void Start()
@@ -22,24 +29,48 @@ public class Health : MonoBehaviour
 
     void Update()
     {
-        if(currentHP <= 0) {
+        if (currentHP <= 0)
+        {
             Die();
         }
     }
 
-    public void Hurt(int damage) {
-        currentHP = currentHP-damage;
+    public void Hurt(int damage)
+    {
+        // CRITICAL: Check if shield is active FIRST
+        if (playerShield != null && playerShield.IsShieldActive)
+        {
+            // Shield blocks damage, tidak mengenai HP
+            bool damageBlocked = playerShield.TakeDamage(damage);
+
+            if (damageBlocked)
+            {
+                if (playerShield.showDebugLogs)
+                {
+                    Debug.Log($"Shield protected player from {damage} damage!");
+                }
+                return; // STOP HERE - HP tidak berkurang!
+            }
+        }
+
+        // Shield tidak aktif atau sudah pecah, damage HP
+        currentHP = currentHP - damage;
         UpdateUI();
+
+        Debug.Log($"Player took {damage} damage! HP: {currentHP}/{MAXHP}");
     }
 
-    private void UpdateUI() {
+    private void UpdateUI()
+    {
         int Display = Mathf.Max(0, currentHP);
 
         HPtxt.SetText(Display + "/" + MAXHP);
         HPBar.fillAmount = (float)currentHP / MAXHP;
     }
 
-    private void Die() {
+    private void Die()
+    {
+        Debug.Log("Player died!");
         Time.timeScale = 0;
     }
 }

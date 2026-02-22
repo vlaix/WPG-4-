@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 779eff3bbb122ec46944b6a37b936d18, type: 3}
+  m_Name: DefaultBearTrap
+  m_EditorClassIdentifier: 
+  trapName: Bear Trap
+  description: A deadly bear trap that stuns enemies
+  damage: 10
+  stunDuration: 3
+  triggerRadius: 1.5
+  lifetime: 0
+  trapPrefab: {fileID: 6434663735299146503, guid: 377d14ee71f5733439784023e57f9bff, type: 3}
+  triggerSound: {fileID: 0}
+  triggerEffect: {fileID: 0}
+  placementCooldown: 5
+  requiredResource: Scrap
+  resourceCost: 2
+  maxActiveTraps: 3
+  idleColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  triggeredColor: {r: 1, g: 0, b: 0, a: 1}

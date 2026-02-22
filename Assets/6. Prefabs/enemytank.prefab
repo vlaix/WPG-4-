@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 345556980294210930}
   - component: {fileID: 1781814002682329248}
   - component: {fileID: 4967957963858205403}
+  - component: {fileID: -7989581899000325838}
   m_Layer: 0
   m_Name: enemytank
   m_TagString: Enemy
@@ -236,8 +237,35 @@ MonoBehaviour:
   Player: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
+  Health: {fileID: 0}
   healthpoint: 0
-  BufferShoot: 0
+--- !u!54 &-7989581899000325838
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534270234629031914}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &8951789952820250306
 GameObject:
   m_ObjectHideFlags: 0

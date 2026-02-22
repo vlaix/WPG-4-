@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6359655228273680341
+--- !u!1 &6434663735299146503
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4082197115928572344}
-  - component: {fileID: 5675694610418121687}
-  - component: {fileID: 6682852373307715277}
-  - component: {fileID: 7762724967371013913}
-  - component: {fileID: 554532324548516235}
-  - component: {fileID: 3729726483141544879}
+  - component: {fileID: 1668632492893149942}
+  - component: {fileID: 7694229038791447279}
+  - component: {fileID: 5995959439326644333}
+  - component: {fileID: 4973598293825767593}
+  - component: {fileID: 8816432290113702194}
   m_Layer: 0
-  m_Name: peluru(musuh)
-  m_TagString: EnemyBullet
+  m_Name: BearTrap
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4082197115928572344
+--- !u!4 &1668632492893149942
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
+  m_GameObject: {fileID: 6434663735299146503}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.07, y: 2.929, z: 5.144}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 9.82, y: 0.02, z: 8.63}
+  m_LocalScale: {x: 1.2698413, y: 0.2, z: 1.2698413}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5675694610418121687
+--- !u!33 &7694229038791447279
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
+  m_GameObject: {fileID: 6434663735299146503}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6682852373307715277
+--- !u!23 &5995959439326644333
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
+  m_GameObject: {fileID: 6434663735299146503}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -89,13 +88,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &7762724967371013913
+--- !u!135 &4973598293825767593
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
+  m_GameObject: {fileID: 6434663735299146503}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -108,47 +107,19 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &554532324548516235
+--- !u!114 &8816432290113702194
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
+  m_GameObject: {fileID: 6434663735299146503}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc3dc1424a4a6e94c8104ea14c943868, type: 3}
+  m_Script: {fileID: 11500000, guid: 45d9e82d968b70d49994d6c12c854c1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 3
-  Health: {fileID: 0}
-  archer: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
---- !u!54 &3729726483141544879
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6359655228273680341}
-  serializedVersion: 4
-  m_Mass: 0.01
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  trapData: {fileID: 11400000, guid: c9f349051b4b9bb4e9f6fa5b0df4b44e, type: 2}
+  showDebugLogs: 1

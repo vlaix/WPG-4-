@@ -1141,6 +1141,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 113771813491061259, guid: b0223b4e80704234e95b09bc94f10318, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1332259692}
+    - targetCorrespondingSourceObject: {fileID: 113771813491061259, guid: b0223b4e80704234e95b09bc94f10318, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1332259697}
+    - targetCorrespondingSourceObject: {fileID: 113771813491061259, guid: b0223b4e80704234e95b09bc94f10318, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1332259698}
   m_SourcePrefab: {fileID: 100100000, guid: b0223b4e80704234e95b09bc94f10318, type: 3}
 --- !u!1 &1127269370
 GameObject:
@@ -1446,6 +1452,35 @@ MonoBehaviour:
   m_DefaultActionMap: Player2Movement
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1332259697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332259670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecaa50c46907b4e4b9672bd216b46f77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trapData: {fileID: 11400000, guid: c9f349051b4b9bb4e9f6fa5b0df4b44e, type: 2}
+  placementDistance: 1.5
+  showDebugLogs: 1
+--- !u!114 &1332259698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332259670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 999fb9a9a5a87dd428a352ab7e016cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldData: {fileID: 11400000, guid: c3d67f0d25911794e8586f3d0f77549e, type: 2}
+  showDebugLogs: 1
 --- !u!1 &1508612644
 GameObject:
   m_ObjectHideFlags: 0

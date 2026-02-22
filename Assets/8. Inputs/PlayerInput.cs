@@ -223,6 +223,24 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceTrap"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d0a0c54-e299-4aa1-917a-a12674fb9183"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ActivateShield"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6a19056-95bc-4f9a-a077-bc184de0f1a0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +331,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Build"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""867f381b-a2a1-4b63-8735-860905b07b79"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceTrap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de8f4965-3cec-4e63-84f8-35377ee8751a"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ActivateShield"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -327,6 +367,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player2Movement = asset.FindActionMap("Player2Movement", throwIfNotFound: true);
         m_Player2Movement_Movement = m_Player2Movement.FindAction("Movement", throwIfNotFound: true);
         m_Player2Movement_Build = m_Player2Movement.FindAction("Build", throwIfNotFound: true);
+        m_Player2Movement_PlaceTrap = m_Player2Movement.FindAction("PlaceTrap", throwIfNotFound: true);
+        m_Player2Movement_ActivateShield = m_Player2Movement.FindAction("ActivateShield", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -517,6 +559,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private List<IPlayer2MovementActions> m_Player2MovementActionsCallbackInterfaces = new List<IPlayer2MovementActions>();
     private readonly InputAction m_Player2Movement_Movement;
     private readonly InputAction m_Player2Movement_Build;
+    private readonly InputAction m_Player2Movement_PlaceTrap;
+    private readonly InputAction m_Player2Movement_ActivateShield;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player2Movement".
     /// </summary>
@@ -536,6 +580,14 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player2Movement/Build".
         /// </summary>
         public InputAction @Build => m_Wrapper.m_Player2Movement_Build;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2Movement/PlaceTrap".
+        /// </summary>
+        public InputAction @PlaceTrap => m_Wrapper.m_Player2Movement_PlaceTrap;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2Movement/ActivateShield".
+        /// </summary>
+        public InputAction @ActivateShield => m_Wrapper.m_Player2Movement_ActivateShield;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -568,6 +620,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Build.started += instance.OnBuild;
             @Build.performed += instance.OnBuild;
             @Build.canceled += instance.OnBuild;
+            @PlaceTrap.started += instance.OnPlaceTrap;
+            @PlaceTrap.performed += instance.OnPlaceTrap;
+            @PlaceTrap.canceled += instance.OnPlaceTrap;
+            @ActivateShield.started += instance.OnActivateShield;
+            @ActivateShield.performed += instance.OnActivateShield;
+            @ActivateShield.canceled += instance.OnActivateShield;
         }
 
         /// <summary>
@@ -585,6 +643,12 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Build.started -= instance.OnBuild;
             @Build.performed -= instance.OnBuild;
             @Build.canceled -= instance.OnBuild;
+            @PlaceTrap.started -= instance.OnPlaceTrap;
+            @PlaceTrap.performed -= instance.OnPlaceTrap;
+            @PlaceTrap.canceled -= instance.OnPlaceTrap;
+            @ActivateShield.started -= instance.OnActivateShield;
+            @ActivateShield.performed -= instance.OnActivateShield;
+            @ActivateShield.canceled -= instance.OnActivateShield;
         }
 
         /// <summary>
@@ -661,5 +725,19 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuild(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PlaceTrap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPlaceTrap(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ActivateShield" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnActivateShield(InputAction.CallbackContext context);
     }
 }

@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 5353591853694529032}
   - component: {fileID: 921185193177742279}
   - component: {fileID: 7480947868438387695}
+  - component: {fileID: 5593298388797471112}
   m_Layer: 0
   m_Name: enemyarcher
   m_TagString: Enemy
@@ -237,8 +238,35 @@ MonoBehaviour:
   Player: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
+  Health: {fileID: 0}
   healthpoint: 0
-  BufferShoot: 0
+--- !u!54 &5593298388797471112
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8765610706870686038}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1001 &3146032701042933954
 PrefabInstance:
   m_ObjectHideFlags: 0
