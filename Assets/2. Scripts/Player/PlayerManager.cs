@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         // Cari InputManager yang aktif (Player1 atau Player2)
-        inputManager = GetComponent<InputManagerPlayer1>() as MonoBehaviour 
+        inputManager = GetComponent<InputManagerPlayer1>() as MonoBehaviour
                     ?? GetComponent<InputManagerPlayer2>() as MonoBehaviour;
         playerLocomotion = GetComponent<PlayerLocomotion>();
     }
@@ -23,6 +23,11 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        playerLocomotion.HandleAllMovement();
+        // Hanya izinkan Player berjalan normal jika script Locomotion sedang aktif.
+        // Jika dimatikan oleh LadderClimber, PlayerManager tidak akan memaksa player maju
+        if (playerLocomotion != null && playerLocomotion.enabled)
+        {
+            playerLocomotion.HandleAllMovement();
+        }
     }
 }

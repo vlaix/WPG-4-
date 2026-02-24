@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3729726483141544879}
   m_Layer: 0
   m_Name: peluru(musuh)
-  m_TagString: EnemyBullet
+  m_TagString: Enemy Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
