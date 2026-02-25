@@ -301,17 +301,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""34cf928a-703e-4bd1-8814-bc59050dca3d"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Build"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""6ff7def6-6986-4f83-ac15-f932770dc85f"",
                     ""path"": ""<Keyboard>/rightShift"",
                     ""interactions"": """",
@@ -345,8 +334,30 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""dcb93ade-20e0-45f6-b9b1-4298c29bfc49"",
+                    ""path"": ""<Keyboard>/slash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceTrap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""de8f4965-3cec-4e63-84f8-35377ee8751a"",
                     ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ActivateShield"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55207d24-a59f-4e25-8e48-2142b6c8f131"",
+                    ""path"": ""<Keyboard>/period"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

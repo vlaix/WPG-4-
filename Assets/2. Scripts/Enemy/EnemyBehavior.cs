@@ -97,7 +97,7 @@ public class EnemyBehavior : MonoBehaviour
         GameObject peluru = Instantiate(data.peluru, transform.position, Quaternion.identity);
 
         Vector3 direction = (Player.position - transform.position).normalized;
-        peluru.GetComponent<Rigidbody>().linearVelocity = direction * 20;
+        peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
     }
 
     private void OnDrawGizmosSelected()

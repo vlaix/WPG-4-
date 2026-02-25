@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: enemy
   m_EditorClassIdentifier: 
   speed: 2
-  healthPoint: 1
+  healthPoint: 3
   stopDistance: 0
   Cooldown: 1
   damage: 1

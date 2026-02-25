@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: enemyarcher
   m_EditorClassIdentifier: 
   speed: 2
-  healthPoint: 3
-  stopDistance: 20
-  Cooldown: 1
-  damage: 1
+  healthPoint: 2
+  stopDistance: 30
+  Cooldown: 3
+  damage: 2
   prefab: {fileID: 8765610706870686038, guid: b9f4f419358db9248be767c8669a6331, type: 3}
   peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}
