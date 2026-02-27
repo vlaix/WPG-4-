@@ -22,7 +22,6 @@ public class EnemyBehavior : MonoBehaviour
         GameObject playerObj2 = GameObject.FindWithTag("Player2");
 
         randomizer = Random.Range(0f, 2f);
-        Debug.Log("Randomizer = " + randomizer);
 
         if(randomizer < 1) {
 
@@ -93,7 +92,8 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(loot, transform.position, Quaternion.identity);
     }
 
-    void Shoot() {
+    void Shoot() 
+    {
         GameObject peluru = Instantiate(data.peluru, transform.position, Quaternion.identity);
 
         Vector3 direction = (Player.position - transform.position).normalized;
@@ -101,11 +101,11 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void OnDrawGizmosSelected()
-{
-    if (data != null) 
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, data.stopDistance);
+        if (data != null) 
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, data.stopDistance);
+        }
     }
-}
 }

@@ -72,5 +72,6 @@ public class Health : MonoBehaviour
     {
         Debug.Log("Player died!");
         Time.timeScale = 0;
+        currentHP = 1;
     }
 }
