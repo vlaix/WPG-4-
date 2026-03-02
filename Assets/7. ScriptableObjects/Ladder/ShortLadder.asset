@@ -12,18 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3931c21e3c9217d46b8c7d2d147a11ba, type: 3}
   m_Name: ShortLadder
   m_EditorClassIdentifier: 
-  ladderName: Metal Ladder
+  ladderName: Short Ladder
   description: A climbable ladder
-  requiredResources: []
+  requiredResources:
+  - resourceName: Scrap
+    amount: 1
   buildSpeed: 2
-  buildRange: 3
-  ladderPrefab: {fileID: 0}
+  buildRange: 4
+  ladderPrefab: {fileID: 198233863776237713, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
   blueprintColor: {r: 1, g: 1, b: 1, a: 0.3}
   buildingColor: {r: 0.8, g: 0.8, b: 0, a: 0.7}
-  completedColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  completedColor: {r: 0.23018861, g: 0.11248839, b: 0.11248839, a: 1}
   buildingSound: {fileID: 0}
   completeSound: {fileID: 0}
-  colliderSize: {x: 1, y: 5, z: 1}
-  colliderCenter: {x: 0, y: 2.5, z: 0}
+  colliderSize: {x: 0, y: 0, z: 0}
+  colliderCenter: {x: 0, y: 0, z: 0}
   requiredPlayerTag: Player2
   ladderTag: Ladder
