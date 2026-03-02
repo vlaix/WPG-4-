@@ -10,6 +10,7 @@ TagManager:
   - Loot
   - Enemy Bullet
   - Ladder
+  - Shield
   layers:
   - Default
   - TransparentFX

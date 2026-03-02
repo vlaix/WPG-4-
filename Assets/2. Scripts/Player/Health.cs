@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,15 +10,9 @@ public class Health : MonoBehaviour
     private int currentHP;
     public static Health Instance;
 
-    [Header("Shield Integration")]
-    private PlayerShield playerShield;
-
     void Awake()
     {
         Instance = this;
-
-        // Get PlayerShield component if exists
-        playerShield = GetComponent<PlayerShield>();
     }
 
     void Start()
@@ -37,26 +31,9 @@ public class Health : MonoBehaviour
 
     public void Hurt(int damage)
     {
-        // CRITICAL: Check if shield is active FIRST
-        if (playerShield != null && playerShield.IsShieldActive)
-        {
-            // Shield blocks damage, tidak mengenai HP
-            bool damageBlocked = playerShield.TakeDamage(damage);
-
-            if (damageBlocked)
-            {
-                if (playerShield.showDebugLogs)
-                {
-                    Debug.Log($"Shield protected player from {damage} damage!");
-                }
-                return; // STOP HERE - HP tidak berkurang!
-            }
-        }
-
-        // Shield tidak aktif atau sudah pecah, damage HP
+        // Langsung kurangi HP karena perlindungan shield sudah ditangani oleh peluru/musuh
         currentHP = currentHP - damage;
         UpdateUI();
-
         Debug.Log($"Player took {damage} damage! HP: {currentHP}/{MAXHP}");
     }
 
