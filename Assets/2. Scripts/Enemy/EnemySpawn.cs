@@ -114,7 +114,7 @@ public class EnemySpawn : MonoBehaviour
                 break;
         }
 
-        spawnPos.y = 1.04f; // Tetap jaga ketinggian agar tidak tenggelam
+        spawnPos.y = 1.00f; // Tetap jaga ketinggian agar tidak tenggelam
         return spawnPos;
     }
 

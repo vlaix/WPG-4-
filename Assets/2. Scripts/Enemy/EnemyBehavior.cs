@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyBehavior : MonoBehaviour
 {
@@ -9,10 +10,18 @@ public class EnemyBehavior : MonoBehaviour
     public float healthpoint;
     private float BufferShoot;
     private float BufferAttack;
+    private NavMeshAgent agent;
+
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
 
     void Start()
     {
         Health = Health.Instance;
+        agent.speed = data.speed;
+        agent.stoppingDistance = data.stopDistance;
 
         healthpoint = data.healthPoint;
         BufferAttack = 0f;
@@ -33,31 +42,19 @@ public class EnemyBehavior : MonoBehaviour
 
     void Update()
     {   
-        bool isStop = false;
-        float distance;
-
-        Vector3 PlayerPosition = new Vector3(Player.position.x, transform.position.y, Player.position.z);
-        transform.LookAt(new Vector3(Player.position.x, transform.position.y, Player.position.z));
-        distance = Vector3.Distance(transform.position, Player.position);
-
-        if (distance <= data.stopDistance && data.stopDistance != 0) {
-            isStop = true; 
-        } else {
-            isStop = false;
-        }
-
-        if(isStop) { //ranged attack
-           if (Time.time >= BufferShoot) {
-                Shoot();
-                BufferShoot = Time.time + data.Cooldown;
-            }
-        }
-
         if (healthpoint >= 0f) {
-            if(isStop == false) {
-                transform.position = Vector3.MoveTowards(transform.position, PlayerPosition, data.speed * Time.deltaTime);
-            }
+            agent.SetDestination(Player.position);
         }
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                FaceTarget(); // Fungsi untuk menghadap player saat berhenti
+                if (Time.time >= BufferShoot && data.stopDistance != 0)
+                {
+                    Shoot();
+                    BufferShoot = Time.time + data.Cooldown;
+                }
+            }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -98,6 +95,13 @@ public class EnemyBehavior : MonoBehaviour
 
         Vector3 direction = (Player.position - transform.position).normalized;
         peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
+    }
+
+    void FaceTarget()
+    {
+        Vector3 direction = (Player.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
     private void OnDrawGizmosSelected()
