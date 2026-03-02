@@ -1194,6 +1194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbSpeed: 5
+  horizontalSpeed: 3
+  exitKey: 32
 --- !u!1001 &1093508732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1628,6 +1630,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   climbSpeed: 5
+  horizontalSpeed: 3
+  exitKey: 32
 --- !u!4 &1380205348 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 596395798935950784, guid: fae795291aa2cc640bca85c478648956, type: 3}
@@ -2398,12 +2402,16 @@ PrefabInstance:
       value: Ladder
       objectReference: {fileID: 0}
     - target: {fileID: 7248343287454947323, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 7.734495
+      objectReference: {fileID: 0}
+    - target: {fileID: 7248343287454947323, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0200001
       objectReference: {fileID: 0}
     - target: {fileID: 7248343287454947323, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.4300003
+      value: 4.1325
       objectReference: {fileID: 0}
     - target: {fileID: 7248343287454947323, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2965,7 +2973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1103176303106548545, guid: fae795291aa2cc640bca85c478648956, type: 3}
       propertyPath: m_Size.y
-      value: 9.184356
+      value: 8.5879755
       objectReference: {fileID: 0}
     - target: {fileID: 1103176303106548545, guid: fae795291aa2cc640bca85c478648956, type: 3}
       propertyPath: m_Center.x
@@ -2973,7 +2981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1103176303106548545, guid: fae795291aa2cc640bca85c478648956, type: 3}
       propertyPath: m_Center.y
-      value: 4.092178
+      value: 3.7939878
       objectReference: {fileID: 0}
     - target: {fileID: 1103176303106548545, guid: fae795291aa2cc640bca85c478648956, type: 3}
       propertyPath: m_IsTrigger

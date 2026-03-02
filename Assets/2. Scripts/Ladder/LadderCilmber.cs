@@ -1,9 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LadderClimber : MonoBehaviour
 {
     [Header("Climbing Settings")]
     public float climbSpeed = 5f;
+
+    [Tooltip("Kecepatan gerak horizontal saat di tangga")]
+    public float horizontalSpeed = 3f;
+
+    [Tooltip("Tombol untuk keluar dari tangga (default: Space)")]
+    public KeyCode exitKey = KeyCode.Space;
 
     // Referensi komponen
     private PlayerLocomotion locomotionScript;
@@ -17,13 +23,23 @@ public class LadderClimber : MonoBehaviour
     private bool isNearLadder = false;
     private bool isClimbing = false;
 
-    // Properti untuk mengambil input vertikal (W/S atau Atas/Bawah)
+    // Input properties
     private float VerticalInput
     {
         get
         {
             if (inputP1 != null) return inputP1.verticalInput;
             if (inputP2 != null) return inputP2.verticalInput;
+            return 0f;
+        }
+    }
+
+    private float HorizontalInput
+    {
+        get
+        {
+            if (inputP1 != null) return inputP1.horizontalInput;
+            if (inputP2 != null) return inputP2.horizontalInput;
             return 0f;
         }
     }
@@ -39,10 +55,16 @@ public class LadderClimber : MonoBehaviour
 
     private void Update()
     {
-        // Jika sedang di dekat tangga, belum manjat, dan menekan tombol maju/mundur
+        // Mulai climbing jika dekat tangga dan menekan W/S
         if (isNearLadder && !isClimbing && Mathf.Abs(VerticalInput) > 0.1f)
         {
             StartClimbing();
+        }
+
+        // Exit climbing dengan tombol Space
+        if (isClimbing && Input.GetKeyDown(exitKey))
+        {
+            StopClimbing();
         }
     }
 
@@ -50,10 +72,20 @@ public class LadderClimber : MonoBehaviour
     {
         if (isClimbing)
         {
-            // KUNCI PERBAIKAN: 
-            // Kita matikan total pergerakan X dan Z. Player HANYA bisa bergerak di sumbu Y.
-            // Ini membuat karakter "melayang" lurus ke atas/bawah tanpa menabrak tembok sedikitpun.
-            rb.linearVelocity = new Vector3(0f, VerticalInput * climbSpeed, 0f);
+            // PERBAIKAN: Player bisa gerak horizontal (A/D) DAN vertical (W/S)
+            float verticalMovement = VerticalInput * climbSpeed;
+            float horizontalMovement = HorizontalInput * horizontalSpeed;
+
+            // Movement di tangga: bisa kiri-kanan DAN naik-turun
+            Vector3 climbMovement = new Vector3(
+                horizontalMovement,      // Kiri-kanan (A/D)
+                verticalMovement,        // Naik-turun (W/S)
+                0f                       // Tidak maju-mundur
+            );
+
+            // Apply movement relative to player's rotation
+            Vector3 worldMovement = transform.TransformDirection(climbMovement);
+            rb.linearVelocity = worldMovement;
         }
     }
 
@@ -61,12 +93,14 @@ public class LadderClimber : MonoBehaviour
     {
         isClimbing = true;
 
-        // Matikan script pergerakan normal agar player tidak lari ke depan
+        // Matikan script pergerakan normal
         if (locomotionScript != null) locomotionScript.enabled = false;
 
-        // Matikan gravitasi agar player bisa menempel/berhenti di tengah tangga
+        // Matikan gravitasi
         rb.useGravity = false;
         rb.linearVelocity = Vector3.zero;
+
+        Debug.Log("🪜 Started climbing! Press Space to exit.");
     }
 
     private void StopClimbing()
@@ -78,14 +112,16 @@ public class LadderClimber : MonoBehaviour
 
         // Nyalakan gravitasi kembali
         rb.useGravity = true;
+
+        Debug.Log("✅ Stopped climbing!");
     }
 
-    // --- DETEKSI AREA TANGGA ---
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Ladder"))
         {
             isNearLadder = true;
+            Debug.Log("📍 Near ladder - Press W to climb");
         }
     }
 
@@ -95,7 +131,7 @@ public class LadderClimber : MonoBehaviour
         {
             isNearLadder = false;
 
-            // Jika keluar dari area tangga otomatis berhenti manjat
+            // Auto-exit jika keluar dari area tangga
             if (isClimbing)
             {
                 StopClimbing();

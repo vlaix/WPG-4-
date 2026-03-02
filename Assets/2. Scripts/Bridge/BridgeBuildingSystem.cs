@@ -515,7 +515,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     {
         if (buildUI != null && uiInstance == null)
         {
-            uiInstance = Instantiate(buildUI, transform.position + Vector3.up * 2f, Quaternion.identity);
+            uiInstance = Instantiate(buildUI, transform.position + Vector3.up * 6f, Quaternion.identity);
             uiInstance.transform.SetParent(transform);
 
             // Pass reference ke UI script jika ada
