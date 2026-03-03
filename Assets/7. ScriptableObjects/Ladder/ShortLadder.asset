@@ -16,7 +16,7 @@ MonoBehaviour:
   description: A climbable ladder
   requiredResources:
   - resourceName: Scrap
-    amount: 1
+    amount: 6
   buildSpeed: 2
   buildRange: 4
   ladderPrefab: {fileID: 198233863776237713, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
