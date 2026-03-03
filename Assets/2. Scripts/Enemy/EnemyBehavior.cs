@@ -69,6 +69,13 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Obstacle")) {
+            Destroy(gameObject);
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         healthpoint -= damage;

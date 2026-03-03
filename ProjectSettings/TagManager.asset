@@ -11,6 +11,7 @@ TagManager:
   - Enemy Bullet
   - Ladder
   - Shield
+  - Obstacle
   layers:
   - Default
   - TransparentFX
