@@ -7,6 +7,8 @@ public class Health : MonoBehaviour
     [SerializeField] private int MAXHP;
     [SerializeField] private Image HPBar;
     [SerializeField] private TextMeshProUGUI HPtxt;
+    [SerializeField] private Image BoxKalah;
+    [SerializeField] private Button ButtonRestart;
     private int currentHP;
     public static Health Instance;
 
@@ -19,6 +21,7 @@ public class Health : MonoBehaviour
     {
         currentHP = MAXHP;
         UpdateUI();
+        BoxKalah.gameObject.SetActive(false);
     }
 
     void Update()
@@ -47,6 +50,8 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
+        BoxKalah.gameObject.SetActive(true);
+        ButtonRestart.GetComponent<UnityEngine.UI.Button>().interactable = true;
         Debug.Log("Player died!");
         Time.timeScale = 0;
         currentHP = 1;

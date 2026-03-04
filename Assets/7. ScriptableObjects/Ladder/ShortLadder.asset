@@ -19,7 +19,7 @@ MonoBehaviour:
     amount: 6
   buildSpeed: 2
   buildRange: 4
-  ladderPrefab: {fileID: 198233863776237713, guid: 2eef3776b00f5f24b89a1b4c9b1a129e, type: 3}
+  ladderPrefab: {fileID: 8631016521294408179, guid: fae795291aa2cc640bca85c478648956, type: 3}
   blueprintColor: {r: 1, g: 1, b: 1, a: 0.3}
   buildingColor: {r: 0.8, g: 0.8, b: 0, a: 0.7}
   completedColor: {r: 0.23018861, g: 0.11248839, b: 0.11248839, a: 1}

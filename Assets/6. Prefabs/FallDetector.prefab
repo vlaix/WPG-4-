@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6605703727878929387
+--- !u!1 &8783112968999413219
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5667807226643142970}
-  - component: {fileID: 1515030413041939530}
-  - component: {fileID: 3973414013405025321}
-  - component: {fileID: 1761326029342047889}
-  - component: {fileID: 906200903765906636}
+  - component: {fileID: 5802279574977279080}
+  - component: {fileID: 8941558236986052747}
+  - component: {fileID: 7550888773337659664}
+  - component: {fileID: 811926238431003319}
   m_Layer: 0
-  m_Name: enemyspawn
+  m_Name: FallDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5667807226643142970
+--- !u!4 &5802279574977279080
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605703727878929387}
+  m_GameObject: {fileID: 8783112968999413219}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0649, y: -0.71, z: -0.0071}
-  m_LocalScale: {x: 54.855602, y: 1, z: 29.158012}
+  m_LocalPosition: {x: -0.6396, y: -13.6, z: 20.8835}
+  m_LocalScale: {x: 89.22117, y: 1, z: 110.83231}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1515030413041939530
+--- !u!33 &8941558236986052747
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605703727878929387}
+  m_GameObject: {fileID: 8783112968999413219}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &3973414013405025321
+--- !u!23 &7550888773337659664
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605703727878929387}
-  m_Enabled: 0
+  m_GameObject: {fileID: 8783112968999413219}
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -88,13 +87,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1761326029342047889
+--- !u!65 &811926238431003319
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605703727878929387}
+  m_GameObject: {fileID: 8783112968999413219}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -103,31 +102,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &906200903765906636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605703727878929387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5bc274ec4d23184f8e52113cbcc68e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpawnCollider: {fileID: 1761326029342047889}
-  SpawnTime: 5
-  data:
-  - {fileID: 11400000, guid: 719dd8d0f0e9d2e46b7f3f74b1ab038c, type: 2}
-  - {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
-  - {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
-  Normal: 4
-  Tank: 2
-  Archer: 4
-  IsTrigger: 0
