@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class WinCondition : MonoBehaviour
 {
     [SerializeField] private Image menangbox;
+    [SerializeField] private Button ButtonLevelSelector;
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
@@ -41,6 +42,19 @@ public class WinCondition : MonoBehaviour
             Debug.Log("Kedua pemain sudah sampai! Menang!");
             Time.timeScale = 0.0f;
             menangbox.gameObject.SetActive(true);
+            ButtonLevelSelector.interactable = true;
+        }
+    }
+
+    public void UnlockNextLevel(int currentLevel)
+    {
+        int levelReached = PlayerPrefs.GetInt("levelReached", 1);
+
+        // Jika level yang baru diselesaikan adalah level tertinggi yang pernah dicapai
+        if (currentLevel == levelReached)
+        {
+            PlayerPrefs.SetInt("levelReached", levelReached + 1);
+            PlayerPrefs.Save(); // Simpan data secara permanen
         }
     }
 }
