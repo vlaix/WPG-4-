@@ -54,7 +54,7 @@ public class LadderBuildUI : MonoBehaviour
         }
 
         // Update progress
-        float progress = ladder.BuildProgress;
+        float progress = ladder.buildProgress;
 
         if (progressText != null)
         {

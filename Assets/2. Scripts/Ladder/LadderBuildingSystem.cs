@@ -47,12 +47,11 @@ public class LadderBuildingSystem : MonoBehaviour
 
     // Runtime data
     private List<RuntimeLadderResourceRequirement> runtimeResources = new List<RuntimeLadderResourceRequirement>();
-    private PlayerInput playerControls;
     private Transform playerTransform;
     private LadderBuildState currentState = LadderBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
-    private float buildProgress = 0f;
+    public float buildProgress = 0f;
     private float buildTimer = 0f;
     private bool isPlayerInRange = false;
     private bool isBuilding = false;
@@ -60,28 +59,22 @@ public class LadderBuildingSystem : MonoBehaviour
 
     // Properties
     public LadderBuildState State => currentState;
-    public float BuildProgress => buildProgress;
     public bool IsCompleted => currentState == LadderBuildState.Completed;
     public string LadderName => ladderData != null ? ladderData.ladderName : "Unknown Ladder";
     public List<RuntimeLadderResourceRequirement> RuntimeResources => runtimeResources;
 
-    private void Awake()
+    public void AssignPlayer(Transform player)
     {
-        playerControls = new PlayerInput();
+        playerTransform = player;
+        if (showDebugLogs) Debug.Log($" '{LadderName}' terhubung ke {player.name}");
     }
 
-    private void OnEnable()
+    public void OnBuild(InputAction.CallbackContext context)
     {
-        playerControls.Player2Movement.Enable();
-        playerControls.Player2Movement.Build.performed += OnBuildPressed;
-        playerControls.Player2Movement.Build.canceled += OnBuildReleased;
-    }
+        if (playerTransform == null || IsCompleted) return;
 
-    private void OnDisable()
-    {
-        playerControls.Player2Movement.Build.performed -= OnBuildPressed;
-        playerControls.Player2Movement.Build.canceled -= OnBuildReleased;
-        playerControls.Player2Movement.Disable();
+        if (context.performed) isBuildButtonPressed = true;
+        else if (context.canceled) isBuildButtonPressed = false;
     }
 
     private void Start()
@@ -90,25 +83,16 @@ public class LadderBuildingSystem : MonoBehaviour
         InitializeRuntimeResources();
         InitializeLadder();
         SetupAudio();
-        FindPlayer();
     }
 
     private void Update()
     {
         CheckPlayerProximity();
-        HandleBuildInput();
+        HandleBuildProcess();
         UpdateVisual();
     }
 
-    private void OnBuildPressed(InputAction.CallbackContext context)
-    {
-        isBuildButtonPressed = true;
-    }
-
-    private void OnBuildReleased(InputAction.CallbackContext context)
-    {
-        isBuildButtonPressed = false;
-    }
+    
 
     private void ValidateLadderData()
     {
@@ -231,71 +215,43 @@ public class LadderBuildingSystem : MonoBehaviour
 
     private void CheckPlayerProximity()
     {
-        if (ladderData == null || playerTransform == null || IsCompleted) return;
+        if (ladderData == null || playerTransform == null || IsCompleted)
+        {
+            isPlayerInRange = false;
+            HideBuildUI();
+            return;
+        }
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
         isPlayerInRange = distance <= ladderData.buildRange;
 
-        // Show/hide UI
-        if (isPlayerInRange && !IsCompleted)
-        {
-            ShowBuildUI();
-        }
-        else
-        {
-            HideBuildUI();
-        }
+        if (isPlayerInRange) ShowBuildUI();
+        else HideBuildUI();
     }
 
-    private void HandleBuildInput()
+    private void HandleBuildProcess()
     {
-        if (ladderData == null || !isPlayerInRange || IsCompleted || playerTransform == null)
+        // Jika player menjauh atau tombol dilepas, stop building
+        if (!isPlayerInRange || !isBuildButtonPressed || IsCompleted || playerTransform == null)
         {
-            if (isBuilding)
-            {
-                StopBuilding();
-            }
+            if (isBuilding) StopBuilding();
             return;
         }
 
-        // Check if build button is being held
-        if (isBuildButtonPressed)
-        {
-            if (!isBuilding)
-            {
-                StartBuilding();
-            }
-
-            // Continue building
-            ProcessBuilding();
-        }
-        else
-        {
-            if (isBuilding)
-            {
-                StopBuilding();
-            }
-        }
+        if (!isBuilding) StartBuilding();
+        ProcessBuilding();
     }
 
     private void StartBuilding()
     {
-        if (currentState == LadderBuildState.Blueprint)
-        {
-            currentState = LadderBuildState.Building;
-        }
-
+        if (currentState == LadderBuildState.Blueprint) currentState = LadderBuildState.Building;
         isBuilding = true;
 
-        // Play building sound
-        if (audioSource != null && ladderData != null && ladderData.buildingSound != null)
+        if (audioSource != null && ladderData.buildingSound != null)
         {
-            if (!audioSource.isPlaying)
-            {
-                audioSource.clip = ladderData.buildingSound;
-                audioSource.loop = true;
-                audioSource.Play();
-            }
+            audioSource.clip = ladderData.buildingSound;
+            audioSource.loop = true;
+            audioSource.Play();
         }
 
         if (showDebugLogs)
@@ -307,12 +263,8 @@ public class LadderBuildingSystem : MonoBehaviour
     private void StopBuilding()
     {
         isBuilding = false;
-
-        // Stop building sound
-        if (audioSource != null && audioSource.isPlaying)
-        {
-            audioSource.Stop();
-        }
+        isBuildButtonPressed = false; // Reset state tombol
+        if (audioSource != null) audioSource.Stop();
 
         if (showDebugLogs)
         {
@@ -322,88 +274,43 @@ public class LadderBuildingSystem : MonoBehaviour
 
     private void ProcessBuilding()
     {
-        if (Inventory.Instance == null)
-        {
-            Debug.LogWarning("⚠️ Inventory.Instance is NULL!");
-            return;
-        }
+        if (Inventory.Instance == null) return;
 
-        buildTimer += Time.deltaTime;
-
-        // Calculate berapa resource yang harus dipasang berdasarkan build speed
-        float resourcesPerSecond = ladderData.buildSpeed;
-        float resourcesThisFrame = resourcesPerSecond * Time.deltaTime;
-
-        // Try consume resources
+        float resourcesThisFrame = ladderData.buildSpeed * Time.deltaTime;
         bool anyResourceConsumed = false;
 
         foreach (var req in runtimeResources)
         {
-            if (req.currentAmount >= req.totalRequired)
-            {
-                continue; // Resource ini sudah penuh
-            }
+            if (req.currentAmount >= req.totalRequired) continue;
 
-            // Check inventory
             int available = Inventory.Instance.GetItemCount(req.resourceName);
-
             if (available > 0)
             {
-                // Calculate berapa yang bisa dipasang
                 float needed = req.totalRequired - req.currentAmount;
-                float toConsume = Mathf.Min(resourcesThisFrame, needed);
+                int toConsume = Mathf.CeilToInt(Mathf.Min(resourcesThisFrame, needed));
 
-                // Consume dari inventory (integer)
-                int intToConsume = Mathf.CeilToInt(toConsume);
-
-                if (Inventory.Instance.RemoveItem(req.resourceName, intToConsume))
+                if (Inventory.Instance.RemoveItem(req.resourceName, toConsume))
                 {
-                    req.currentAmount += intToConsume;
+                    req.currentAmount += toConsume;
                     anyResourceConsumed = true;
-
-                    if (showDebugLogs)
-                    {
-                        Debug.Log($"🔧 Installing {intToConsume}x {req.resourceName} ({req.currentAmount}/{req.totalRequired})");
-                    }
-                }
-            }
-            else
-            {
-                // Tidak punya resource ini
-                if (showDebugLogs)
-                {
-                    Debug.Log($"⚠️ Out of {req.resourceName}! Need {req.totalRequired - req.currentAmount} more.");
                 }
             }
         }
 
-        // Update progress
         UpdateBuildProgress();
 
-        // Check if complete
-        if (buildProgress >= 1f)
-        {
-            CompleteLadder();
-        }
-
-        // Stop building jika tidak ada resource yang ter-consume
-        if (!anyResourceConsumed)
-        {
-            StopBuilding();
-        }
+        if (buildProgress >= 1f) CompleteLadder();
+        else if (!anyResourceConsumed) StopBuilding();
     }
 
     private void UpdateBuildProgress()
     {
-        int totalRequired = 0;
-        int totalCurrent = 0;
-
+        int totalRequired = 0, totalCurrent = 0;
         foreach (var req in runtimeResources)
         {
             totalRequired += req.totalRequired;
             totalCurrent += req.currentAmount;
         }
-
         buildProgress = totalRequired > 0 ? (float)totalCurrent / totalRequired : 0f;
     }
 
@@ -470,48 +377,16 @@ public class LadderBuildingSystem : MonoBehaviour
         buildProgress = 1f;
         isBuilding = false;
 
-        // Stop building sound
-        if (audioSource != null && audioSource.isPlaying)
+        if (audioSource != null)
         {
             audioSource.Stop();
+            if (ladderData.completeSound != null) audioSource.PlayOneShot(ladderData.completeSound);
         }
 
-        // Play complete sound
-        if (audioSource != null && ladderData != null && ladderData.completeSound != null)
-        {
-            audioSource.PlayOneShot(ladderData.completeSound);
-        }
+        if (ladderCollider != null) ladderCollider.enabled = true;
+        if (!string.IsNullOrEmpty(ladderData.ladderTag)) gameObject.tag = ladderData.ladderTag;
 
-        // Enable collider (can climb now!)
-        if (ladderCollider != null)
-        {
-            ladderCollider.enabled = true;
-
-            if (showDebugLogs)
-            {
-                Debug.Log($"✅ '{LadderName}' collider ENABLED - Can climb now!");
-            }
-        }
-
-        // Set ladder tag (untuk LadderClimber detect)
-        if (!string.IsNullOrEmpty(ladderData.ladderTag))
-        {
-            gameObject.tag = ladderData.ladderTag;
-        }
-
-        // Set final color
-        if (ladderData != null)
-        {
-            SetLadderColor(ladderData.completedColor);
-        }
-
-        // Hide UI
         HideBuildUI();
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"🎉 '{LadderName}' COMPLETED!");
-        }
     }
 
     private void ShowBuildUI()

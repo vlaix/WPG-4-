@@ -1,13 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 /// Script ini attach OTOMATIS ke shield sphere instance
 /// Fungsi: Detect collision dengan enemy & bullet, forward damage ke PlayerShield
 /// </summary>
-public class ShieldCollision : MonoBehaviour
+public class ShieldCollideTest : MonoBehaviour
 {
     [HideInInspector]
-    public PlayerShield parentShield;
+    public Shieldtest parentShield;
 
     // Timer agar saat musuh menempel, HP shield tidak langsung habis dalam sekejap
     private float damageCooldown = 0f;
@@ -22,7 +22,7 @@ public class ShieldCollision : MonoBehaviour
             SphereCollider sphereCol = gameObject.AddComponent<SphereCollider>();
             sphereCol.isTrigger = true;
             sphereCol.radius = 1f;
-            Debug.Log("✅ Auto-added SphereCollider to shield");
+            Debug.Log("Auto-added SphereCollider to shield");
         }
         else
         {
@@ -83,7 +83,7 @@ public class ShieldCollision : MonoBehaviour
 
                 // Reset cooldown agar 1 detik ke depan shield tidak kena damage lagi dari tabrakan ini
                 damageCooldown = 1f;
-                Debug.Log($"🛡️ Shield menahan musuh! Damage: {damage}");
+                Debug.Log($" Shield menahan musuh! Damage: {damage}");
             }
         }
     }

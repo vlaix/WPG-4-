@@ -4,43 +4,38 @@ using UnityEngine.UI;
 public class WinCondition : MonoBehaviour
 {
     [SerializeField] private Image menangbox;
-    [SerializeField] private GameObject player1;
-    [SerializeField] private GameObject player2;
 
-    private int jumlahPemainDiArea = 0; // Penghitung pemain
+    // Kita gunakan bool untuk mengecek apakah masing-masing player sudah sampai
+    private bool player1Masuk = false;
+    private bool player2Masuk = false;
 
     private void Start()
     {
-        menangbox.gameObject.SetActive(false);
+        if (menangbox != null) menangbox.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Cek apakah yang masuk salah satu dari kedua player
-        if (other.gameObject == player1 || other.gameObject == player2)
-        {
-            jumlahPemainDiArea++;
-            CekKemenangan();
-        }
+        if (other.CompareTag("Player")) player1Masuk = true;
+        if (other.CompareTag("Player2")) player2Masuk = true;
+
+        CekKemenangan();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Jika salah satu player keluar dari area, kurangi hitungan
-        if (other.gameObject == player1 || other.gameObject == player2)
-        {
-            jumlahPemainDiArea--;
-        }
+        if (other.CompareTag("Player")) player1Masuk = false;
+        if (other.CompareTag("Player2")) player2Masuk = false;
     }
 
     private void CekKemenangan()
     {
-        // Menang HANYA JIKA kedua pemain ada di dalam area
-        if (jumlahPemainDiArea >= 2)
+        // Menang jika kedua kondisi true
+        if (player1Masuk && player2Masuk)
         {
             Debug.Log("Kedua pemain sudah sampai! Menang!");
             Time.timeScale = 0.0f;
-            menangbox.gameObject.SetActive(true);
+            if (menangbox != null) menangbox.gameObject.SetActive(true);
         }
     }
 }

@@ -2,32 +2,22 @@ using UnityEngine;
 
 public class FallDamage : MonoBehaviour
 {
-    [SerializeField] Health health;
-    [SerializeField] Transform player1;
-    [SerializeField] Transform player2;
+    [SerializeField] Health health; // Pastikan ini merujuk ke Health Manager global atau sistem health player
     [SerializeField] Transform respawn;
 
     private void OnTriggerEnter(Collider collision)
     {
-        if(collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Player2")){
-            health.Hurt(2);
-            if(collision.gameObject.CompareTag("Player")){
-                Respawn(1);
-            } else 
-            {
-                Respawn(2);
-            }
-        }   
-    }
+        // Cek apakah yang masuk memiliki tag Player atau Player2
+        if (collision.CompareTag("Player") || collision.CompareTag("Player2"))
+        {
+            // Jika script Health ada di objek player itu sendiri:
+            Health playerHealth = collision.GetComponent<Health>();
+            if (playerHealth != null) playerHealth.Hurt(2);
 
-    private void Respawn(int player) 
-    {
-        if(player == 1) {
-            player1.position = respawn.position;
-        } else {
-            player2.position = respawn.position;
+            // Langsung pindahkan posisi objek yang menyentuh trigger ke tempat respawn
+            collision.transform.position = respawn.position;
+
+            Debug.Log($"{collision.gameObject.name} jatuh dan respawn!");
         }
     }
-
-
 }

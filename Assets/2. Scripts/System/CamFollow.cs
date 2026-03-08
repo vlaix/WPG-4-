@@ -85,4 +85,19 @@ public class CameraFollow : MonoBehaviour
 
         return bounds.center;
     }
+    public void AddTarget(Transform newTarget)
+    {
+        if (!targets.Contains(newTarget))
+        {
+            targets.Add(newTarget);
+        }
+    }
+
+    public void RemoveTarget(Transform oldTarget)
+    {
+        if (targets.Contains(oldTarget))
+        {
+            targets.Remove(oldTarget);
+        }
+    }
 }

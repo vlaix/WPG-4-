@@ -47,8 +47,8 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     // Runtime data
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
-    private PlayerInput playerControls;
-    private Transform playerTransform;
+    
+    [SerializeField]private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
@@ -65,31 +65,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     public string BridgeName => bridgeData != null ? bridgeData.bridgeName : "Unknown Bridge";
     public List<RuntimeResourceRequirement> RuntimeResources => runtimeResources;
 
-    private void Awake()
-    {
-        // Initialize input system
-        playerControls = new PlayerInput();
-    }
-
-    private void OnEnable()
-    {
-        // Enable Player2Movement action map
-        playerControls.Player2Movement.Enable();
-
-        // Subscribe to Build action
-        playerControls.Player2Movement.Build.performed += OnBuildPressed;
-        playerControls.Player2Movement.Build.canceled += OnBuildReleased;
-    }
-
-    private void OnDisable()
-    {
-        // Unsubscribe from Build action
-        playerControls.Player2Movement.Build.performed -= OnBuildPressed;
-        playerControls.Player2Movement.Build.canceled -= OnBuildReleased;
-
-        // Disable Player2Movement action map
-        playerControls.Player2Movement.Disable();
-    }
+    
 
     private void Start()
     {
@@ -97,31 +73,36 @@ public class BridgeBuildingSystem : MonoBehaviour
         InitializeRuntimeResources();
         InitializeBridge();
         SetupAudio();
-        FindPlayer();
+        
     }
 
     private void Update()
     {
         CheckPlayerProximity();
-        HandleBuildInput();
+        HandleBuildProcess();
         UpdateVisual();
     }
 
-    private void OnBuildPressed(InputAction.CallbackContext context)
-    {
-        isBuildButtonPressed = true;
-    }
 
-    private void OnBuildReleased(InputAction.CallbackContext context)
+    public void OnBuild(InputAction.CallbackContext context)
     {
-        isBuildButtonPressed = false;
+        // Tombol ditekan (Hold dimulai)
+        if (context.performed)
+        {
+            isBuildButtonPressed = true;
+        }
+        // Tombol dilepas (Hold berakhir)
+        else if (context.canceled)
+        {
+            isBuildButtonPressed = false;
+        }
     }
 
     private void ValidateBridgeData()
     {
         if (bridgeData == null)
         {
-            Debug.LogError($"❌ BridgeData is NULL! Please assign a BridgeData ScriptableObject to {gameObject.name}");
+            Debug.LogError($" BridgeData is NULL! Please assign a BridgeData ScriptableObject to {gameObject.name}");
             enabled = false;
         }
     }
@@ -139,7 +120,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log($"📋 '{BridgeName}' requires:");
+            Debug.Log($" '{BridgeName}' requires:");
             foreach (var req in runtimeResources)
             {
                 Debug.Log($"  • {req.resourceName}: {req.totalRequired}");
@@ -190,7 +171,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
             if (showDebugLogs)
             {
-                Debug.Log($"🔧 '{BridgeName}': Collider DISABLED - Player akan jatuh!");
+                Debug.Log($" '{BridgeName}': Collider DISABLED - Player akan jatuh!");
             }
         }
 
@@ -198,7 +179,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log($"🏗️ '{BridgeName}' initialized as Blueprint");
+            Debug.Log($" '{BridgeName}' initialized as Blueprint");
         }
     }
 
@@ -215,24 +196,12 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    private void FindPlayer()
+    public void AssignPlayer(Transform player)
     {
-        if (bridgeData == null) return;
+        playerTransform = player;
 
-        GameObject player = GameObject.FindGameObjectWithTag(bridgeData.requiredPlayerTag);
-        if (player != null)
-        {
-            playerTransform = player.transform;
-
-            if (showDebugLogs)
-            {
-                Debug.Log($"✅ Found player with tag '{bridgeData.requiredPlayerTag}' for '{BridgeName}'");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"⚠️ Player with tag '{bridgeData.requiredPlayerTag}' not found for '{BridgeName}'!");
-        }
+        if (showDebugLogs)
+            Debug.Log($"'{BridgeName}' berhasil terhubung dengan {player.name}");
     }
 
     private void CheckPlayerProximity()
@@ -253,7 +222,7 @@ public class BridgeBuildingSystem : MonoBehaviour
         }
     }
 
-    private void HandleBuildInput()
+    private void HandleBuildProcess()
     {
         if (bridgeData == null || !isPlayerInRange || IsCompleted || playerTransform == null)
         {
@@ -298,7 +267,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log($"🔨 Mulai membangun '{BridgeName}'...");
+            Debug.Log($" Mulai membangun '{BridgeName}'...");
         }
     }
 
@@ -314,7 +283,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log($"⏸️ Berhenti membangun '{BridgeName}'");
+            Debug.Log($"Berhenti membangun '{BridgeName}'");
         }
     }
 
@@ -324,7 +293,7 @@ public class BridgeBuildingSystem : MonoBehaviour
         {
             if (Inventory.Instance == null)
             {
-                Debug.LogError("❌ Inventory tidak ditemukan!");
+                Debug.LogError(" Inventory tidak ditemukan!");
             }
             StopBuilding();
             return;
@@ -366,7 +335,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
                     if (showDebugLogs)
                     {
-                        Debug.Log($"🔧 Memasang {intToConsume}x {req.resourceName} ({req.currentAmount}/{req.totalRequired})");
+                        Debug.Log($" Memasang {intToConsume}x {req.resourceName} ({req.currentAmount}/{req.totalRequired})");
                     }
                 }
             }
@@ -375,7 +344,7 @@ public class BridgeBuildingSystem : MonoBehaviour
                 // Tidak punya resource ini
                 if (showDebugLogs)
                 {
-                    Debug.Log($"⚠️ Tidak punya {req.resourceName}! Butuh {req.totalRequired - req.currentAmount} lagi.");
+                    Debug.Log($" Tidak punya {req.resourceName}! Butuh {req.totalRequired - req.currentAmount} lagi.");
                 }
             }
         }
@@ -492,7 +461,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
             if (showDebugLogs)
             {
-                Debug.Log($"✅ '{BridgeName}' collider ENABLED - Player bisa lewat!");
+                Debug.Log($" '{BridgeName}' collider ENABLED - Player bisa lewat!");
             }
         }
 
@@ -507,7 +476,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (showDebugLogs)
         {
-            Debug.Log($"🎉 '{BridgeName}' SELESAI DIBANGUN!");
+            Debug.Log($" '{BridgeName}' SELESAI DIBANGUN!");
         }
     }
 
