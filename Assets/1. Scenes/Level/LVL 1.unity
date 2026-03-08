@@ -2624,7 +2624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3919f4d448d4e04468d64397e8cb5e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1Prefab: {fileID: 113771813491061259, guid: 8c8b859ecba5e2644a0a313e9e036eff, type: 3}
+  player1Prefab: {fileID: 1721787318033512107, guid: 1cbf86e2b7b7aed469c2751df48c93c4, type: 3}
   player2Prefab: {fileID: 113771813491061259, guid: b7784762f6487584f9a9aba6546c8465, type: 3}
   gameCamera: {fileID: 1828842236}
 --- !u!1 &1536383079
@@ -2900,6 +2900,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a988b84ab8aaa734ca8adc03e3e3bce9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WinCondition: {fileID: 0}
+  currentLevel: 0
 --- !u!1 &1606425168
 GameObject:
   m_ObjectHideFlags: 0
