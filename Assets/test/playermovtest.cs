@@ -1,10 +1,11 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody), typeof(InputReader))]
+[RequireComponent(typeof(Rigidbody), typeof(InputReader), typeof(Animator))]
 public class playermovtest : MonoBehaviour
 {
     private Rigidbody rb;
     private InputReader inputReader;
+    private Animator animator;
 
     [Header("Movement Settings")]
     public float moveSpeed = 7f;
@@ -14,6 +15,7 @@ public class playermovtest : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         inputReader = GetComponent<InputReader>();
+        animator = GetComponent<Animator>();
 
         rb.freezeRotation = true; // Penting agar karakter tidak guling
     }
@@ -27,6 +29,9 @@ public class playermovtest : MonoBehaviour
     {
         // Ambil input dari script InputReader
         Vector3 moveDir = new Vector3(inputReader.Horizontal, 0, inputReader.Vertical).normalized;
+
+        // Update animator Speed parameter
+        animator.SetFloat("Speed", moveDir.magnitude);
 
         if (moveDir.magnitude >= 0.1f)
         {

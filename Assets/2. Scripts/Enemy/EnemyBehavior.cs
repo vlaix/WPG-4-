@@ -28,13 +28,13 @@ public class EnemyBehavior : MonoBehaviour
         float randomizer;
 
         GameObject playerObj1 = GameObject.FindWithTag("Player");
-        GameObject playerObj2 = GameObject.FindWithTag("Player2");
+       // GameObject playerObj2 = GameObject.FindWithTag("Player2");
 
         randomizer = Random.Range(0f, 2f);
 
         if(randomizer < 1) {
 
-            Player = playerObj2.transform;
+            //Player = playerObj2.transform;
         } else {
             Player = playerObj1.transform;
         }        
@@ -60,7 +60,7 @@ public class EnemyBehavior : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         if(data.stopDistance == 0) { //melee attack
-            if(collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Player2")) {
+            if(collision.gameObject.CompareTag("Player")) {
                 if(Time.time >= BufferAttack) {
                     Health.Hurt(data.damage);
                     BufferAttack = Time.time + data.Cooldown;
