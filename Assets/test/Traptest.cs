@@ -15,6 +15,9 @@ public class Traptest : MonoBehaviour
     [Header("Debug")]
     public bool showDebugLogs = true;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+
     // Private variables
 
     private float placementCooldownTimer = 0f;
@@ -39,6 +42,12 @@ public class Traptest : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
+        }
+
+        // Ambil Animator otomatis jika belum diisi
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
         }
 
         if (trapData == null)
@@ -141,6 +150,12 @@ public class Traptest : MonoBehaviour
 
         // Start cooldown
         placementCooldownTimer = trapData.placementCooldown;
+
+        // Trigger animasi Build
+        if (animator != null)
+        {
+            animator.SetTrigger("Build");
+        }
 
         // Play sound
         if (audioSource != null && trapData.triggerSound != null)

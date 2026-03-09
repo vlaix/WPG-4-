@@ -25,19 +25,13 @@ public class EnemyBehavior : MonoBehaviour
 
         healthpoint = data.healthPoint;
         BufferAttack = 0f;
-        float randomizer;
 
         GameObject playerObj1 = GameObject.FindWithTag("Player");
-       // GameObject playerObj2 = GameObject.FindWithTag("Player2");
-
-        randomizer = Random.Range(0f, 2f);
-
-        if(randomizer < 1) {
-
-            //Player = playerObj2.transform;
-        } else {
+        if (playerObj1 != null)
+        {
             Player = playerObj1.transform;
-        }        
+        }
+              
     }
 
     void Update()

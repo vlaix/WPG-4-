@@ -45,6 +45,12 @@ public class BridgeBuildingSystem : MonoBehaviour
     [Tooltip("Show debug logs")]
     public bool showDebugLogs = true;
 
+    [Header("Hologram Settings")]
+    [SerializeField] private Color hologramColor = new Color(0f, 0.8f, 1f, 1f);
+    [SerializeField] private float hologramPulseSpeed = 2f;
+    [SerializeField] private float hologramMinAlpha = 0.15f;
+    [SerializeField] private float hologramMaxAlpha = 0.55f;
+
     // Runtime data
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     
@@ -386,7 +392,7 @@ public class BridgeBuildingSystem : MonoBehaviour
         switch (currentState)
         {
             case BridgeBuildState.Blueprint:
-                SetBridgeColor(bridgeData.blueprintColor);
+                ApplyHologramEffect();
                 break;
 
             case BridgeBuildState.Building:
@@ -399,6 +405,33 @@ public class BridgeBuildingSystem : MonoBehaviour
                 SetBridgeColor(bridgeData.completedColor);
                 break;
         }
+    }
+
+    private void ApplyHologramEffect()
+    {
+        if (bridgeRenderer == null) return;
+
+        float pulse = Mathf.Sin(Time.time * hologramPulseSpeed) * 0.5f + 0.5f;
+        float alpha = Mathf.Lerp(hologramMinAlpha, hologramMaxAlpha, pulse);
+
+        Color hColor = new Color(hologramColor.r, hologramColor.g, hologramColor.b, alpha);
+
+        Material mat = bridgeRenderer.material;
+        mat.color = hColor;
+
+        // Set transparent mode
+        mat.SetFloat("_Mode", 3);
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.DisableKeyword("_ALPHATEST_ON");
+        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        mat.renderQueue = 3000;
+
+        // Emission glow biar keliatan hologram
+        mat.EnableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", new Color(hologramColor.r, hologramColor.g, hologramColor.b) * (pulse * 1.5f));
     }
 
     private void SetBridgeColor(Color color)

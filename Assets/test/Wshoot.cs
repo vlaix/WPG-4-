@@ -12,8 +12,14 @@ public partial class Wshoot : MonoBehaviour
     [Header("Shooting Settings")]
     [SerializeField] private float fireRate = 0.5f;
 
+    [Header("Knockback Settings")]
+    [SerializeField] private float knockbackForce = 10f;
+    [SerializeField] private float knockbackJumpForce = 5f;
+    [SerializeField] private ForceMode knockbackForceMode = ForceMode.Impulse;
+
     [Header("Player Reference")]
     [SerializeField] private GameObject player;
+    [SerializeField] private Animator animator;
 
     private float nextFireTime = 0f;
 
@@ -23,6 +29,12 @@ public partial class Wshoot : MonoBehaviour
         if (player == null)
         {
             player = this.gameObject;
+        }
+
+        // Ambil Animator otomatis dari player jika belum diisi
+        if (animator == null)
+        {
+            animator = player.GetComponent<Animator>();
         }
 
         // Setup Firepoint otomatis jika kosong
@@ -71,5 +83,25 @@ public partial class Wshoot : MonoBehaviour
         }
 
         Destroy(projectile, projectileLifetime);
+
+        // Trigger animasi Shoot
+        if (animator != null)
+        {
+            animator.SetTrigger("Shoot");
+        }
+
+        ApplyKnockback();
+    }
+
+    void ApplyKnockback()
+    {
+        Rigidbody playerRb = player.GetComponent<Rigidbody>();
+        if (playerRb != null)
+        {
+            // Arah knockback adalah kebalikan dari arah tembakan + efek jump ke atas
+            Vector3 knockbackDir = -firePoint.forward;
+            Vector3 totalForce = knockbackDir * knockbackForce + Vector3.up * knockbackJumpForce;
+            playerRb.AddForce(totalForce, knockbackForceMode);
+        }
     }
 }
