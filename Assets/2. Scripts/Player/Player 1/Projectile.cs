@@ -6,7 +6,24 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float damage = 1f;
     [SerializeField] private LayerMask hitLayers;
 
+    [Header("Audio Settings")]
+    [Tooltip("Suara saat peluru keluar")]
+    [SerializeField] private AudioClip shootSound;
+
+    [Tooltip("Suara saat mengenai musuh")]
+    [SerializeField] private AudioClip hitSound;
+
+    [Tooltip("Volume suara (Bisa diisi 1 atau lebih jika masih kurang keras)")]
+    [Range(0f, 1f)]
+    [SerializeField] private float volume = 1f;
+
     private GameObject player;
+
+    void Start()
+    {
+        // 1. MAIN-KAN SFX TEMBAKAN (Mode 2D agar sangat jelas dan keras)
+        PlaySound2D(shootSound);
+    }
 
     public void SetPlayer(GameObject playerRef)
     {
@@ -15,17 +32,17 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Don't collide with player
-        if (other.CompareTag("Player"))
+        // Jangan bertabrakan dengan player
+        if (other.CompareTag("Player") || other.CompareTag("Player2"))
             return;
 
-        // Handle hit logic here
         HandleHit(other.gameObject);
-
-        // Destroy projectile on impact
 
         if (other.CompareTag("Enemy"))
         {
+            // 2. MAIN-KAN SFX HIT (Mode 2D) sebelum peluru hancur
+            PlaySound2D(hitSound);
+
             other.GetComponent<EnemyBehavior>().TakeDamage(damage, transform.position);
             Destroy(gameObject);
         }
@@ -33,14 +50,27 @@ public class Projectile : MonoBehaviour
 
     void HandleHit(GameObject hitObject)
     {
-        // Add your hit detection logic here
         Debug.Log($"Projectile hit: {hitObject.name}");
+    }
 
-        // Example: if you have a Health script on enemies
-        // Health targetHealth = hitObject.GetComponent<Health>();
-        // if (targetHealth != null)
-        // {
-        //     targetHealth.TakeDamage(damage);
-        // }
+    // --- FUNGSI KHUSUS PEMUTAR SUARA 2D ---
+    private void PlaySound2D(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        // Buat GameObject sementara khusus untuk menjadi speaker
+        GameObject audioObj = new GameObject("TempAudio_" + clip.name);
+        AudioSource source = audioObj.AddComponent<AudioSource>();
+
+        source.clip = clip;
+        source.volume = volume;
+
+        // KUNCI UTAMA: Ubah ke 0 agar jadi suara 2D (Tidak terpengaruh jarak kamera)
+        source.spatialBlend = 0f;
+
+        source.Play();
+
+        // Hancurkan speaker sementara ini setelah durasi lagunya selesai
+        Destroy(audioObj, clip.length);
     }
 }

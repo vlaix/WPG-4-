@@ -99,12 +99,7 @@ public class LadderBuildUI : MonoBehaviour
             int inInventory = Inventory.Instance != null ?
                              Inventory.Instance.GetItemCount(req.resourceName) : 0;
 
-            text += $"{checkmark} {req.resourceName}: {req.currentAmount}/{req.totalRequired}";
-
-            if (!hasEnough)
-            {
-                text += $" (Have: {inInventory})";
-            }
+            text += $"{inInventory}/{req.totalRequired}";
 
             text += "\n";
         }

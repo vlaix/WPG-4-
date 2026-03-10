@@ -154,6 +154,9 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 0
+  shootSound: {fileID: 8300000, guid: 268a5df70bba3004ca3f17e2756d59cd, type: 3}
+  hitSound: {fileID: 8300000, guid: 8c0035c87d8bc7748927b96aff960034, type: 3}
+  volume: 1
 --- !u!1001 &7836877470716618768
 PrefabInstance:
   m_ObjectHideFlags: 0
