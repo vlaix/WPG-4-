@@ -100,7 +100,7 @@ public class BearTrap : MonoBehaviour
         // Deal damage
         if (trapData.damage > 0f)
         {
-            enemy.TakeDamage(trapData.damage);
+            enemy.TakeDamage(trapData.damage, transform.position);
         }
 
         // Stun enemy

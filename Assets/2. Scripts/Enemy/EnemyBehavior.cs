@@ -11,10 +11,18 @@ public class EnemyBehavior : MonoBehaviour
     private float BufferShoot;
     private float BufferAttack;
     private NavMeshAgent agent;
+    private Animator animator;
+    private bool isAttacking = false;
+    private Renderer enemyRenderer;
+    private Color originalColor;
+    private Vector3 knockbackVelocity;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+        enemyRenderer = GetComponent<Renderer>();
+        if (enemyRenderer != null) originalColor = enemyRenderer.material.color;
     }
 
     void Start()
@@ -36,8 +44,28 @@ public class EnemyBehavior : MonoBehaviour
 
     void Update()
     {   
-        if (healthpoint >= 0f) {
-            agent.SetDestination(Player.position);
+        if (knockbackVelocity.magnitude > 0.05f)
+        {
+            agent.isStopped = true;
+            transform.position += knockbackVelocity * Time.deltaTime;
+            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, Time.deltaTime * 10f);
+        }
+        else if (healthpoint >= 0f)
+        {
+            if (isAttacking)
+            {
+                agent.isStopped = true;
+            }
+            else
+            {
+                agent.isStopped = false;
+                agent.SetDestination(Player.position);
+            }
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", isAttacking ? 0f : agent.velocity.magnitude);
         }
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
@@ -58,9 +86,27 @@ public class EnemyBehavior : MonoBehaviour
                 if(Time.time >= BufferAttack) {
                     Health.Hurt(data.damage);
                     BufferAttack = Time.time + data.Cooldown;
+                    isAttacking = true;
+                    if (animator != null) animator.SetTrigger("Attack");
+                    StartCoroutine(ResetAttack());
                 }
             }
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if(data.stopDistance == 0 && collision.gameObject.CompareTag("Player"))
+        {
+            isAttacking = false;
+            agent.isStopped = false;
+        }
+    }
+
+    private System.Collections.IEnumerator ResetAttack()
+    {
+        yield return new WaitForSeconds(data.Cooldown);
+        isAttacking = false;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -70,13 +116,26 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Vector3 attackerPosition = default)
     {
         healthpoint -= damage;
+
+        Vector3 knockDir = (transform.position - attackerPosition).normalized;
+        knockbackVelocity = knockDir * 9f;
+
+        if (enemyRenderer != null)
+            StartCoroutine(FlashRed());
 
         if(healthpoint <= 0) {
             Die();
         }
+    }
+
+    private System.Collections.IEnumerator FlashRed()
+    {
+        enemyRenderer.material.color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        enemyRenderer.material.color = originalColor;
     }
 
     private void Die()

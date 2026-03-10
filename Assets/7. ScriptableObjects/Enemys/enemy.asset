@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c1ff26b237529b479b57ad71a528ce0, type: 3}
   m_Name: enemy
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 1
   healthPoint: 3
   stopDistance: 0
   Cooldown: 1
   damage: 1
-  prefab: {fileID: 6453985559881473216, guid: 44956d5a15a0c01488406b3c7337ff79, type: 3}
+  prefab: {fileID: 378483154360624458, guid: c3bd0dba404b1444bb11bef5565ea540, type: 3}
   peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}

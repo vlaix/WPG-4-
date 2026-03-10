@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c1ff26b237529b479b57ad71a528ce0, type: 3}
   m_Name: enemytank
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 0.5
   healthPoint: 5
   stopDistance: 0
-  Cooldown: 1
+  Cooldown: 3
   damage: 2
-  prefab: {fileID: 5534270234629031914, guid: 19dcfdb69b21866439bcca155a3d174c, type: 3}
+  prefab: {fileID: 1801632913523968843, guid: b37b544aba5e23440a06565ffcd7ba02, type: 3}
   peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}
