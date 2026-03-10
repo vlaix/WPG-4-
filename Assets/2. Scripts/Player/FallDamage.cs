@@ -11,8 +11,7 @@ public class FallDamage : MonoBehaviour
         if (collision.CompareTag("Player") || collision.CompareTag("Player2"))
         {
             // Jika script Health ada di objek player itu sendiri:
-            Health playerHealth = collision.GetComponent<Health>();
-            if (playerHealth != null) playerHealth.Hurt(2);
+            health.Hurt(2);
 
             // Langsung pindahkan posisi objek yang menyentuh trigger ke tempat respawn
             collision.transform.position = respawn.position;
