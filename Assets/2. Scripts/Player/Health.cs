@@ -9,12 +9,23 @@ public class Health : MonoBehaviour
     [SerializeField] private TextMeshProUGUI HPtxt;
     [SerializeField] private Image BoxKalah;
     [SerializeField] private Button ButtonRestart;
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip deathSFX; 
+
     private int currentHP;
     public static Health Instance;
 
     void Awake()
     {
         Instance = this;
+
+        // Otomatis mencari AudioSource di objek ini jika belum dimasukkan di Inspector
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
     }
 
     void Start()
@@ -50,10 +61,17 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
+        // Mainkan SFX Mati
+        if (audioSource != null && deathSFX != null)
+        {
+            audioSource.PlayOneShot(deathSFX);
+        }
+
         BoxKalah.gameObject.SetActive(true);
-        ButtonRestart.GetComponent<UnityEngine.UI.Button>().interactable = true;
+        ButtonRestart.interactable = true; // Penulisan yang lebih rapi tanpa GetComponent berulang
+
         Debug.Log("Player died!");
         Time.timeScale = 0;
-        currentHP = 1;
+        currentHP = 1; // Mencegah fungsi Die() terpanggil berulang kali
     }
 }
