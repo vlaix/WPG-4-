@@ -3,7 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyBehavior : MonoBehaviour
 {
-    [SerializeField] private Transform Player;
+    [SerializeField] private Transform[] players;
+    private Transform closestPlayer;
     [SerializeField] private GameObject loot;
     [SerializeField] private EnemyData data;
     [SerializeField] Health Health;
@@ -34,16 +35,23 @@ public class EnemyBehavior : MonoBehaviour
         healthpoint = data.healthPoint;
         BufferAttack = 0f;
 
-        GameObject playerObj1 = GameObject.FindWithTag("Player");
-        if (playerObj1 != null)
-        {
-            Player = playerObj1.transform;
-        }
-              
+        // Cari semua player dengan tag "Player" dan "Player2"
+        GameObject[] playerObjs1 = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] playerObjs2 = GameObject.FindGameObjectsWithTag("Player2");
+        players = new Transform[playerObjs1.Length + playerObjs2.Length];
+        int idx = 0;
+        foreach (var p in playerObjs1) players[idx++] = p.transform;
+        foreach (var p in playerObjs2) players[idx++] = p.transform;
+
+        UpdateClosestPlayer();
     }
 
     void Update()
     {   
+        UpdateClosestPlayer();
+
+        if (closestPlayer == null) return;
+
         if (knockbackVelocity.magnitude > 0.05f)
         {
             agent.isStopped = true;
@@ -59,7 +67,7 @@ public class EnemyBehavior : MonoBehaviour
             else
             {
                 agent.isStopped = false;
-                agent.SetDestination(Player.position);
+                agent.SetDestination(closestPlayer.position);
             }
         }
 
@@ -153,15 +161,36 @@ public class EnemyBehavior : MonoBehaviour
     {
         GameObject peluru = Instantiate(data.peluru, transform.position, Quaternion.identity);
 
-        Vector3 direction = (Player.position - transform.position).normalized;
+        Vector3 direction = (closestPlayer.position - transform.position).normalized;
         peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
     }
 
     void FaceTarget()
     {
-        Vector3 direction = (Player.position - transform.position).normalized;
+        Vector3 direction = (closestPlayer.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+
+    private void UpdateClosestPlayer()
+    {
+        if (players == null || players.Length == 0) return;
+
+        float minDist = Mathf.Infinity;
+        Transform nearest = null;
+
+        foreach (Transform p in players)
+        {
+            if (p == null) continue;
+            float dist = Vector3.Distance(transform.position, p.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = p;
+            }
+        }
+
+        closestPlayer = nearest;
     }
 
     private void OnDrawGizmosSelected()

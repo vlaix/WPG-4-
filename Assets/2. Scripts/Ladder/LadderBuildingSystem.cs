@@ -47,6 +47,7 @@ public class LadderBuildingSystem : MonoBehaviour
 
     // Runtime data
     private List<RuntimeLadderResourceRequirement> runtimeResources = new List<RuntimeLadderResourceRequirement>();
+    private Animator playerAnimator;
     private Transform playerTransform;
     private LadderBuildState currentState = LadderBuildState.Blueprint;
     private AudioSource audioSource;
@@ -66,6 +67,7 @@ public class LadderBuildingSystem : MonoBehaviour
     public void AssignPlayer(Transform player)
     {
         playerTransform = player;
+        playerAnimator = player.GetComponent<Animator>();
         if (showDebugLogs) Debug.Log($" '{LadderName}' terhubung ke {player.name}");
     }
 
@@ -83,6 +85,9 @@ public class LadderBuildingSystem : MonoBehaviour
         InitializeRuntimeResources();
         InitializeLadder();
         SetupAudio();
+        // Jika playerTransform sudah di-assign lewat Inspector
+        if (playerTransform != null)
+            playerAnimator = playerTransform.GetComponent<Animator>();
     }
 
     private void Update()
@@ -246,6 +251,12 @@ public class LadderBuildingSystem : MonoBehaviour
     {
         if (currentState == LadderBuildState.Blueprint) currentState = LadderBuildState.Building;
         isBuilding = true;
+
+        // Trigger build animation pada player
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetTrigger("Build");
+        }
 
         if (audioSource != null && ladderData.buildingSound != null)
         {

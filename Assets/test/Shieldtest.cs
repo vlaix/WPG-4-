@@ -14,6 +14,7 @@ public class Shieldtest : MonoBehaviour
     private GameObject shieldInstance;
     private Renderer shieldRenderer;
     private AudioSource audioSource;
+    private Animator animator;
     private float currentShieldHealth;
     private float shieldDurationTimer;
     private float cooldownTimer = 0f;
@@ -45,6 +46,9 @@ public class Shieldtest : MonoBehaviour
 
     private void Start()
     {
+        // Setup animator
+        animator = GetComponent<Animator>();
+
         // Setup audio
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -178,6 +182,12 @@ public class Shieldtest : MonoBehaviour
         else
         {
             Debug.LogError("? Shield Prefab is NULL! Assign a shield prefab in ShieldData.");
+        }
+
+        // Trigger build animation
+        if (animator != null)
+        {
+            animator.SetTrigger("Build");
         }
 
         // Play activate sound

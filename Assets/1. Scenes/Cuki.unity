@@ -552,11 +552,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Tank
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Archer
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Normal
@@ -564,6 +564,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
+      propertyPath: SpawnTime
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1761326029342047889, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}

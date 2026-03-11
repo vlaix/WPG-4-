@@ -2829,6 +2829,8 @@ MonoBehaviour:
   HPtxt: {fileID: 0}
   BoxKalah: {fileID: 1021776654}
   ButtonRestart: {fileID: 173816992}
+  audioSource: {fileID: 0}
+  deathSFX: {fileID: 0}
 --- !u!4 &1577729173 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8221267687009610337, guid: b6367e94c02525d4e9fd75ba4dca1c1d, type: 3}
@@ -2920,8 +2922,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3919f4d448d4e04468d64397e8cb5e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1Prefab: {fileID: 113771813491061259, guid: 8c8b859ecba5e2644a0a313e9e036eff, type: 3}
-  player2Prefab: {fileID: 113771813491061259, guid: b7784762f6487584f9a9aba6546c8465, type: 3}
+  player1Prefab: {fileID: 1721787318033512107, guid: 1cbf86e2b7b7aed469c2751df48c93c4, type: 3}
+  player2Prefab: {fileID: 8594513441840774039, guid: c9ad244a031e5ec4d8f4b5600a3589fa, type: 3}
   gameCamera: {fileID: 750954636}
 --- !u!114 &1646866409
 MonoBehaviour:

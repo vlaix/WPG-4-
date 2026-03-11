@@ -53,6 +53,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     // Runtime data
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
+    private Animator playerAnimator;
     
     [SerializeField]private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
@@ -79,7 +80,9 @@ public class BridgeBuildingSystem : MonoBehaviour
         InitializeRuntimeResources();
         InitializeBridge();
         SetupAudio();
-        
+        // Jika playerTransform sudah di-assign lewat Inspector
+        if (playerTransform != null)
+            playerAnimator = playerTransform.GetComponent<Animator>();
     }
 
     private void Update()
@@ -205,6 +208,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     public void AssignPlayer(Transform player)
     {
         playerTransform = player;
+        playerAnimator = player.GetComponent<Animator>();
 
         if (showDebugLogs)
             Debug.Log($"'{BridgeName}' berhasil terhubung dengan {player.name}");
@@ -262,6 +266,12 @@ public class BridgeBuildingSystem : MonoBehaviour
     {
         isBuilding = true;
         currentState = BridgeBuildState.Building;
+
+        // Trigger build animation pada player
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetTrigger("Build");
+        }
 
         // Play building sound loop
         if (audioSource != null && bridgeData.buildingSound != null)
