@@ -193,6 +193,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2509034140326135138}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8473945533145953046}
   m_SourcePrefab: {fileID: 100100000, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
 --- !u!4 &6556403619456600814 stripped
 Transform:
@@ -458,3 +461,19 @@ MonoBehaviour:
   placementDistance: 2
   showDebugLogs: 1
   animator: {fileID: 0}
+--- !u!114 &-8473945533145953046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8594513441840774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2535b47fc63de46983c54f55246317, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  climbSpeed: 5
+  horizontalSpeed: 3
+  exitKey: 32
+  showDebugLogs: 1

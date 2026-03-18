@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8631016521294408179, guid: fae795291aa2cc640bca85c478648956, type: 3}
       propertyPath: m_TagString
-      value: Ladder
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

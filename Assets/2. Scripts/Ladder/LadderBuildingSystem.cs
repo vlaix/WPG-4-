@@ -97,7 +97,7 @@ public class LadderBuildingSystem : MonoBehaviour
         UpdateVisual();
     }
 
-    
+
 
     private void ValidateLadderData()
     {

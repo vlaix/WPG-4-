@@ -297,17 +297,6 @@
                 },
                 {
                     "name": "",
-                    "id": "bfb9711a-3ca1-46aa-89cf-71d9f5057196",
-                    "path": "<Keyboard>/period",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";KeyboardP2",
-                    "action": "Build",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "66788023-041a-4de8-bb49-e3578dae998e",
                     "path": "<Keyboard>/q",
                     "interactions": "",
