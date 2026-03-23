@@ -743,9 +743,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 719dd8d0f0e9d2e46b7f3f74b1ab038c, type: 2}
   - {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
   - {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
-  Normal: 3
-  Tank: 2
+  - {fileID: 11400000, guid: a6a3cbf630b7db24ea690142f92b324f, type: 2}
+  Normal: 0
+  Tank: 0
   Archer: 0
+  Mbledos: 1
   IsTrigger: 0
 --- !u!65 &477164624
 BoxCollider:

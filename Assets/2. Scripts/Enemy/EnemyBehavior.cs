@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,8 +19,15 @@ public class EnemyBehavior : MonoBehaviour
     private Color originalColor;
     private Vector3 knockbackVelocity;
 
+    [Header ("Musuh Mbledos")]
+    [SerializeField] private MaterialPropertyBlock propBlock;
+    private float Buffermbledos;
+    private bool bomaktif;
+
+
     void Awake()
     {
+        propBlock = new MaterialPropertyBlock();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         enemyRenderer = GetComponent<Renderer>();
@@ -44,10 +52,14 @@ public class EnemyBehavior : MonoBehaviour
         foreach (var p in playerObjs2) players[idx++] = p.transform;
 
         UpdateClosestPlayer();
+
+        Buffermbledos = data.Cooldown;
     }
 
     void Update()
     {   
+        float progress;
+
         UpdateClosestPlayer();
 
         if (closestPlayer == null) return;
@@ -79,12 +91,26 @@ public class EnemyBehavior : MonoBehaviour
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
                 FaceTarget(); // Fungsi untuk menghadap player saat berhenti
-                if (Time.time >= BufferShoot && data.stopDistance != 0)
+                if (Time.time >= BufferShoot && data.stopDistance != 0 && bomaktif == false)
                 {
                     Shoot();
                     BufferShoot = Time.time + data.Cooldown;
                 }
             }
+        
+        //mbledos
+        if(bomaktif) {
+            Buffermbledos -= Time.deltaTime;
+
+            // Hitung progress 0.0 (awal) sampai 1.0 (meledak)
+            progress = 1.0f - (Buffermbledos / data.Cooldown);
+            UpdateShaderProgress(progress);
+
+            if(Buffermbledos <= 0) {
+                IniSaatnyaMbledos();
+            }
+        }
+
     }
 
     private void OnCollisionStay(Collision collision)
@@ -191,6 +217,35 @@ public class EnemyBehavior : MonoBehaviour
         }
 
         closestPlayer = nearest;
+    }
+
+    //mbledos
+    public void StartTimer() {
+        bomaktif = true;
+    }
+
+    public void StopTimer() {
+        bomaktif = false;
+        Buffermbledos = data.Cooldown;
+        UpdateShaderProgress(0f);
+    }
+
+    private void IniSaatnyaMbledos() {
+        Debug.Log("Mbledos");
+
+        Health.Hurt(data.damage);
+        Die();
+    }
+
+    private void UpdateShaderProgress(float value)
+    {
+        if (enemyRenderer != null)
+        {
+            enemyRenderer.GetPropertyBlock(propBlock);
+            // "_MbledosProgress" harus SAMA dengan Reference di Shader Graph Anda
+            propBlock.SetFloat("_MbledosProgress", Mathf.Clamp01(value));
+            enemyRenderer.SetPropertyBlock(propBlock);
+        }
     }
 
     private void OnDrawGizmosSelected()

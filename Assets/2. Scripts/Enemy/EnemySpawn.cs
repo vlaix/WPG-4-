@@ -11,7 +11,8 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField] private int Normal;
     [SerializeField] private int Tank;
     [SerializeField] private int Archer;
-    private int MaxSpawn, SpawnCount, NormalCount, TankCount, ArcherCount;
+    [SerializeField] private int Mbledos;
+    private int MaxSpawn, SpawnCount, NormalCount, TankCount, ArcherCount, MbledosCount;
     private float BufferTime;
     private List<int> AvailableEnemy = new List<int>();
 
@@ -22,7 +23,7 @@ public class EnemySpawn : MonoBehaviour
 
     void Start()
     {
-        MaxSpawn = Normal+Tank+Archer;
+        MaxSpawn = Normal+Tank+Archer+Mbledos;
         SpawnCount = 0;
         NormalCount = 0;
         TankCount = 0;
@@ -47,6 +48,7 @@ public class EnemySpawn : MonoBehaviour
                 if (NormalCount < Normal) AvailableEnemy.Add(0); // Index 0 = Normal
                 if (TankCount < Tank)   AvailableEnemy.Add(1); // Index 1 = Tank
                 if (ArcherCount < Archer) AvailableEnemy.Add(2); // Index 2 = Archer
+                if (MbledosCount < Mbledos) AvailableEnemy.Add(3);
 
                 // 2. Jika masih ada tipe yang jatahnya tersedia
                 if (AvailableEnemy.Count > 0)
@@ -57,6 +59,7 @@ public class EnemySpawn : MonoBehaviour
                     if (indexTerpilih == 0) NormalCount++;
                     else if (indexTerpilih == 1) TankCount++;
                     else if (indexTerpilih == 2) ArcherCount++;
+                    else if (indexTerpilih == 3) MbledosCount++;
 
                     SpawnEnemy(indexTerpilih);
                 }
