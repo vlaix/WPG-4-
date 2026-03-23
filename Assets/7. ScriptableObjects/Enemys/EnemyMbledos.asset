@@ -15,7 +15,7 @@ MonoBehaviour:
   speed: 1
   healthPoint: 3
   stopDistance: 5
-  Cooldown: 3
-  damage: 5
+  Cooldown: 1
+  damage: 0
   prefab: {fileID: 7340920223036713623, guid: ec0881319aaa1b84aaabf7a2b7782232, type: 3}
   peluru: {fileID: 6359655228273680341, guid: a6cc4cafb49869f48b622540c2591f0e, type: 3}

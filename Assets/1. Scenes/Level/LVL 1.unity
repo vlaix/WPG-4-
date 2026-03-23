@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawnCollider: {fileID: 477164624}
-  SpawnTime: 5
+  SpawnTime: 1
   data:
   - {fileID: 11400000, guid: 719dd8d0f0e9d2e46b7f3f74b1ab038c, type: 2}
   - {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
@@ -747,7 +747,7 @@ MonoBehaviour:
   Normal: 0
   Tank: 0
   Archer: 0
-  Mbledos: 1
+  Mbledos: 8
   IsTrigger: 0
 --- !u!65 &477164624
 BoxCollider:
