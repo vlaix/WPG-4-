@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
@@ -17,6 +17,7 @@ public class LevelSelector : MonoBehaviour
     {
         // Mengambil data level mana yang terakhir terbuka (default level 1)
         int levelReached = PlayerPrefs.GetInt("levelReached", 1);
+        
         for (int i = 1; i <= totalLevels; i++)
         {
             // Buat tombol
@@ -27,7 +28,7 @@ public class LevelSelector : MonoBehaviour
             // Set teks angka level
             TextMeshProUGUI btnText = button.GetComponentInChildren<TextMeshProUGUI>();
             Button buttonprop = button.GetComponent<Button>();
-            btnText.font =  font;
+            btnText.font = font;
 
             if (btnText != null) btnText.text = i.ToString();
 
@@ -44,25 +45,35 @@ public class LevelSelector : MonoBehaviour
                 btnComponent.interactable = true;
                 if (effect != null) effect.SetupInitialVisual(true);  // Mode Unlocked
                 
-                int levelIndexa = i;
-                btnComponent.onClick.AddListener(() => LoadLevel("LVL " + levelIndexa));
+                // ✅ CHANGED: Use LoadingScreen instead of direct SceneManager
+                btnComponent.onClick.AddListener(() => LoadLevel(levelIndex));
             }
 
-            if(buttonprop.interactable) {
-                btnText.color = new Color(0.8078f,0.8078f,0.8078f);
-            } else {
+            if (buttonprop.interactable)
+            {
+                btnText.color = new Color(0.8078f, 0.8078f, 0.8078f);
+            }
+            else
+            {
                 btnText.color = new Color(1.0f, 1.0f, 1.0f);
             }
         }
     }
 
-    void LoadLevel(string sceneName)
+    // ✅ UPDATED: Load level through loading screen
+    void LoadLevel(int levelNumber)
     {
-        SceneManager.LoadScene(sceneName);
+        string sceneName = "LVL " + levelNumber;
+        
+        Debug.Log($"Loading level: {sceneName}");
+        
+        // Use LoadingScreen for smooth transition
+        LoadingScreen.LoadScene(sceneName);
     }
 
-    public void BackMenu(){
-        SceneManager.LoadScene("MainMenu");
+    // ✅ UPDATED: Back to menu through loading screen
+    public void BackMenu()
+    {
+        LoadingScreen.LoadScene("MainMenu");
     }
-
 }
