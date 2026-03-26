@@ -4120,7 +4120,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 374935789140614968, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 374935789140614968, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_RenderMode
