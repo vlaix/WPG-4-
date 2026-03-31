@@ -14,6 +14,7 @@ public class GameData : MonoBehaviour
     public InputDevice p0Device;
     public InputDevice p1Device;
 
+    public string selectedLevelName = "LVL 1";
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }

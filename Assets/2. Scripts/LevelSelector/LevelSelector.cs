@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 public class LevelSelector : MonoBehaviour
 {
@@ -17,11 +19,16 @@ public class LevelSelector : MonoBehaviour
     {
         // Mengambil data level mana yang terakhir terbuka (default level 1)
         int levelReached = PlayerPrefs.GetInt("levelReached", 1);
-        
+        GameObject firstButtonCreated = null;
+
         for (int i = 1; i <= totalLevels; i++)
         {
             // Buat tombol
             GameObject button = Instantiate(levelButtonPrefab, levelPanel);
+            if (i == 1)
+            {
+                firstButtonCreated = button;
+            }
             Button btnComponent = button.GetComponent<Button>();
             LevelButtonEffect effect = button.GetComponent<LevelButtonEffect>();
 
@@ -58,17 +65,42 @@ public class LevelSelector : MonoBehaviour
                 btnText.color = new Color(1.0f, 1.0f, 1.0f);
             }
         }
+        if (firstButtonCreated != null)
+        {
+            // 1. Bersihkan seleksi yang mungkin nyangkut
+            EventSystem.current.SetSelectedGameObject(null);
+
+            // 2. Pilih tombol pertama secara paksa
+            EventSystem.current.SetSelectedGameObject(firstButtonCreated);
+        }
+        StartCoroutine(SelectFirstButton(firstButtonCreated));
+    }
+
+    IEnumerator SelectFirstButton(GameObject btn)
+    {
+        // Tunggu sampai akhir frame agar UI Mesh & Layout selesai dibuat
+        yield return new WaitForEndOfFrame();
+
+        if (btn != null && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(btn);
+            Debug.Log("Sistem: Mencoba fokus ke " + btn.name);
+        }
     }
 
     // ✅ UPDATED: Load level through loading screen
     void LoadLevel(int levelNumber)
     {
         string sceneName = "LVL " + levelNumber;
-        
-        Debug.Log($"Loading level: {sceneName}");
-        
-        // Use LoadingScreen for smooth transition
-        LoadingScreen.LoadScene(sceneName);
+        if (GameData.Instance != null)
+        {
+            GameData.Instance.selectedLevelName = sceneName;
+        }
+        Debug.Log($"Level {sceneName} dipilih. Menuju Lobby...");
+
+        // Pindah ke Scene Lobby terlebih dahulu untuk pilih karakter
+        LoadingScreen.LoadScene("Lobby");
     }
 
     // ✅ UPDATED: Back to menu through loading screen
