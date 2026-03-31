@@ -82,6 +82,7 @@ public class LoadingScreen : MonoBehaviour
 
     private void Update()
     {
+        currentProgress = Mathf.MoveTowards(currentProgress, targetProgress, progressSpeed * Time.unscaledDeltaTime);
         // Smooth progress bar animation
         if (smoothProgress && progressBarFill != null)
         {
@@ -167,6 +168,7 @@ public class LoadingScreen : MonoBehaviour
     /// </summary>
     public static void LoadScene(string sceneName)
     {
+        Time.timeScale = 1f;
         sceneToLoad = sceneName;
         SceneManager.LoadScene("Loading"); // Make sure you have a scene named "Loading"
     }
