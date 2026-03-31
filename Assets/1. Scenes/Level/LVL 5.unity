@@ -1384,7 +1384,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.577
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1402,6 +1402,10 @@ PrefabInstance:
       propertyPath: menangbox
       value: 
       objectReference: {fileID: 1420668493}
+    - target: {fileID: 4688220212740311550, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+      propertyPath: levelCompleteUI
+      value: 
+      objectReference: {fileID: 2135586452}
     - target: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_Name
       value: FinishGrounds
@@ -1412,7 +1416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -33.35
+      value: -36.53
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12011,6 +12015,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+--- !u!1 &2135586452 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2294836420320778100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 2135586451}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2720607146831060821
 PrefabInstance:
   m_ObjectHideFlags: 0

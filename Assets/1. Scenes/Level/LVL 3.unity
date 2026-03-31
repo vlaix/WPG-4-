@@ -450,7 +450,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.92
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.y
@@ -458,7 +458,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2063241188818176454, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: player1
@@ -472,13 +472,17 @@ PrefabInstance:
       propertyPath: menangbox
       value: 
       objectReference: {fileID: 1420668493}
+    - target: {fileID: 4688220212740311550, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+      propertyPath: levelCompleteUI
+      value: 
+      objectReference: {fileID: 253049663}
     - target: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_Name
       value: FinishGrounds
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.729862
+      value: -6.57
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.y
@@ -486,7 +490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 22.19963
+      value: 63.16
       objectReference: {fileID: 0}
     - target: {fileID: 5776729727485183484, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalRotation.w
@@ -688,6 +692,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+--- !u!1 &253049663 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2294836420320778100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 253049662}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &262603994 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
