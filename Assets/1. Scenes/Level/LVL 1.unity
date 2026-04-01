@@ -4180,6 +4180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelCompleteUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2294836420320778100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3633308021182258124, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -4189,8 +4193,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1710768884}
     - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 6716564576664321504, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

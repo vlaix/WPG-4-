@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 22f9048c719d77a448ab32bc411e8f6d, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 3f3a40e58349ee14e86651b70c500d86, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
