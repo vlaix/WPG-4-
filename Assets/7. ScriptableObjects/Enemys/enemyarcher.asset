@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   healthPoint: 2
-  stopDistance: 30
+  stopDistance: 50
   Cooldown: 3
   damage: 2
   prefab: {fileID: 6549078209048014017, guid: 895e38d1f66fbdc4b9b589ea5ea46e88, type: 3}

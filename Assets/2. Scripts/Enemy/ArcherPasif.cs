@@ -22,10 +22,8 @@ public class ArcherPasif : EnemyBehavior
     
     protected override void Update()
     {
-        // 1. Cari player terdekat (fungsi warisan dari induk)
         UpdateClosestPlayer();
 
-        // Jika tidak ada player, jangan lakukan apa-apa
         if (closestPlayer == null) return;
 
         // 2. Logika Jarak (Menggunakan stopDistance dari EnemyData)

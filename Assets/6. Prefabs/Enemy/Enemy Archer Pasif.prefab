@@ -108,13 +108,13 @@ PrefabInstance:
       addedObject: {fileID: 3057496749678678717}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4507499918805868489}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 5522114133032814872}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6491806952064299692}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8510361616955068232}
   m_SourcePrefab: {fileID: 100100000, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
 --- !u!1 &6549078209048014017 stripped
 GameObject:
@@ -171,25 +171,6 @@ CapsuleCollider:
   m_Height: 5.3574343
   m_Direction: 1
   m_Center: {x: -0.05722797, y: 2.1787171, z: 0}
---- !u!114 &4507499918805868489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6549078209048014017}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53ca45f19edd3d547a6d5c8f374362ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  players: []
-  closestPlayer: {fileID: 0}
-  loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
-  data: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
-  Health: {fileID: 0}
-  healthpoint: 0
-  lookAtPlayer: 1
 --- !u!195 &5522114133032814872
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -198,7 +179,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6549078209048014017}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
@@ -234,3 +215,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8510361616955068232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549078209048014017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596c427225c4f984596a7bf9257c623b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players: []
+  closestPlayer: {fileID: 0}
+  loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
+  data: {fileID: 11400000, guid: fc6e7b2990a020542aa6793431e59e87, type: 2}
+  Health: {fileID: 0}
+  healthpoint: 0

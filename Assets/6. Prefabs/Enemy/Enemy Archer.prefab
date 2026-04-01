@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
       propertyPath: m_Name
-      value: start walk char 5
+      value: Enemy Archer
       objectReference: {fileID: 0}
     - target: {fileID: 2389602830470214216, guid: c2b3e0507faf72b4c8ef46161e6888d6, type: 3}
       propertyPath: m_DirtyAABB
@@ -183,7 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 596c427225c4f984596a7bf9257c623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  players: []
+  closestPlayer: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
   Health: {fileID: 0}
