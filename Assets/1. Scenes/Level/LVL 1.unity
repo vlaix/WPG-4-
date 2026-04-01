@@ -2322,7 +2322,7 @@ MonoBehaviour:
   m_JoinAction:
     m_UseReference: 0
     m_Action:
-      m_Name: 
+      m_Name: Join
       m_Type: 0
       m_ExpectedControlType: 
       m_Id: 4bc7f492-4bc4-42ec-a751-5462a2abf6a0
@@ -3925,11 +3925,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf54774fc4e33e949adf4f7a7573937f, type: 3}
---- !u!1 &3554700088159993868 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
-  m_PrefabInstance: {fileID: 4672037107832780291}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4672037107832780291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3946,6 +3941,10 @@ PrefabInstance:
       propertyPath: menangbox
       value: 
       objectReference: {fileID: 437165126}
+    - target: {fileID: 4688220212740311550, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+      propertyPath: levelCompleteUI
+      value: 
+      objectReference: {fileID: 358735318}
     - target: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_Name
       value: FinishGround
@@ -3990,19 +3989,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6706211558790514972, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
-    - {fileID: 4501573721768636709, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
-    - {fileID: 5510835823652192321, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6223546106746104023}
-    - targetCorrespondingSourceObject: {fileID: 4960257745783163915, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6223546106746104024}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
 --- !u!1001 &5051270980979259649
 PrefabInstance:
@@ -4074,42 +4064,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1659611929}
   m_SourcePrefab: {fileID: 100100000, guid: 4bfec90a07a273c4e94476e7bcde55ea, type: 3}
---- !u!136 &6223546106746104023
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3554700088159993868}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.35759908
-  m_Height: 8.052346
-  m_Direction: 1
-  m_Center: {x: 0.0027066993, y: 0, z: -0.010752957}
---- !u!114 &6223546106746104024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3554700088159993868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f01ef0e4768ff343aad445345fc40f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelCompleteUI: {fileID: 358735318}
 --- !u!1001 &8419004900634468789
 PrefabInstance:
   m_ObjectHideFlags: 0

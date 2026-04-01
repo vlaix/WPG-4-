@@ -93,10 +93,10 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnUp: {fileID: 7749282504222976389}
+    m_SelectOnDown: {fileID: 7749282504222976389}
+    m_SelectOnLeft: {fileID: 7749282504222976389}
+    m_SelectOnRight: {fileID: 7749282504222976389}
   m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_SpriteState:
     m_HighlightedSprite: {fileID: 21300000, guid: f8691e644df21ad4f9f3db7bffd0edfa, type: 3}
     m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 21300000, guid: f8691e644df21ad4f9f3db7bffd0edfa, type: 3}
     m_DisabledSprite: {fileID: 21300000, guid: 7d2432633f207e94f972934c528cd2b6, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal

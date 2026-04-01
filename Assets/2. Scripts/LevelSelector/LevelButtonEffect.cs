@@ -3,28 +3,35 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class LevelButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+// TAMBAHKAN ISelectHandler dan IDeselectHandler di sini
+public class LevelButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private TextMeshProUGUI btnText;
     private Button btn;
 
-    // Warna sesuai permintaanmu
-    private Color normalColor; 
-    private Color hoverColor;  
-    private Color lockedColor = Color.white; // Warna Locked: Putih
+    private Color normalColor;
+    private Color hoverColor;
+    private Color lockedColor = Color.white;
 
     void Awake()
     {
         btnText = GetComponentInChildren<TextMeshProUGUI>();
         btn = GetComponent<Button>();
 
-        // Konversi Hex ke Color Unity
-        ColorUtility.TryParseHtmlString("#CCCCCC", out normalColor); // Abu-abu Normal
-        ColorUtility.TryParseHtmlString("#A9A7A7", out hoverColor);  // Abu-abu Hover
+        ColorUtility.TryParseHtmlString("#CCCCCC", out normalColor);
+        ColorUtility.TryParseHtmlString("#A9A7A7", out hoverColor);
     }
 
-    // Saat mouse masuk (Hover)
-    public void OnPointerEnter(PointerEventData eventData)
+    // --- UNTUK MOUSE (Hover) ---
+    public void OnPointerEnter(PointerEventData eventData) => HandleHighlight();
+    public void OnPointerExit(PointerEventData eventData) => HandleDehighlight();
+
+    // --- UNTUK CONTROLLER / KEYBOARD (Selection) ---
+    public void OnSelect(BaseEventData eventData) => HandleHighlight();
+    public void OnDeselect(BaseEventData eventData) => HandleDehighlight();
+
+    // Fungsi pusat untuk mengubah warna saat disorot
+    private void HandleHighlight()
     {
         if (btn.interactable && btnText != null)
         {
@@ -32,22 +39,18 @@ public class LevelButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    // Saat mouse keluar
-    public void OnPointerExit(PointerEventData eventData)
+    // Fungsi pusat untuk mengembalikan warna saat sorotan hilang
+    private void HandleDehighlight()
     {
         if (btnText != null)
         {
-            // Jika tombol aktif kembali ke normal, jika mati tetap warna locked
             btnText.color = btn.interactable ? normalColor : lockedColor;
         }
     }
 
-    // Fungsi inisialisasi awal yang dipanggil oleh LevelSelector
     public void SetupInitialVisual(bool isUnlocked)
     {
         if (btnText == null) btnText = GetComponentInChildren<TextMeshProUGUI>();
-        
-        // Memastikan warna awal benar saat pertama kali muncul
         btnText.color = isUnlocked ? normalColor : lockedColor;
     }
 }

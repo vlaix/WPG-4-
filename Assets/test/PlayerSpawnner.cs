@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerSpawner : MonoBehaviour
 {
     [Header("Daftar Prefab Karakter")]
-    public GameObject player1Prefab;
-    public GameObject player2Prefab;
+    public GameObject player1Prefab; // Karakter untuk Sisi Kiri
+    public GameObject player2Prefab; // Karakter untuk Sisi Kanan
 
     private PlayerInputManager manager;
     public CameraFollow gameCamera;
@@ -14,56 +14,84 @@ public class PlayerSpawner : MonoBehaviour
     {
         manager = GetComponent<PlayerInputManager>();
 
-        // Set prefab pertama saat game mulai (Player 1)
-        manager.playerPrefab = player1Prefab;
+        // KUNCI UTAMA: Kita mematikan auto-join karena kita mau spawn manual 
+        // berdasarkan data dari Lobby.
+        manager.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;
     }
 
-    // Fungsi ini akan dipanggil otomatis setiap kali Player bergabung
-    public void OnPlayerJoined(UnityEngine.InputSystem.PlayerInput playerInput)
+    void Start()
     {
-        Debug.Log("Player " + playerInput.playerIndex + " Joined!");
+        // 1. Spawn Player pertama (P0 dari Lobby)
+        if (GameData.Instance.p0Connected)
+            SpawnFromLobby(0, GameData.Instance.p0Side);
+
+        // 2. Spawn Player kedua (P1 dari Lobby)
+        if (GameData.Instance.p1Connected)
+            SpawnFromLobby(1, GameData.Instance.p1Side);
+    }
+
+    void SpawnFromLobby(int playerIndex, int side)
+    {
+        // Pilih prefab: -1 (Kiri) pakai Prefab1, 1 (Kanan) pakai Prefab2
+        GameObject chosenPrefab = (side == -1) ? player1Prefab : player2Prefab;
+
+        // Ambil device yang benar dari Input System agar tidak tertukar
+        // (Mengambil device yang join saat di lobby)
+        InputDevice userDevice = (playerIndex == 0) ? GameData.Instance.p0Device : GameData.Instance.p1Device;
+        if (userDevice == null)
+        {
+            Debug.LogError($"Device untuk Player {playerIndex} tidak ditemukan di GameData!");
+            return;
+        }
+        // Spawn player dengan device tersebut
+        UnityEngine.InputSystem.PlayerInput pi = UnityEngine.InputSystem.PlayerInput.Instantiate(chosenPrefab, playerIndex, pairWithDevice: userDevice);
+
+        // Panggil fungsi inisialisasi (Logika Bridge/Ladder kamu)
+        InitializePlayerSystems(pi);
+    }
+
+    public void InitializePlayerSystems(UnityEngine.InputSystem.PlayerInput playerInput)
+    {
+        Debug.Log("Initializing Systems for Player " + playerInput.playerIndex);
+
+        // --- Tetap Gunakan Logika Kamu Sebelumnya ---
         BridgeBuildingSystem[] allBridges = FindObjectsByType<BridgeBuildingSystem>(FindObjectsSortMode.None);
         LadderBuildingSystem[] allLadders = FindObjectsByType<LadderBuildingSystem>(FindObjectsSortMode.None);
-        // Setelah Player 1 masuk, ganti prefab untuk Player berikutnya
-        if (playerInput.playerIndex == 0)
-        {
-            manager.playerPrefab = player2Prefab;
-        }
 
         if (gameCamera != null)
         {
             gameCamera.AddTarget(playerInput.transform);
         }
 
-        Debug.Log($"Player {playerInput.playerIndex} ditambahkan ke kamera.");
         foreach (var bridge in allBridges)
         {
             if (playerInput.CompareTag(bridge.bridgeData.requiredPlayerTag))
             {
-                // Misalnya fungsi untuk menghubungkan player ke jembatan
                 bridge.AssignPlayer(playerInput.transform);
                 playerInput.actions["Build"].performed += bridge.OnBuild;
                 playerInput.actions["Build"].canceled += bridge.OnBuild;
             }
         }
+
         foreach (var ladder in allLadders)
         {
             if (playerInput.CompareTag(ladder.ladderData.requiredPlayerTag))
             {
                 ladder.AssignPlayer(playerInput.transform);
-                // Daftarkan event OnBuild secara dinamis
                 playerInput.actions["Build"].performed += ladder.OnBuild;
                 playerInput.actions["Build"].canceled += ladder.OnBuild;
             }
         }
-        // Opsional: Beri warna atau posisi spawn yang berbeda
+
         SetSpawnPosition(playerInput);
     }
 
     private void SetSpawnPosition(UnityEngine.InputSystem.PlayerInput player)
     {
-        // Contoh sederhana memisahkan posisi P1 dan P2
-        Vector3 spawnPos = (player.playerIndex == 0) ? new Vector3(-2, 1, 0) : new Vector3(2, 1, 0);
+        // Gunakan side dari GameData untuk menentukan posisi spawn fisik
+        int side = (player.playerIndex == 0) ? GameData.Instance.p0Side : GameData.Instance.p1Side;
+
+        Vector3 spawnPos = (side == -1) ? new Vector3(-2, 1, 0) : new Vector3(2, 1, 0);
         player.transform.position = spawnPos;
     }
 }
