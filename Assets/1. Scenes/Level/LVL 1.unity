@@ -752,7 +752,7 @@ MonoBehaviour:
   Normal: 0
   Tank: 0
   Archer: 0
-  Mbledos: 8
+  Mbledos: 7
   IsTrigger: 0
 --- !u!65 &477164624
 BoxCollider:
@@ -3933,9 +3933,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7309468291920471414, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 535820408171792721, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2063241188818176454, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2063241188818176454, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
       propertyPath: menangbox
@@ -3989,7 +3997,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -7309468291920471414, guid: ef7c2282626a2c94d80d713fa3f40731, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4083,6 +4092,10 @@ PrefabInstance:
     - target: {fileID: 374935789140614968, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_PixelPerfect
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 640609797250143278, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_text
+      value: Menu
       objectReference: {fileID: 0}
     - target: {fileID: 1498434163942391883, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_Pivot.x
@@ -4192,6 +4205,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1710768884}
+    - target: {fileID: 4860343832589975151, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnNextLevelButton
+      objectReference: {fileID: 0}
     - target: {fileID: 6143659272464069045, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
       propertyPath: m_UiScaleMode
       value: 1
@@ -4216,6 +4233,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1710768884}
+    - target: {fileID: 7028939625813655299, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7028939625813655299, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7028939625813655299, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -5,12 +5,12 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] private Transform[] players;
-    private Transform closestPlayer;
+    [HideInInspector] public Transform closestPlayer;
     [SerializeField] private GameObject loot;
-    [SerializeField] private EnemyData data;
+    [SerializeField] protected EnemyData data;
     [SerializeField] Health Health;
     public float healthpoint;
-    private float BufferShoot;
+    protected float BufferShoot;
     private float BufferAttack;
     private NavMeshAgent agent;
     private Animator animator;
@@ -22,7 +22,7 @@ public class EnemyBehavior : MonoBehaviour
     [Header ("Musuh Mbledos")]
     [SerializeField] private MaterialPropertyBlock propBlock;
     private float Buffermbledos;
-    private bool bomaktif;
+    protected bool bomaktif;
 
 
     void Awake()
@@ -34,7 +34,7 @@ public class EnemyBehavior : MonoBehaviour
         if (enemyRenderer != null) originalColor = enemyRenderer.material.color;
     }
 
-    void Start()
+    protected virtual void Start()
     {
         Health = Health.Instance;
         agent.speed = data.speed;
@@ -56,7 +56,7 @@ public class EnemyBehavior : MonoBehaviour
         Buffermbledos = data.Cooldown;
     }
 
-    void Update()
+    protected virtual void Update()
     {   
         float progress;
 
@@ -183,22 +183,29 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(loot, transform.position, Quaternion.identity);
     }
 
-    void Shoot() 
+    protected void Shoot() 
     {
-        GameObject peluru = Instantiate(data.peluru, transform.position, Quaternion.identity);
-
+        // 1. Hitung arah ke player
         Vector3 direction = (closestPlayer.position - transform.position).normalized;
+
+        // 2. Buat rotasi agar peluru menghadap ke arah player
+        Quaternion shootRotation = Quaternion.LookRotation(direction);
+
+        // 3. Munculkan peluru dengan rotasi yang sudah disesuaikan
+        GameObject peluru = Instantiate(data.peluru, transform.position, shootRotation);
+
+        // 4. Beri kecepatan
         peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
     }
 
-    void FaceTarget()
+    protected void FaceTarget()
     {
         Vector3 direction = (closestPlayer.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
-    private void UpdateClosestPlayer()
+    protected void UpdateClosestPlayer()
     {
         if (players == null || players.Length == 0) return;
 
