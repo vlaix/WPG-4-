@@ -12,8 +12,10 @@ public class PlayerShield : MonoBehaviour
 
     // Private variables
     private PlayerInput playerControls;
-    private GameObject shieldInstance;
-    private Renderer shieldRenderer;
+    private GameObject shieldInstanceP2; // Visual Shield untuk Player 2
+    private GameObject shieldInstanceP1; // Visual Shield untuk Player 1
+    private Renderer shieldRendererP2;
+    private Renderer shieldRendererP1;
     private AudioSource audioSource;
     private float currentShieldHealth;
     private float shieldDurationTimer;
@@ -55,99 +57,48 @@ public class PlayerShield : MonoBehaviour
             TryActivateShield();
         }
     }
-    // ---------------------------
 
     private void Start()
     {
-        // Setup audio
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
         }
-
-        if (shieldData == null)
-        {
-            Debug.LogWarning("?? ShieldData is not assigned! Assign a ShieldData ScriptableObject.");
-        }
     }
 
     private void Update()
     {
-        // Update cooldown
-        if (cooldownTimer > 0f)
-        {
-            cooldownTimer -= Time.deltaTime;
-        }
-
-        // Update shield duration
-        if (isShieldActive && shieldData != null && shieldData.duration > 0f)
-        {
-            shieldDurationTimer -= Time.deltaTime;
-            if (shieldDurationTimer <= 0f)
-            {
-                DeactivateShield();
-            }
-        }
-
-        // Update shield visual color based on health
-        UpdateShieldVisual();
-    }
-
-    public void TryActivateShield()
-    {
-        if (shieldData == null)
-        {
-            Debug.LogError("? ShieldData is NULL!");
-            return;
-        }
-
-        // Check cooldown
-        if (!CanActivateShield)
-        {
-            if (showDebugLogs)
-            {
-                Debug.Log($"? Shield on cooldown! Wait {cooldownTimer:F1}s");
-            }
-            return;
-        }
-
-        // Check if already active
         if (isShieldActive)
         {
-            if (showDebugLogs)
+            if (shieldData.duration > 0f)
             {
-                Debug.Log("??? Shield already active!");
+                shieldDurationTimer -= Time.deltaTime;
+                if (shieldDurationTimer <= 0f)
+                {
+                    DeactivateShield();
+                }
             }
-            return;
+            UpdateShieldVisual();
         }
-
-        // Check resource cost
-        if (Inventory.Instance == null)
+        else
         {
-            Debug.LogError("? Inventory not found!");
-            return;
-        }
-
-        int available = Inventory.Instance.GetItemCount(shieldData.requiredResource);
-        if (available < shieldData.resourceCost)
-        {
-            if (showDebugLogs)
+            if (cooldownTimer > 0f)
             {
-                Debug.Log($"? Not enough {shieldData.requiredResource}! Need {shieldData.resourceCost}, have {available}");
+                cooldownTimer -= Time.deltaTime;
             }
-            return;
         }
+    }
 
-        // Consume resources
-        if (!Inventory.Instance.RemoveItem(shieldData.requiredResource, shieldData.resourceCost))
+    private void TryActivateShield()
+    {
+        if (!CanActivateShield)
         {
-            Debug.LogError("? Failed to remove resources from inventory!");
+            if (showDebugLogs) Debug.Log("Shield is on cooldown!");
             return;
         }
 
-        // Activate shield
         ActivateShield();
     }
 
@@ -157,53 +108,42 @@ public class PlayerShield : MonoBehaviour
         currentShieldHealth = shieldData.shieldHealth;
         shieldDurationTimer = shieldData.duration;
 
-        // Spawn shield visual
+        // 1. SPAWN SHIELD UNTUK PLAYER 2 (Dirinya Sendiri)
         if (shieldData.shieldPrefab != null)
         {
-            shieldInstance = Instantiate(shieldData.shieldPrefab, transform);
-            shieldInstance.transform.localPosition = shieldData.shieldOffset;
-            shieldInstance.transform.localScale = shieldData.shieldScale;
+            shieldInstanceP2 = Instantiate(shieldData.shieldPrefab, transform.position, Quaternion.identity, transform);
+            shieldRendererP2 = shieldInstanceP2.GetComponentInChildren<Renderer>();
 
-            // Memanggil ShieldCollision dari objek yang di-spawn
-            ShieldCollision shieldCol = shieldInstance.GetComponent<ShieldCollision>();
-            if (shieldCol == null)
-            {
-                shieldCol = shieldInstance.AddComponent<ShieldCollision>();
-            }
-            shieldCol.parentShield = this;
+            ShieldCollision colP2 = shieldInstanceP2.GetComponent<ShieldCollision>();
+            if (colP2 == null) colP2 = shieldInstanceP2.AddComponent<ShieldCollision>();
+            colP2.parentShield = this;
+        }
 
-            shieldRenderer = shieldInstance.GetComponentInChildren<Renderer>();
-            if (shieldRenderer != null)
-            {
-                Material mat = shieldRenderer.material;
-                mat.color = shieldData.fullHealthColor;
+        // 2. SPAWN SHIELD UNTUK PLAYER 1
+        // Mencari Player 1 berdasarkan Tag "Player"
+        GameObject player1 = GameObject.FindGameObjectWithTag("Player");
+        if (player1 != null && shieldData.shieldPrefab != null)
+        {
+            shieldInstanceP1 = Instantiate(shieldData.shieldPrefab, player1.transform.position, Quaternion.identity, player1.transform);
+            shieldRendererP1 = shieldInstanceP1.GetComponentInChildren<Renderer>();
 
-                // Set render mode ke transparent secara otomatis
-                mat.SetFloat("_Mode", 3);
-                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                mat.SetInt("_ZWrite", 0);
-                mat.DisableKeyword("_ALPHATEST_ON");
-                mat.EnableKeyword("_ALPHABLEND_ON");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.renderQueue = 3000;
-            }
+            ShieldCollision colP1 = shieldInstanceP1.GetComponent<ShieldCollision>();
+            if (colP1 == null) colP1 = shieldInstanceP1.AddComponent<ShieldCollision>();
+
+            // KUNCI UTAMA: Shield P1 juga mengirim deteksi tembakan (Damage) ke script P2 ini!
+            colP1.parentShield = this;
         }
         else
         {
-            Debug.LogError("? Shield Prefab is NULL! Assign a shield prefab in ShieldData.");
+            if (showDebugLogs) Debug.LogWarning("Player 1 tidak ditemukan! Pastikan Player 1 memiliki Tag 'Player'");
         }
 
-        // Play activate sound
         if (audioSource != null && shieldData.activateSound != null)
         {
             audioSource.PlayOneShot(shieldData.activateSound);
         }
 
-        if (showDebugLogs)
-        {
-            Debug.Log($"??? Shield activated! Health: {currentShieldHealth}");
-        }
+        if (showDebugLogs) Debug.Log("Shield Activated for BOTH Players!");
     }
 
     public bool TakeDamage(float damage)
@@ -212,109 +152,72 @@ public class PlayerShield : MonoBehaviour
 
         currentShieldHealth -= damage;
 
-        // Play hit sound
         if (audioSource != null && shieldData.hitSound != null)
         {
             audioSource.PlayOneShot(shieldData.hitSound);
         }
 
-        // Spawn hit effect
-        if (shieldData.hitEffect != null && shieldInstance != null)
+        if (shieldData.hitEffect != null)
         {
-            Instantiate(shieldData.hitEffect, shieldInstance.transform.position, Quaternion.identity);
+            Instantiate(shieldData.hitEffect, transform.position, Quaternion.identity);
         }
 
-        if (showDebugLogs)
-        {
-            Debug.Log($"??? Shield blocked {damage} damage! Remaining: {currentShieldHealth}/{shieldData.shieldHealth}");
-        }
+        if (showDebugLogs) Debug.Log($"Shield took {damage} damage! HP: {currentShieldHealth}");
 
-        // Check if shield broken
-        if (currentShieldHealth <= 0f)
+        if (currentShieldHealth <= 0)
         {
             BreakShield();
         }
 
-        return true; // Damage blocked
+        return true;
     }
 
     private void BreakShield()
     {
-        if (showDebugLogs)
-        {
-            Debug.Log("?? Shield broken!");
-        }
-
-        // Play break sound
         if (audioSource != null && shieldData.breakSound != null)
         {
             audioSource.PlayOneShot(shieldData.breakSound);
         }
 
-        // Spawn break effect
-        if (shieldData.breakEffect != null && shieldInstance != null)
+        if (shieldData.breakEffect != null)
         {
-            Instantiate(shieldData.breakEffect, shieldInstance.transform.position, Quaternion.identity);
+            Instantiate(shieldData.breakEffect, transform.position, Quaternion.identity);
         }
 
-        // Deactivate shield
         DeactivateShield();
-
-        // Start cooldown
-        cooldownTimer = shieldData.cooldown;
     }
 
     private void DeactivateShield()
     {
         isShieldActive = false;
+        cooldownTimer = shieldData.cooldown;
 
-        // Destroy shield visual
-        if (shieldInstance != null)
+        // Hancurkan visual Shield Player 2
+        if (shieldInstanceP2 != null)
         {
-            Destroy(shieldInstance);
-            shieldInstance = null;
+            Destroy(shieldInstanceP2);
+            shieldInstanceP2 = null;
         }
 
-        if (showDebugLogs)
+        // Hancurkan visual Shield Player 1
+        if (shieldInstanceP1 != null)
         {
-            Debug.Log("??? Shield deactivated");
+            Destroy(shieldInstanceP1);
+            shieldInstanceP1 = null;
         }
+
+        if (showDebugLogs) Debug.Log("Shield Deactivated");
     }
 
     private void UpdateShieldVisual()
     {
-        if (!isShieldActive || shieldRenderer == null || shieldData == null) return;
+        if (!isShieldActive || shieldData == null) return;
 
-        // Lerp color based on health percentage
         float healthPercent = ShieldHealthPercent;
         Color targetColor = Color.Lerp(shieldData.lowHealthColor, shieldData.fullHealthColor, healthPercent);
-        shieldRenderer.material.color = targetColor;
-    }
 
-    public string GetShieldInfo()
-    {
-        if (shieldData == null) return "No Shield Data";
-
-        string info = $"{shieldData.shieldName}\n";
-
-        if (isShieldActive)
-        {
-            info += $"Health: {currentShieldHealth:F0}/{shieldData.shieldHealth}\n";
-            if (shieldData.duration > 0f)
-            {
-                info += $"Time: {shieldDurationTimer:F1}s\n";
-            }
-        }
-        else if (!CanActivateShield)
-        {
-            info += $"Cooldown: {cooldownTimer:F1}s\n";
-        }
-        else
-        {
-            info += $"Cost: {shieldData.resourceCost} {shieldData.requiredResource}\n";
-            info += "Ready!\n";
-        }
-
-        return info;
+        // Update warna kedua shield secara bersamaan agar terlihat sinkron
+        if (shieldRendererP2 != null) shieldRendererP2.material.color = targetColor;
+        if (shieldRendererP1 != null) shieldRendererP1.material.color = targetColor;
     }
 }
