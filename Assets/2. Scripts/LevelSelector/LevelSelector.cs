@@ -106,6 +106,6 @@ public class LevelSelector : MonoBehaviour
     // ✅ UPDATED: Back to menu through loading screen
     public void BackMenu()
     {
-        LoadingScreen.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenu");
     }
 }
