@@ -135,7 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 596c427225c4f984596a7bf9257c623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  players: []
+  closestPlayer: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
   Health: {fileID: 0}
@@ -180,7 +181,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: bc231fa3669162647a7495b0101a296f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0

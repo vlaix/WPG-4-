@@ -26,7 +26,7 @@ MonoBehaviour:
   requiredResource: Scrap
   resourceCost: 1
   autoActivate: 0
-  fullHealthColor: {r: 0, g: 0.5, b: 1, a: 0.5}
-  lowHealthColor: {r: 1, g: 0, b: 0, a: 0.5}
+  fullHealthColor: {r: 0, g: 0.5, b: 1, a: 0.6666667}
+  lowHealthColor: {r: 1, g: 0, b: 0, a: 0.03529412}
   shieldScale: {x: 7, y: 7, z: 7}
   shieldOffset: {x: 0, y: 2, z: 0}
