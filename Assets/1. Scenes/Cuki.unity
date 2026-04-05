@@ -343,10 +343,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6921018705369131680, guid: 1cbf86e2b7b7aed469c2751df48c93c4, type: 3}
+      propertyPath: fireRate
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 9143339284435817507, guid: 1cbf86e2b7b7aed469c2751df48c93c4, type: 3}
       propertyPath: m_Actions
       value: 
       objectReference: {fileID: -944628639613478452, guid: 818c100664358824eb54cfa3168e7508, type: 3}
+    - target: {fileID: 9181690034318928336, guid: 1cbf86e2b7b7aed469c2751df48c93c4, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -621,6 +629,10 @@ PrefabInstance:
     - target: {fileID: 6605703727878929387, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: m_Name
       value: enemyspawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 6605703727878929387, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
