@@ -24,6 +24,9 @@ public class EnemyBehavior : MonoBehaviour
     private float Buffermbledos;
     protected bool bomaktif;
 
+    [Header ("Shoot Settings")]
+    [SerializeField] private float bulletSpawnHeight = 2f;
+
 
     void Awake()
     {
@@ -191,10 +194,13 @@ public class EnemyBehavior : MonoBehaviour
         // 2. Buat rotasi agar peluru menghadap ke arah player
         Quaternion shootRotation = Quaternion.LookRotation(direction);
 
-        // 3. Munculkan peluru dengan rotasi yang sudah disesuaikan
-        GameObject peluru = Instantiate(data.peluru, transform.position, shootRotation);
+        // 3. Tentukan posisi spawn peluru dari Y object
+        Vector3 shootPosition = new Vector3(transform.position.x, transform.position.y + bulletSpawnHeight, transform.position.z);
 
-        // 4. Beri kecepatan
+        // 4. Munculkan peluru dengan rotasi yang sudah disesuaikan
+        GameObject peluru = Instantiate(data.peluru, shootPosition, shootRotation);
+
+        // 5. Beri kecepatan
         peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
     }
 
