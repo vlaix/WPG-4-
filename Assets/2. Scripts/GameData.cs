@@ -20,4 +20,15 @@ public class GameData : MonoBehaviour
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); }
     }
+    public void ResetLobbyData()
+    {
+        p0Connected = false;
+        p1Connected = false;
+        p0Side = 0;
+        p1Side = 0;
+        p0Device = null;
+        p1Device = null;
+        // Jangan reset selectedLevelName jika kamu masih butuh data levelnya
+        Debug.Log("GameData telah di-reset untuk Lobby baru.");
+    }
 }

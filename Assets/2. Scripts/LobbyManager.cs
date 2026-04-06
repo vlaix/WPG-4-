@@ -21,7 +21,18 @@ public class LobbyManager : MonoBehaviour
     [Header("Controls")]
     public Button btnStart;
 
-    void Start() => UpdateUI();
+    void Start()
+    {
+        if (GameData.Instance != null)
+        {
+            GameData.Instance.ResetLobbyData();
+        }
+
+        // Pastikan TimeScale kembali ke 1 (karena biasanya Win UI me-pause game)
+        Time.timeScale = 1f;
+
+        UpdateUI();
+    }
 
     public void OnPlayerJoined(UnityEngine.InputSystem.PlayerInput input)
     {
@@ -74,7 +85,7 @@ public class LobbyManager : MonoBehaviour
         // 4. Slot Instruksi (Muncul jika ada slot player yang masih bisa join)
         bool allJoined = GameData.Instance.p0Connected && GameData.Instance.p1Connected;
         slotInstruksi.sprite = spritePressJoin;
-        slotInstruksi.gameObject.SetActive(!allJoined);
+        slotInstruksi.gameObject.SetActive(true);
         // Opsional: Instruksi hanya muncul jika tidak ada p1/p2 yang menghalangi di tengah
         // slotInstruksi.gameObject.SetActive(!allJoined && !p0InCenter && !p1InCenter);
 
