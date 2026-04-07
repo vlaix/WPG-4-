@@ -134,11 +134,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 596c427225c4f984596a7bf9257c623b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  players: []
+  closestPlayer: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: 719dd8d0f0e9d2e46b7f3f74b1ab038c, type: 2}
   Health: {fileID: 0}
   healthpoint: 0
+  bulletSpawnHeight: 2
+  deathSFX: {fileID: 8300000, guid: 5422e16a996cef64aba896572d8caad4, type: 3}
+  explosionSFX: {fileID: 0}
+  volume: 1
 --- !u!195 &5692745102131058060
 NavMeshAgent:
   m_ObjectHideFlags: 0

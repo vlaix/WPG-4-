@@ -193,6 +193,10 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 06f5cbc016b5f28489ef20aec791be2d, type: 2}
   Health: {fileID: 0}
   healthpoint: 0
+  bulletSpawnHeight: 2
+  deathSFX: {fileID: 8300000, guid: 5422e16a996cef64aba896572d8caad4, type: 3}
+  explosionSFX: {fileID: 0}
+  volume: 1
 --- !u!195 &5522114133032814872
 NavMeshAgent:
   m_ObjectHideFlags: 0

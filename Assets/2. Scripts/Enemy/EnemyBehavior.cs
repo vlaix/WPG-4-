@@ -19,14 +19,29 @@ public class EnemyBehavior : MonoBehaviour
     private Color originalColor;
     private Vector3 knockbackVelocity;
 
-    [Header ("Musuh Mbledos")]
+    [Header("Musuh Mbledos")]
     [SerializeField] private MaterialPropertyBlock propBlock;
     private float Buffermbledos;
     protected bool bomaktif;
 
-    [Header ("Shoot Settings")]
+    [Header("Shoot Settings")]
     [SerializeField] private float bulletSpawnHeight = 2f;
 
+    [Header("Audio Settings")]
+    [Tooltip("Suara saat musuh mati biasa")]
+    [SerializeField] private AudioClip deathSFX;
+
+    [Tooltip("Suara saat musuh meledak (Mbledos)")]
+    [SerializeField] private AudioClip explosionSFX;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float volume = 1f;
+
+    // Penanda agar suara tidak tumpang tindih
+    private bool hasExploded = false;
+
+    // KUNCI PERBAIKAN: Penanda bahwa musuh sudah mati (agar tidak jalan/nyerang lagi saat delay)
+    protected bool isDead = false;
 
     void Awake()
     {
@@ -60,7 +75,10 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     protected virtual void Update()
-    {   
+    {
+        // Jika sedang dalam proses mati, hentikan semua aktivitas
+        if (isDead) return;
+
         float progress;
 
         UpdateClosestPlayer();
@@ -92,35 +110,40 @@ public class EnemyBehavior : MonoBehaviour
         }
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            FaceTarget();
+            if (Time.time >= BufferShoot && data.stopDistance != 0 && bomaktif == false)
             {
-                FaceTarget(); // Fungsi untuk menghadap player saat berhenti
-                if (Time.time >= BufferShoot && data.stopDistance != 0 && bomaktif == false)
-                {
-                    Shoot();
-                    BufferShoot = Time.time + data.Cooldown;
-                }
-            }
-        
-        //mbledos
-        if(bomaktif) {
-            Buffermbledos -= Time.deltaTime;
-
-            // Hitung progress 0.0 (awal) sampai 1.0 (meledak)
-            progress = 1.0f - (Buffermbledos / data.Cooldown);
-            UpdateShaderProgress(progress);
-
-            if(Buffermbledos <= 0) {
-                IniSaatnyaMbledos();
+                Shoot();
+                BufferShoot = Time.time + data.Cooldown;
             }
         }
 
+        //mbledos
+        if (bomaktif)
+        {
+            Buffermbledos -= Time.deltaTime;
+
+            progress = 1.0f - (Buffermbledos / data.Cooldown);
+            UpdateShaderProgress(progress);
+
+            if (Buffermbledos <= 0)
+            {
+                IniSaatnyaMbledos();
+            }
+        }
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if(data.stopDistance == 0) { //melee attack
-            if(collision.gameObject.CompareTag("Player")) {
-                if(Time.time >= BufferAttack) {
+        if (isDead) return; // Cegah menyerang jika sudah mati
+
+        if (data.stopDistance == 0)
+        { //melee attack
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                if (Time.time >= BufferAttack)
+                {
                     Health.Hurt(data.damage);
                     BufferAttack = Time.time + data.Cooldown;
                     isAttacking = true;
@@ -133,7 +156,9 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if(data.stopDistance == 0 && collision.gameObject.CompareTag("Player"))
+        if (isDead) return;
+
+        if (data.stopDistance == 0 && collision.gameObject.CompareTag("Player"))
         {
             isAttacking = false;
             agent.isStopped = false;
@@ -148,13 +173,19 @@ public class EnemyBehavior : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Obstacle")) {
+        if (isDead) return;
+
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
             Destroy(gameObject);
         }
     }
 
     public void TakeDamage(float damage, Vector3 attackerPosition = default)
     {
+        // Cegah menerima damage lagi saat sedang dalam proses jeda mati (bug double loot)
+        if (isDead) return;
+
         healthpoint -= damage;
 
         Vector3 knockDir = (transform.position - attackerPosition).normalized;
@@ -163,7 +194,8 @@ public class EnemyBehavior : MonoBehaviour
         if (enemyRenderer != null)
             StartCoroutine(FlashRed());
 
-        if(healthpoint <= 0) {
+        if (healthpoint <= 0)
+        {
             Die();
         }
     }
@@ -175,32 +207,60 @@ public class EnemyBehavior : MonoBehaviour
         enemyRenderer.material.color = originalColor;
     }
 
-    private void Die()
+    public virtual void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
+        // Panggil fungsi proses kematian yang menggunakan jeda waktu
+        StartCoroutine(DeathRoutine());
+    }
+
+    private System.Collections.IEnumerator DeathRoutine()
+    {
+        // 1. Matikan Pergerakan agar musuh mematung
+        if (agent != null && agent.isOnNavMesh) agent.isStopped = true;
+
+        // 2. Matikan Collider agar peluru dan player bisa tembus badannya saat dia mematung
+        foreach (Collider c in GetComponents<Collider>())
+        {
+            c.enabled = false;
+        }
+
+        // JEDA WAKTU. 
+        yield return new WaitForSeconds(0.3f);
+
+        // 4. Putar SFX Mati / Meledak
+        if (hasExploded)
+        {
+            PlaySound2D(explosionSFX);
+        }
+        else
+        {
+            PlaySound2D(deathSFX);
+        }
+
+        // 5. Munculkan Loot
         SpawnLoot();
+
+        // 6. Hancurkan Objek Musuh
         Destroy(gameObject);
     }
 
     void SpawnLoot()
     {
-        Instantiate(loot, transform.position, Quaternion.identity);
+        if (loot != null)
+        {
+            Instantiate(loot, transform.position, Quaternion.identity);
+        }
     }
 
-    protected void Shoot() 
+    protected void Shoot()
     {
-        // 1. Hitung arah ke player
         Vector3 direction = (closestPlayer.position - transform.position).normalized;
-
-        // 2. Buat rotasi agar peluru menghadap ke arah player
         Quaternion shootRotation = Quaternion.LookRotation(direction);
-
-        // 3. Tentukan posisi spawn peluru dari Y object
         Vector3 shootPosition = new Vector3(transform.position.x, transform.position.y + bulletSpawnHeight, transform.position.z);
-
-        // 4. Munculkan peluru dengan rotasi yang sudah disesuaikan
         GameObject peluru = Instantiate(data.peluru, shootPosition, shootRotation);
-
-        // 5. Beri kecepatan
         peluru.GetComponent<Rigidbody>().linearVelocity = direction * 10;
     }
 
@@ -233,20 +293,27 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     //mbledos
-    public void StartTimer() {
+    public void StartTimer()
+    {
         bomaktif = true;
     }
 
-    public void StopTimer() {
+    public void StopTimer()
+    {
         bomaktif = false;
         Buffermbledos = data.Cooldown;
         UpdateShaderProgress(0f);
     }
 
-    private void IniSaatnyaMbledos() {
+    private void IniSaatnyaMbledos()
+    {
         Debug.Log("Mbledos");
 
         Health.Hurt(data.damage);
+
+        // Tandai bahwa musuh ini mati karena meledak
+        hasExploded = true;
+
         Die();
     }
 
@@ -255,7 +322,6 @@ public class EnemyBehavior : MonoBehaviour
         if (enemyRenderer != null)
         {
             enemyRenderer.GetPropertyBlock(propBlock);
-            // "_MbledosProgress" harus SAMA dengan Reference di Shader Graph Anda
             propBlock.SetFloat("_MbledosProgress", Mathf.Clamp01(value));
             enemyRenderer.SetPropertyBlock(propBlock);
         }
@@ -263,10 +329,25 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (data != null) 
+        if (data != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, data.stopDistance);
         }
+    }
+
+    private void PlaySound2D(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        GameObject audioObj = new GameObject("TempAudio_" + clip.name);
+        AudioSource source = audioObj.AddComponent<AudioSource>();
+
+        source.clip = clip;
+        source.volume = volume;
+        source.spatialBlend = 0f;
+        source.Play();
+
+        Destroy(audioObj, clip.length);
     }
 }

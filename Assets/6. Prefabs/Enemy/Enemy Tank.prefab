@@ -141,6 +141,10 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 495420073e269dc428937d9a5432e84d, type: 2}
   Health: {fileID: 0}
   healthpoint: 0
+  bulletSpawnHeight: 2
+  deathSFX: {fileID: 8300000, guid: 5422e16a996cef64aba896572d8caad4, type: 3}
+  explosionSFX: {fileID: 0}
+  volume: 1
 --- !u!54 &4972988445317891237
 Rigidbody:
   m_ObjectHideFlags: 0
