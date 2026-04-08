@@ -300,7 +300,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Tank
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Archer
@@ -308,11 +308,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Normal
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Mbledos
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: IsTrigger
@@ -320,7 +320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: SpawnTime
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: data.Array.size
@@ -637,7 +637,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Pasif
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Archer
@@ -2673,7 +2673,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Tank
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Archer
@@ -2681,15 +2681,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Normal
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Mbledos
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: SpawnTime
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: data.Array.size
@@ -2872,7 +2872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Normal
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: Mbledos
@@ -2884,7 +2884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: SpawnTime
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 906200903765906636, guid: 1e17035fbf4b28a46918f70822aa773b, type: 3}
       propertyPath: data.Array.size
