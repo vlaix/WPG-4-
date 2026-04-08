@@ -3,9 +3,8 @@ using UnityEngine.UI;
 
 public class WinCondition : MonoBehaviour
 {
-    [SerializeField] private Image menangbox;
+    [SerializeField] private GameObject menangbox;
 
-    [SerializeField] private Button ButtonLevelSelector;
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
@@ -43,7 +42,6 @@ public class WinCondition : MonoBehaviour
 
             if (menangbox != null) menangbox.gameObject.SetActive(true);
             menangbox.gameObject.SetActive(true);
-            ButtonLevelSelector.interactable = true;
         }
     }
 

@@ -9,10 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5776729727485183484}
-  - component: {fileID: 2063241188818176454}
-  - component: {fileID: -7309468291920471414}
   - component: {fileID: 5032160607449368816}
-  - component: {fileID: 4688220212740311550}
+  - component: {fileID: -3469922822911377574}
   m_Layer: 0
   m_Name: FinishGrounds
   m_TagString: Untagged
@@ -36,35 +34,6 @@ Transform:
   - {fileID: 535820408171792721}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2063241188818176454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4960257745783163915}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2983fee4617a6a4ea92df3b0f901dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menangbox: {fileID: 0}
-  ButtonLevelSelector: {fileID: 0}
-  player1: {fileID: 113771813491061259, guid: 8c8b859ecba5e2644a0a313e9e036eff, type: 3}
-  player2: {fileID: 113771813491061259, guid: b7784762f6487584f9a9aba6546c8465, type: 3}
---- !u!114 &-7309468291920471414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4960257745783163915}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f01ef0e4768ff343aad445345fc40f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelCompleteUI: {fileID: 2294836420320778100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
 --- !u!136 &5032160607449368816
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -88,7 +57,7 @@ CapsuleCollider:
   m_Height: 8.052346
   m_Direction: 1
   m_Center: {x: 0.0027066993, y: 0, z: -0.010752957}
---- !u!114 &4688220212740311550
+--- !u!114 &-3469922822911377574
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,10 +66,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4960257745783163915}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f01ef0e4768ff343aad445345fc40f6, type: 3}
+  m_Script: {fileID: 11500000, guid: a2983fee4617a6a4ea92df3b0f901dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelCompleteUI: {fileID: 0}
+  menangbox: {fileID: 0}
+  ButtonLevelSelector: {fileID: 0}
+  player1: {fileID: 0}
+  player2: {fileID: 0}
 --- !u!1001 &64498107911597754
 PrefabInstance:
   m_ObjectHideFlags: 0
