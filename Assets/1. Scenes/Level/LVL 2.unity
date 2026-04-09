@@ -220,6 +220,38 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+--- !u!1 &5951449 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2294836420320778100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 5951448}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5951450 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6716564576664321504, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 5951448}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &5951451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2499206059022677100, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 5951448}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5951452 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7028939625813655299, guid: 01c803f295ee82445b4de52b55dac0eb, type: 3}
+  m_PrefabInstance: {fileID: 5951448}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &18615462
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2979,8 +3011,10 @@ MonoBehaviour:
   MAXHP: 8
   HPBar: {fileID: 734081525}
   HPtxt: {fileID: 734081524}
-  BoxKalah: {fileID: 1021776654}
-  ButtonRestart: {fileID: 173816992}
+  panelKalah: {fileID: 5951449}
+  statusText: {fileID: 5951452}
+  firstButtonKalah: {fileID: 5951450}
+  nextmati: {fileID: 5951451}
   audioSource: {fileID: 0}
   deathSFX: {fileID: 0}
 --- !u!4 &1577729173 stripped

@@ -1,18 +1,23 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems; // Penting untuk fokus controller
 
 public class Health : MonoBehaviour
 {
     [SerializeField] private int MAXHP;
     [SerializeField] private Image HPBar;
     [SerializeField] private TextMeshProUGUI HPtxt;
-    [SerializeField] private Image BoxKalah;
-    [SerializeField] private Button ButtonRestart;
+
+    [Header("Lose UI Settings")]
+    [SerializeField] private GameObject panelKalah; // Objek Induk Panel
+    [SerializeField] private TextMeshProUGUI statusText; // Text di dalam panel
+    [SerializeField] private Button firstButtonKalah; // Button pertama untuk difokuskan controller
+    [SerializeField] private GameObject nextmati;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip deathSFX; 
+    [SerializeField] private AudioClip deathSFX;
 
     private int currentHP;
     public static Health Instance;
@@ -20,19 +25,16 @@ public class Health : MonoBehaviour
     void Awake()
     {
         Instance = this;
-
-        // Otomatis mencari AudioSource di objek ini jika belum dimasukkan di Inspector
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-        }
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
     {
         currentHP = MAXHP;
         UpdateUI();
-        BoxKalah.gameObject.SetActive(false);
+
+        // Pastikan panel mati saat awal game
+        if (panelKalah != null) panelKalah.SetActive(false);
     }
 
     void Update()
@@ -45,33 +47,44 @@ public class Health : MonoBehaviour
 
     public void Hurt(int damage)
     {
-        // Langsung kurangi HP karena perlindungan shield sudah ditangani oleh peluru/musuh
-        currentHP = currentHP - damage;
+        currentHP -= damage;
         UpdateUI();
-        Debug.Log($"Player took {damage} damage! HP: {currentHP}/{MAXHP}");
     }
 
     private void UpdateUI()
     {
-        int Display = Mathf.Max(0, currentHP);
-
-        HPtxt.SetText(Display + "/" + MAXHP);
+        int displayHP = Mathf.Max(0, currentHP);
+        HPtxt.SetText(displayHP + "/" + MAXHP);
         HPBar.fillAmount = (float)currentHP / MAXHP;
     }
 
     private void Die()
     {
-        // Mainkan SFX Mati
-        if (audioSource != null && deathSFX != null)
+        if (audioSource != null && deathSFX != null && currentHP <= 0)
         {
             audioSource.PlayOneShot(deathSFX);
         }
 
-        BoxKalah.gameObject.SetActive(true);
-        ButtonRestart.interactable = true; // Penulisan yang lebih rapi tanpa GetComponent berulang
+        // TAMPILKAN PANEL KALAH
+        if (panelKalah != null)
+        {
+            panelKalah.SetActive(true);
+            nextmati.SetActive(false);
+            // Ganti Text di dalam panel sesuai keinginan
+            if (statusText != null)
+            {
+                statusText.text = "LEVEL GAGAL";
+            }
 
-        Debug.Log("Player died!");
+            // AGAR CONTROLLER BISA NAVIGASI:
+            if (firstButtonKalah != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(firstButtonKalah.gameObject);
+            }
+        }
+
         Time.timeScale = 0;
-        currentHP = 1; // Mencegah fungsi Die() terpanggil berulang kali
+        currentHP = 1; // Mencegah looping Die()
     }
 }
