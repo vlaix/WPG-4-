@@ -947,6 +947,17 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
                     ""action"": ""Tips"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ebfe4702-5996-4273-bf0a-aed30f9336e0"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }

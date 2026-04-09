@@ -25,7 +25,7 @@ public class EnemyBehavior : MonoBehaviour
     protected bool bomaktif;
 
     [Header("Shoot Settings")]
-    [SerializeField] private float bulletSpawnHeight = 2f;
+    [SerializeField] private float bulletSpawnHeight = 0.1f;
 
     [Header("Audio Settings")]
     [Tooltip("Suara saat musuh mati biasa")]

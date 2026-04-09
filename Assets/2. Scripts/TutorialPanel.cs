@@ -27,7 +27,7 @@ public class TutorialPanelController : MonoBehaviour
 
         // Simpan posisi shown dulu, lalu hitung hidden (geser ke bawah 100px)
         shownPos = rectTransform.anchoredPosition;
-        hiddenPos = shownPos + new Vector2(300f, 0);   // dari kanan
+        hiddenPos = shownPos + new Vector2(0, -300f);   // dari kanan
 
         // Set initial state: hidden
         canvasGroup.alpha = 0f;
