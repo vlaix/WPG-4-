@@ -1358,7 +1358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 204937a5300096b428abbb605a4967c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  respawn: {fileID: 0}
+  respawn: {fileID: 2117312558}
   fallSound: {fileID: 8300000, guid: a934dd48057b88c4e88b3597822c98df, type: 3}
   respawnSound: {fileID: 0}
   volume: 0.685
@@ -3928,6 +3928,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 811926238431003319, guid: 4bfec90a07a273c4e94476e7bcde55ea, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5802279574977279080, guid: 4bfec90a07a273c4e94476e7bcde55ea, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.6396
