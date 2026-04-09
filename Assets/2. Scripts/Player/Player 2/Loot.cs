@@ -5,7 +5,7 @@ public class Loot : MonoBehaviour
     [Header("Loot Settings")]
     [Tooltip("Name of this loot item")]
     public string itemName = "Coin";
-    
+
     [Tooltip("How many of this item to give")]
     public int quantity = 1;
 
@@ -15,7 +15,11 @@ public class Loot : MonoBehaviour
     [Header("Optional Effects")]
     [Tooltip("Sound to play when collected")]
     public AudioClip collectionSound;
-    
+
+    [Tooltip("Volume suara (Bisa diatur 0 sampai 1)")]
+    [Range(0f, 1f)]
+    public float volume = 1f;
+
     [Tooltip("Particle effect to spawn when collected")]
     public GameObject collectionEffect;
 
@@ -28,12 +32,12 @@ public class Loot : MonoBehaviour
         // Find both players by their tags
         GameObject player1 = GameObject.FindGameObjectWithTag("Player");
         GameObject player2 = GameObject.FindGameObjectWithTag("Player2");
-        
+
         if (player1 != null)
         {
             player1Transform = player1.transform;
         }
-        
+
         if (player2 != null)
         {
             player2Transform = player2.transform;
@@ -68,12 +72,15 @@ public class Loot : MonoBehaviour
         isCollected = true;
 
         // Add to inventory
-        Inventory.Instance.AddItem(itemName, quantity);
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.AddItem(itemName, quantity);
+        }
 
-        // Play sound effect
+        //zPlay sound effect menggunakan mode 2D
         if (collectionSound != null)
         {
-            AudioSource.PlayClipAtPoint(collectionSound, transform.position);
+            PlaySound2D(collectionSound);
         }
 
         // Spawn particle effect
@@ -110,5 +117,22 @@ public class Loot : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, collectionRange);
+    }
+
+    private void PlaySound2D(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        // Buat GameObject sementara khusus untuk menjadi speaker
+        GameObject audioObj = new GameObject("TempAudio_" + clip.name);
+        AudioSource source = audioObj.AddComponent<AudioSource>();
+
+        source.clip = clip;
+        source.volume = volume;
+        source.spatialBlend = 0f;
+        source.Play();
+
+        // Hancurkan speaker sementara ini otomatis setelah lagunya selesai
+        Destroy(audioObj, clip.length);
     }
 }

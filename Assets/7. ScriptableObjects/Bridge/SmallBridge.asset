@@ -23,8 +23,8 @@ MonoBehaviour:
   blueprintColor: {r: 1, g: 1, b: 1, a: 0.3}
   buildingColor: {r: 1, g: 1, b: 1, a: 0.7}
   completedColor: {r: 0.6, g: 0.4, b: 0.2, a: 1}
-  buildingSound: {fileID: 0}
-  completeSound: {fileID: 0}
+  buildingSound: {fileID: 8300000, guid: d0b5ac3b52c8e6343987b25f94176de7, type: 3}
+  completeSound: {fileID: 8300000, guid: 72acb6d7ff685174091dc054519847a4, type: 3}
   colliderSize: {x: 0, y: 0, z: 0}
   colliderCenter: {x: 0, y: 0, z: 0}
   requiredPlayerTag: Player2

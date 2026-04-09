@@ -125,7 +125,8 @@ MonoBehaviour:
   itemName: Scrap
   quantity: 1
   collectionRange: 2
-  collectionSound: {fileID: 0}
+  collectionSound: {fileID: 8300000, guid: be790e7188dbb0d419a679723feef201, type: 3}
+  volume: 1
   collectionEffect: {fileID: 0}
 --- !u!1001 &2267460938143577215
 PrefabInstance:

@@ -19,7 +19,7 @@ MonoBehaviour:
   triggerRadius: 1.5
   lifetime: 0
   trapPrefab: {fileID: 6434663735299146503, guid: 377d14ee71f5733439784023e57f9bff, type: 3}
-  triggerSound: {fileID: 0}
+  triggerSound: {fileID: 8300000, guid: bceb60c6b2440b54d8ca2e7fe739031d, type: 3}
   triggerEffect: {fileID: 0}
   placementCooldown: 5
   requiredResource: Scrap

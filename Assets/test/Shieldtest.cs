@@ -37,15 +37,14 @@ public class Shieldtest : MonoBehaviour
         {
             if (isShieldActive)
             {
-                DeactivateShield();
+                if (showDebugLogs) Debug.Log("Shield sedang aktif! Tidak bisa dimatikan");
+                return;
             }
-            else
-            {
-                TryActivateShield();
-            }
+
+            // Jika shield BELUM AKTIF, coba nyalakan
+            TryActivateShield();
         }
     }
-    // ---------------------------
 
     private void Start()
     {
