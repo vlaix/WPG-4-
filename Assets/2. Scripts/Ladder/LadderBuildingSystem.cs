@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public enum LadderBuildState
 {
-    Blueprint,      // Belum mulai build (warna wireframe)
+    Blueprint,      // Belum mulai build (warna hologram)
     Building,       // Sedang di-build (progress)
     Completed       // Sudah selesai (warna final, bisa climb)
 }
@@ -41,391 +41,333 @@ public class LadderBuildingSystem : MonoBehaviour
     [Tooltip("UI prefab yang muncul saat player di radius")]
     public GameObject buildUI;
 
+    [Header("Hologram Settings")]
+    [SerializeField] private Color hologramColor = new Color(0f, 0.8f, 1f, 1f); // Cyan
+    [SerializeField] private Color hologramValidColor = new Color(0f, 1f, 0f, 1f); // Hijau
+    [SerializeField] private Color hologramInvalidColor = new Color(1f, 0f, 0f, 1f); // Merah
+    [SerializeField] private float hologramPulseSpeed = 2f;
+    [SerializeField] private float hologramMinAlpha = 0.15f;
+    [SerializeField] private float hologramMaxAlpha = 0.55f;
+
     [Header("Debug")]
     [Tooltip("Show debug logs")]
     public bool showDebugLogs = true;
 
     // Runtime data
     private List<RuntimeLadderResourceRequirement> runtimeResources = new List<RuntimeLadderResourceRequirement>();
-    private Animator playerAnimator;
-    private Transform playerTransform;
+    public List<RuntimeLadderResourceRequirement> RuntimeResources => runtimeResources;
     private LadderBuildState currentState = LadderBuildState.Blueprint;
-    private AudioSource audioSource;
-    private GameObject uiInstance;
-    public float buildProgress = 0f;
-    private float buildTimer = 0f;
+    public LadderBuildState CurrentState => currentState;
+
+    public float buildProgress { get; private set; } = 0f;
+
     private bool isPlayerInRange = false;
     private bool isBuilding = false;
-    private bool isBuildButtonPressed = false;
 
-    // Properties
-    public LadderBuildState State => currentState;
+    // Transform player yang sedang berinteraksi
+    private Transform activePlayer;
+
+    // State properties
     public bool IsCompleted => currentState == LadderBuildState.Completed;
     public string LadderName => ladderData != null ? ladderData.ladderName : "Unknown Ladder";
-    public List<RuntimeLadderResourceRequirement> RuntimeResources => runtimeResources;
 
-    public void AssignPlayer(Transform player)
-    {
-        playerTransform = player;
-        playerAnimator = player.GetComponent<Animator>();
-        if (showDebugLogs) Debug.Log($" '{LadderName}' terhubung ke {player.name}");
-    }
-
-    public void OnBuild(InputAction.CallbackContext context)
-    {
-        if (playerTransform == null || IsCompleted) return;
-
-        if (context.performed) isBuildButtonPressed = true;
-        else if (context.canceled) isBuildButtonPressed = false;
-    }
+    // Material caching untuk Hologram
+    private Material originalMaterial;
+    private Material hologramMaterial;
 
     private void Start()
     {
-        ValidateLadderData();
-        InitializeRuntimeResources();
-        InitializeLadder();
-        SetupAudio();
-        // Jika playerTransform sudah di-assign lewat Inspector
-        if (playerTransform != null)
-            playerAnimator = playerTransform.GetComponent<Animator>();
-    }
-
-    private void Update()
-    {
-        CheckPlayerProximity();
-        HandleBuildProcess();
-        UpdateVisual();
-    }
-
-
-
-    private void ValidateLadderData()
-    {
         if (ladderData == null)
         {
-            Debug.LogError($"❌ LadderData is NULL! Please assign a LadderData ScriptableObject to {gameObject.name}");
-            enabled = false;
+            Debug.LogError($"[Ladder] LadderData missing on {gameObject.name}!");
+            return;
         }
-    }
 
-    private void InitializeRuntimeResources()
-    {
-        if (ladderData == null) return;
-
-        runtimeResources.Clear();
-
+        // Initialize runtime requirements
         foreach (var req in ladderData.requiredResources)
         {
             runtimeResources.Add(new RuntimeLadderResourceRequirement(req.resourceName, req.amount));
         }
 
-        if (showDebugLogs)
-        {
-            Debug.Log($"🪜 '{LadderName}' requires:");
-            foreach (var req in runtimeResources)
-            {
-                Debug.Log($"  • {req.resourceName}: {req.totalRequired}");
-            }
-        }
-    }
+        // Setup Renderer
+        if (ladderRenderer == null) ladderRenderer = GetComponentInChildren<Renderer>();
 
-    private void InitializeLadder()
-    {
-        if (ladderData == null) return;
-
-        // Auto-find renderer
-        if (ladderRenderer == null)
-        {
-            ladderRenderer = GetComponentInChildren<Renderer>();
-        }
-
-        // Set initial blueprint color
+        // Setup Hologram Materials
         if (ladderRenderer != null)
         {
-            SetLadderColor(ladderData.blueprintColor);
+            // Simpan material asli untuk dipakai saat sedang dibangun dan selesai
+            originalMaterial = new Material(ladderRenderer.material);
+
+            // Buat material hologram khusus (transparan)
+            hologramMaterial = new Material(ladderRenderer.material);
+            SetMaterialTransparent(hologramMaterial);
         }
 
-        // Auto-find or setup collider
+        // Setup Collider
         if (ladderCollider == null)
         {
             ladderCollider = GetComponent<BoxCollider>();
-
             if (ladderCollider == null)
             {
-                // Create box collider dari data
                 BoxCollider boxCol = gameObject.AddComponent<BoxCollider>();
-                boxCol.size = ladderData.colliderSize;
                 boxCol.center = ladderData.colliderCenter;
-                boxCol.isTrigger = true; // PENTING: trigger untuk climbing!
+                boxCol.size = ladderData.colliderSize;
+                boxCol.isTrigger = true;
                 ladderCollider = boxCol;
-
-                if (showDebugLogs)
-                {
-                    Debug.Log($"✅ Auto-created Box Collider for '{LadderName}'");
-                }
-            }
-        }
-
-        // Disable collider saat blueprint (cannot climb yet)
-        if (ladderCollider != null)
-        {
-            ladderCollider.enabled = false;
-
-            if (showDebugLogs)
-            {
-                Debug.Log($"🔧 '{LadderName}': Collider DISABLED - Cannot climb yet!");
-            }
-        }
-
-        currentState = LadderBuildState.Blueprint;
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"🪜 '{LadderName}' initialized as Blueprint");
-        }
-    }
-
-    private void SetupAudio()
-    {
-        if (ladderData == null) return;
-
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null && (ladderData.buildingSound != null || ladderData.completeSound != null))
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-            audioSource.loop = false;
-        }
-    }
-
-    private void FindPlayer()
-    {
-        if (ladderData == null) return;
-
-        GameObject player = GameObject.FindGameObjectWithTag(ladderData.requiredPlayerTag);
-        if (player != null)
-        {
-            playerTransform = player.transform;
-
-            if (showDebugLogs)
-            {
-                Debug.Log($"✅ Found player with tag '{ladderData.requiredPlayerTag}' for '{LadderName}'");
+                if (showDebugLogs) Debug.Log($"[Ladder] Auto-added BoxCollider to {gameObject.name}");
             }
         }
         else
         {
-            Debug.LogWarning($"⚠️ Player with tag '{ladderData.requiredPlayerTag}' not found for '{LadderName}'!");
+            ladderCollider.isTrigger = true;
+        }
+
+        UpdateState(LadderBuildState.Blueprint);
+    }
+
+    private void Update()
+    {
+        if (IsCompleted) return;
+
+        CheckPlayerDistance();
+
+        // Update warna hologram (pulse animation) jika dalam mode Blueprint
+        if (currentState == LadderBuildState.Blueprint)
+        {
+            UpdateHologramVisual();
+        }
+
+        if (isBuilding && isPlayerInRange)
+        {
+            ProcessBuilding();
         }
     }
 
-    private void CheckPlayerProximity()
+    public void AssignPlayer(Transform playerTransform)
     {
-        if (ladderData == null || playerTransform == null || IsCompleted)
-        {
-            isPlayerInRange = false;
-            HideBuildUI();
-            return;
-        }
+        activePlayer = playerTransform;
+        if (showDebugLogs) Debug.Log($"[Ladder] Player assigned: {playerTransform.name}");
+    }
 
-        float distance = Vector3.Distance(transform.position, playerTransform.position);
+    private void CheckPlayerDistance()
+    {
+        if (activePlayer == null) return;
+
+        float distance = Vector3.Distance(transform.position, activePlayer.position);
+        bool wasInRange = isPlayerInRange;
         isPlayerInRange = distance <= ladderData.buildRange;
 
-        if (isPlayerInRange) ShowBuildUI();
-        else HideBuildUI();
-    }
-
-    private void HandleBuildProcess()
-    {
-        // Jika player menjauh atau tombol dilepas, stop building
-        if (!isPlayerInRange || !isBuildButtonPressed || IsCompleted || playerTransform == null)
+        if (isPlayerInRange && !wasInRange)
         {
-            if (isBuilding) StopBuilding();
-            return;
+            if (showDebugLogs) Debug.Log($"[Ladder] Player entered build range: {gameObject.name}");
+            if (buildUI != null && !IsCompleted) buildUI.SetActive(true);
         }
-
-        if (!isBuilding) StartBuilding();
-        ProcessBuilding();
-    }
-
-    private void StartBuilding()
-    {
-        if (currentState == LadderBuildState.Blueprint) currentState = LadderBuildState.Building;
-        isBuilding = true;
-
-        // Trigger build animation pada player
-        if (playerAnimator != null)
+        else if (!isPlayerInRange && wasInRange)
         {
-            playerAnimator.SetTrigger("Build");
-        }
-
-        if (audioSource != null && ladderData.buildingSound != null)
-        {
-            audioSource.clip = ladderData.buildingSound;
-            audioSource.loop = true;
-            audioSource.Play();
-        }
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"🔨 Started building '{LadderName}'");
+            if (showDebugLogs) Debug.Log($"[Ladder] Player left build range: {gameObject.name}");
+            if (buildUI != null) buildUI.SetActive(false);
+            isBuilding = false; // Batal build kalau ngejauh
         }
     }
 
-    private void StopBuilding()
+    public void OnBuild(InputAction.CallbackContext context)
     {
-        isBuilding = false;
-        isBuildButtonPressed = false; // Reset state tombol
-        if (audioSource != null) audioSource.Stop();
+        if (IsCompleted || !isPlayerInRange) return;
 
-        if (showDebugLogs)
+        if (context.performed)
         {
-            Debug.Log($"⏸️ Stopped building '{LadderName}'");
+            if (showDebugLogs) Debug.Log("[Ladder] Build button PRESSED");
+            isBuilding = true;
+        }
+        else if (context.canceled)
+        {
+            if (showDebugLogs) Debug.Log("[Ladder] Build button RELEASED");
+            isBuilding = false;
         }
     }
 
     private void ProcessBuilding()
     {
-        if (Inventory.Instance == null) return;
+        if (currentState == LadderBuildState.Blueprint)
+        {
+            if (TryConsumeResources())
+            {
+                if (showDebugLogs) Debug.Log("[Ladder] Blueprint started building!");
+                UpdateState(LadderBuildState.Building);
+            }
+            else
+            {
+                isBuilding = false; // Stop mencoba build
+            }
+        }
+        else if (currentState == LadderBuildState.Building)
+        {
+            buildProgress += ladderData.buildSpeed * Time.deltaTime / 100f; // Scale to 0-1
+            buildProgress = Mathf.Clamp01(buildProgress);
 
-        float resourcesThisFrame = ladderData.buildSpeed * Time.deltaTime;
-        bool anyResourceConsumed = false;
+            if (buildProgress >= 1f)
+            {
+                if (showDebugLogs) Debug.Log($"[Ladder] {ladderData.ladderName} COMPLETED!");
+                UpdateState(LadderBuildState.Completed);
+                isBuilding = false;
+            }
+        }
+    }
 
+    private bool TryConsumeResources()
+    {
+        if (Inventory.Instance == null)
+        {
+            Debug.LogError("[Ladder] No Inventory found in scene!");
+            return false;
+        }
+
+        // 1. Cek dulu semua cukup nggak
         foreach (var req in runtimeResources)
         {
-            if (req.currentAmount >= req.totalRequired) continue;
-
-            int available = Inventory.Instance.GetItemCount(req.resourceName);
-            if (available > 0)
+            if (Inventory.Instance.GetItemCount(req.resourceName) < req.totalRequired)
             {
-                float needed = req.totalRequired - req.currentAmount;
-                int toConsume = Mathf.CeilToInt(Mathf.Min(resourcesThisFrame, needed));
-
-                if (Inventory.Instance.RemoveItem(req.resourceName, toConsume))
-                {
-                    req.currentAmount += toConsume;
-                    anyResourceConsumed = true;
-                }
+                if (showDebugLogs) Debug.Log($"[Ladder] Not enough {req.resourceName}. Need {req.totalRequired}");
+                return false;
             }
         }
 
-        UpdateBuildProgress();
-
-        if (buildProgress >= 1f) CompleteLadder();
-        else if (!anyResourceConsumed) StopBuilding();
-    }
-
-    private void UpdateBuildProgress()
-    {
-        int totalRequired = 0, totalCurrent = 0;
+        // 2. Kalau cukup semua, baru consume (kurangi dari inventory)
         foreach (var req in runtimeResources)
         {
-            totalRequired += req.totalRequired;
-            totalCurrent += req.currentAmount;
+            Inventory.Instance.RemoveItem(req.resourceName, req.totalRequired);
+            req.currentAmount = req.totalRequired; // Catat bahwa resource sudah terpenuhi
         }
-        buildProgress = totalRequired > 0 ? (float)totalCurrent / totalRequired : 0f;
+
+        return true;
     }
 
-    private void UpdateVisual()
+    private void UpdateState(LadderBuildState newState)
     {
-        if (ladderData == null || ladderRenderer == null) return;
+        currentState = newState;
 
         switch (currentState)
         {
             case LadderBuildState.Blueprint:
-                SetLadderColor(ladderData.blueprintColor);
+                if (ladderCollider != null) ladderCollider.enabled = false;
+                if (ladderRenderer != null && hologramMaterial != null)
+                {
+                    ladderRenderer.material = hologramMaterial;
+                    UpdateHologramVisual(); // Set warna awal
+                }
+                if (ladderCollider != null) ladderCollider.tag = "Untagged";
                 break;
 
             case LadderBuildState.Building:
-                // Lerp color based on progress
-                Color buildColor = Color.Lerp(ladderData.blueprintColor, ladderData.buildingColor, buildProgress);
-                SetLadderColor(buildColor);
+                if (ladderCollider != null) ladderCollider.enabled = false;
+                if (ladderRenderer != null && originalMaterial != null)
+                {
+                    ladderRenderer.material = originalMaterial;
+                    SetMaterialOpaque(ladderRenderer.material);
+                    ladderRenderer.material.color = ladderData.buildingColor; // Warna solid dari LadderData
+                }
                 break;
 
             case LadderBuildState.Completed:
-                SetLadderColor(ladderData.completedColor);
+                if (ladderCollider != null)
+                {
+                    ladderCollider.enabled = true;
+                    ladderCollider.tag = ladderData.ladderTag;
+                }
+                if (ladderRenderer != null && originalMaterial != null)
+                {
+                    ladderRenderer.material = originalMaterial;
+                    SetMaterialOpaque(ladderRenderer.material);
+                    ladderRenderer.material.color = ladderData.completedColor; // Warna final dari LadderData
+                }
+
+                // Hide UI
+                if (buildUI != null) buildUI.SetActive(false);
                 break;
         }
     }
 
-    private void SetLadderColor(Color color)
-    {
-        if (ladderRenderer != null)
-        {
-            // Set color di material
-            ladderRenderer.material.color = color;
+    // --- BAGIAN LOGIKA HOLOGRAM ---
 
-            // Enable/disable transparency based on alpha
-            if (color.a < 1f)
+    private void UpdateHologramVisual()
+    {
+        if (hologramMaterial == null || ladderRenderer == null) return;
+
+        // Jika player jauh, warna cyan standar
+        if (!isPlayerInRange)
+        {
+            SetHologramColor(hologramColor);
+            return;
+        }
+
+        // Jika player dekat, cek isi tasnya
+        bool hasAllResources = true;
+        if (Inventory.Instance != null)
+        {
+            foreach (var req in runtimeResources)
             {
-                // Transparent mode
-                ladderRenderer.material.SetFloat("_Mode", 3);
-                ladderRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                ladderRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                ladderRenderer.material.SetInt("_ZWrite", 0);
-                ladderRenderer.material.DisableKeyword("_ALPHATEST_ON");
-                ladderRenderer.material.EnableKeyword("_ALPHABLEND_ON");
-                ladderRenderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                ladderRenderer.material.renderQueue = 3000;
-            }
-            else
-            {
-                // Opaque mode
-                ladderRenderer.material.SetFloat("_Mode", 0);
-                ladderRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                ladderRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                ladderRenderer.material.SetInt("_ZWrite", 1);
-                ladderRenderer.material.DisableKeyword("_ALPHATEST_ON");
-                ladderRenderer.material.DisableKeyword("_ALPHABLEND_ON");
-                ladderRenderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                ladderRenderer.material.renderQueue = -1;
+                if (Inventory.Instance.GetItemCount(req.resourceName) < req.totalRequired)
+                {
+                    hasAllResources = false;
+                    break;
+                }
             }
         }
-    }
 
-    private void CompleteLadder()
-    {
-        currentState = LadderBuildState.Completed;
-        buildProgress = 1f;
-        isBuilding = false;
-
-        if (audioSource != null)
+        // Ganti warna sesuai ketersediaan resource
+        if (hasAllResources)
         {
-            audioSource.Stop();
-            if (ladderData.completeSound != null) audioSource.PlayOneShot(ladderData.completeSound);
+            SetHologramColor(hologramValidColor); // Hijau (Bisa dibangun)
         }
-
-        if (ladderCollider != null) ladderCollider.enabled = true;
-        if (!string.IsNullOrEmpty(ladderData.ladderTag)) gameObject.tag = ladderData.ladderTag;
-
-        HideBuildUI();
-    }
-
-    private void ShowBuildUI()
-    {
-        if (buildUI != null && uiInstance == null)
+        else
         {
-            uiInstance = Instantiate(buildUI, transform.position + Vector3.up * 2f, Quaternion.identity);
-            uiInstance.transform.SetParent(transform);
-
-            // Pass reference ke UI script jika ada
-            var uiScript = uiInstance.GetComponent<LadderBuildUI>();
-            if (uiScript != null)
-            {
-                uiScript.SetLadder(this);
-            }
+            SetHologramColor(hologramInvalidColor); // Merah (Resource kurang)
         }
     }
 
-    private void HideBuildUI()
+    private void SetHologramColor(Color baseColor)
     {
-        if (uiInstance != null)
+        if (hologramMaterial != null)
         {
-            Destroy(uiInstance);
-            uiInstance = null;
+            // Logika "Pulse" persis seperti di BridgeBuildingSystem
+            float pulse = Mathf.Sin(Time.time * hologramPulseSpeed) * 0.5f + 0.5f;
+            float alpha = Mathf.Lerp(hologramMinAlpha, hologramMaxAlpha, pulse);
+
+            Color hColor = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+            hologramMaterial.color = hColor;
+
+            // Emission glow biar keliatan hologram
+            hologramMaterial.EnableKeyword("_EMISSION");
+            hologramMaterial.SetColor("_EmissionColor", new Color(baseColor.r, baseColor.g, baseColor.b) * (pulse * 1.5f));
         }
     }
 
-    public string GetInfoText()
+    // Script ajaib dari Unity untuk mengubah Opaque jadi Transparent lewat kode
+    private void SetMaterialTransparent(Material mat)
+    {
+        mat.SetFloat("_Mode", 3); // 3 = Transparent
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.DisableKeyword("_ALPHATEST_ON");
+        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        mat.renderQueue = 3000;
+    }
+
+    private void SetMaterialOpaque(Material mat)
+    {
+        mat.SetFloat("_Mode", 0); // 0 = Opaque
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+        mat.SetInt("_ZWrite", 1);
+        mat.DisableKeyword("_ALPHATEST_ON");
+        mat.DisableKeyword("_ALPHABLEND_ON");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        mat.renderQueue = -1;
+    }
+
+    public string GetBuildInfo()
     {
         if (ladderData == null) return "No Ladder Data";
 
@@ -470,13 +412,5 @@ public class LadderBuildingSystem : MonoBehaviour
         Gizmos.color = new Color(0, 1, 0, 0.3f);
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawCube(ladderData.colliderCenter, ladderData.colliderSize);
-
-        // Progress indicator
-        if (Application.isPlaying && buildProgress > 0f && buildProgress < 1f)
-        {
-            Gizmos.matrix = Matrix4x4.identity;
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position + Vector3.up * 2f, 0.5f * buildProgress);
-        }
     }
 }

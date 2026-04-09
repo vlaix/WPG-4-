@@ -15,10 +15,10 @@ MonoBehaviour:
   shieldName: Energy Shield
   description: A protective barrier that absorbs damage
   shieldHealth: 50
-  duration: 10
+  duration: 15
   cooldown: 15
   shieldPrefab: {fileID: 6437710649150463739, guid: aae5bbb78813cc94e8a4f011455d3aa4, type: 3}
-  activateSound: {fileID: 0}
+  activateSound: {fileID: 8300000, guid: bceb60c6b2440b54d8ca2e7fe739031d, type: 3}
   hitSound: {fileID: 0}
   breakSound: {fileID: 0}
   hitEffect: {fileID: 0}
