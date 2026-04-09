@@ -471,9 +471,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: d9f3ab31-5d1e-4901-b913-1275fd9b233a
     m_ActionName: 'Player/Build[/Keyboard/period,/Keyboard/q]'
+  - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 88f9a499-e220-42c5-8908-f052925679e4
-    m_ActionName: UI/Tips
+    m_ActionName: 'UI/Tips[/XInputControllerWindows/rightTrigger]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3966020482068304439}
+        m_TargetAssemblyTypeName: InputReader, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 26e947cf-3f9b-4081-8a93-f70aa7f3ec12
+    m_ActionName: 'Player/Pause[/XInputControllerWindows/start]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

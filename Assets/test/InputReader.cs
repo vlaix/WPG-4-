@@ -20,4 +20,12 @@ public class InputReader : MonoBehaviour
         if (context.started) IsJumpPressed = true;
         else if (context.canceled) IsJumpPressed = false;
     }
+
+    public void OnPause() // Fungsi ini terpanggil dari PlayerInput
+    {
+        if (PauseManager.Instance != null)
+        {
+            PauseManager.Instance.TogglePause();
+        }
+    }
 }
