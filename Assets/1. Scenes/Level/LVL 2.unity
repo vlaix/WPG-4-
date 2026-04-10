@@ -6276,6 +6276,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BuildAbleLadder_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8631016521294408179, guid: fae795291aa2cc640bca85c478648956, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7273,6 +7277,7 @@ GameObject:
   - component: {fileID: 1479057312}
   - component: {fileID: 1479057314}
   - component: {fileID: 1479057313}
+  - component: {fileID: 1479057315}
   m_Layer: 5
   m_Name: TutorialPanel
   m_TagString: Untagged
@@ -7337,6 +7342,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479057311}
   m_CullTransparentMesh: 1
+--- !u!225 &1479057315
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479057311}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1484397727
 PrefabInstance:
   m_ObjectHideFlags: 0

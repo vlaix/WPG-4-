@@ -12567,6 +12567,7 @@ GameObject:
   - component: {fileID: 1346229732}
   - component: {fileID: 1346229734}
   - component: {fileID: 1346229733}
+  - component: {fileID: 1346229735}
   m_Layer: 5
   m_Name: TutorialPanel
   m_TagString: Untagged
@@ -12631,6 +12632,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346229731}
   m_CullTransparentMesh: 1
+--- !u!225 &1346229735
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346229731}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1348804614
 PrefabInstance:
   m_ObjectHideFlags: 0
