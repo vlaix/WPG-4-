@@ -51,6 +51,7 @@ public class PauseManager : MonoBehaviour
 
         // 3. GameObject SetActive False (Tombol yang tidak terpakai)
         if (btnNextLevel != null) btnNextLevel.SetActive(false);
+        firstButtonPause.SetActive(true);
 
         // 4. Set First Button (Untuk Controller)
         if (firstButtonPause != null)
@@ -67,11 +68,13 @@ public class PauseManager : MonoBehaviour
     {
         isPaused = false;
         panelPause.SetActive(false);
+        btnNextLevel.SetActive(true);
+        firstButtonPause.SetActive(false);
 
         // Kembalikan waktu game
         Time.timeScale = 1f;
 
         // Bersihkan seleksi agar tidak mengganggu gameplay
-        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(btnNextLevel);
     }
 }

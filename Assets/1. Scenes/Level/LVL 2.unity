@@ -1854,7 +1854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &336609430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8738,7 +8738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d9ed9d6fd8b4b4da919da10ea5acf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialPanel: {fileID: 0}
+  tutorialPanel: {fileID: 1479057311}
   inputActions: {fileID: -944628639613478452, guid: 818c100664358824eb54cfa3168e7508, type: 3}
   animDuration: 0.3
 --- !u!1001 &1699570563
