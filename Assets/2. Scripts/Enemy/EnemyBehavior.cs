@@ -25,7 +25,7 @@ public class EnemyBehavior : MonoBehaviour
     protected bool bomaktif;
 
     [Header("Shoot Settings")]
-    [SerializeField] private float bulletSpawnHeight = 0.1f;
+    [SerializeField] private float bulletSpawnHeight = 0f;
 
     [Header("Audio Settings")]
     [Tooltip("Suara saat musuh mati biasa")]
@@ -135,34 +135,39 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     private void OnCollisionStay(Collision collision)
-    {
-        if (isDead) return; // Cegah menyerang jika sudah mati
+{
+    if (isDead) return; // Cegah menyerang jika sudah mati
 
-        if (data.stopDistance == 0)
-        { //melee attack
-            if (collision.gameObject.CompareTag("Player"))
+    if (data.stopDistance == 0)
+    { //melee attack
+        if (IsPlayerTarget(collision.gameObject))
+        {
+            if (Time.time >= BufferAttack)
             {
-                if (Time.time >= BufferAttack)
-                {
-                    Health.Hurt(data.damage);
-                    BufferAttack = Time.time + data.Cooldown;
-                    isAttacking = true;
-                    if (animator != null) animator.SetTrigger("Attack");
-                    StartCoroutine(ResetAttack());
-                }
+                Health.Hurt(data.damage);
+                BufferAttack = Time.time + data.Cooldown;
+                isAttacking = true;
+                if (animator != null) animator.SetTrigger("Attack");
+                StartCoroutine(ResetAttack());
             }
         }
     }
+}
 
-    private void OnCollisionExit(Collision collision)
+private void OnCollisionExit(Collision collision)
+{
+    if (isDead) return;
+
+    if (data.stopDistance == 0 && IsPlayerTarget(collision.gameObject))
     {
-        if (isDead) return;
+        isAttacking = false;
+        agent.isStopped = false;
+    }
+}
 
-        if (data.stopDistance == 0 && collision.gameObject.CompareTag("Player"))
-        {
-            isAttacking = false;
-            agent.isStopped = false;
-        }
+    private bool IsPlayerTarget(GameObject target)
+    {
+        return target.CompareTag("Player") || target.CompareTag("Player2");
     }
 
     private System.Collections.IEnumerator ResetAttack()
