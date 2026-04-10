@@ -50,13 +50,12 @@ MonoBehaviour:
   ladderRenderer: {fileID: 8786542589892294526}
   ladderCollider: {fileID: 1103176303106548545}
   buildUI: {fileID: 2220282804155163659, guid: 30c6b1b7a561f234da4a30f157cefb74, type: 3}
+  showDebugLogs: 1
   hologramColor: {r: 0.39607844, g: 0.18039216, b: 0.06666667, a: 1}
-  hologramValidColor: {r: 0.39607847, g: 0.18039216, b: 0.06666667, a: 1}
-  hologramInvalidColor: {r: 0.39607847, g: 0.18039216, b: 0.06666667, a: 1}
   hologramPulseSpeed: 2
   hologramMinAlpha: 0.15
   hologramMaxAlpha: 0.55
-  showDebugLogs: 1
+  buildProgress: 0
 --- !u!65 &1103176303106548545
 BoxCollider:
   m_ObjectHideFlags: 0

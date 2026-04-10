@@ -3577,7 +3577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3349245524555608548, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.44
+      value: 8.97
       objectReference: {fileID: 0}
     - target: {fileID: 3349245524555608548, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3614,6 +3614,22 @@ PrefabInstance:
     - target: {fileID: 4746255627118056903, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
       propertyPath: bridgeRenderer
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086877097041298325, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
+      propertyPath: m_Size.y
+      value: 0.57771206
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086877097041298325, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
+      propertyPath: m_Size.z
+      value: 12.517176
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086877097041298325, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
+      propertyPath: m_Center.y
+      value: -0.21114397
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086877097041298325, guid: ad93b74300c81a84e9aef8e189593585, type: 3}
+      propertyPath: m_Center.z
+      value: 6.6743345
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

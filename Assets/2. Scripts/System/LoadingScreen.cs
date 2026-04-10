@@ -31,11 +31,11 @@ public class LoadingScreen : MonoBehaviour
     [Tooltip("Tips to show during loading")]
     public string[] loadingTips = new string[]
     {
-        "Press Q to build structures",
-        "Hold Shift to activate shield",
+        "build structures to help your friends",
+        "Activate shield so your friends won't die",
         "Collect resources to build bridges and ladders",
-        "Press W/S to climb ladders",
-        "Use WASD to move around",
+        "Go forwawrd to climb ladders",
+        "Use joystick to move around",
         "Work together with your teammate!",
         "Shield blocks enemy attacks",
         "Build bridges to cross gaps",
