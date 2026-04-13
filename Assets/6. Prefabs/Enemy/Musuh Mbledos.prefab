@@ -308,10 +308,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players: []
+  closestPlayer: {fileID: 0}
   loot: {fileID: 3827336590551632495, guid: 16746fda74281554b8aee783aec3bdb2, type: 3}
   data: {fileID: 11400000, guid: a6a3cbf630b7db24ea690142f92b324f, type: 2}
   Health: {fileID: 0}
   healthpoint: 0
+  bulletSpawnHeight: 0.1
+  deathSFX: {fileID: 8300000, guid: b2d19c0913c413f459da6536bb5e5448, type: 3}
+  explosionSFX: {fileID: 8300000, guid: d72d39a97d1f78f46a401339c84abe8a, type: 3}
+  volume: 1
 --- !u!54 &8388130708807740711
 Rigidbody:
   m_ObjectHideFlags: 0

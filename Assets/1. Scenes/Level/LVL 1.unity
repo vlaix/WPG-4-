@@ -4242,6 +4242,8 @@ MonoBehaviour:
   Mbledos: 0
   Pasif: 0
   IsTrigger: 0
+  BridgeBuildingSystem: {fileID: 637964675}
+  Inventory: {fileID: 1571044560}
 --- !u!65 &477164624
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6516,6 +6518,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &637964675 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 216919671199222555, guid: a3354e23a8489874e9c6e41835e2c069, type: 3}
+  m_PrefabInstance: {fileID: 2142192441}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ccb571280042c046833af1bff3dd192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &640635998
 PrefabInstance:
   m_ObjectHideFlags: 0

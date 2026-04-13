@@ -21,6 +21,10 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField]  private bool IsTrigger;
     private bool Activate;
 
+    [Header("Fitur Baru")]
+    [SerializeField] private BridgeBuildingSystem BridgeBuildingSystem;
+    [SerializeField] private Inventory Inventory;
+    private int RandomIndex;
 
     void Start()
     {
@@ -43,30 +47,36 @@ public class EnemySpawn : MonoBehaviour
         if(Activate) { //buat trigger
             BufferTime -= Time.deltaTime;
 
-            if (BufferTime <= 0f && SpawnCount < MaxSpawn)
-            {   
-                //                          spawn metode list
-                AvailableEnemy.Clear(); // Kosongkan list yang lama, tanpa membuat objek baru
+            if (BufferTime <= 0f) {
+                if(SpawnCount < MaxSpawn)
+                {   
+                    //                          spawn metode list
+                    AvailableEnemy.Clear(); // Kosongkan list yang lama, tanpa membuat objek baru
 
-                if (NormalCount < Normal) AvailableEnemy.Add(0); // Index 0 = Normal
-                if (TankCount < Tank)   AvailableEnemy.Add(1); // Index 1 = Tank
-                if (ArcherCount < Archer) AvailableEnemy.Add(2); // Index 2 = Archer
-                if (MbledosCount < Mbledos) AvailableEnemy.Add(3);
-                if (PasifCount < Pasif) AvailableEnemy.Add(4);
+                    if (NormalCount < Normal) AvailableEnemy.Add(0); // Index 0 = Normal
+                    if (TankCount < Tank)   AvailableEnemy.Add(1); // Index 1 = Tank
+                    if (ArcherCount < Archer) AvailableEnemy.Add(2); // Index 2 = Archer
+                    if (MbledosCount < Mbledos) AvailableEnemy.Add(3);
+                    if (PasifCount < Pasif) AvailableEnemy.Add(4);
 
-                // 2. Jika masih ada tipe yang jatahnya tersedia
-                if (AvailableEnemy.Count > 0)
-                {
-                    // Pilih secara acak dari tipe yang tersedia saja
-                    int indexTerpilih = AvailableEnemy[Random.Range(0, AvailableEnemy.Count)];
+                    // 2. Jika masih ada tipe yang jatahnya tersedia
+                    if (AvailableEnemy.Count > 0)
+                    {
+                        // Pilih secara acak dari tipe yang tersedia saja
+                        int indexTerpilih = AvailableEnemy[Random.Range(0, AvailableEnemy.Count)];
 
-                    if (indexTerpilih == 0) NormalCount++;
-                    else if (indexTerpilih == 1) TankCount++;
-                    else if (indexTerpilih == 2) ArcherCount++;
-                    else if (indexTerpilih == 3) MbledosCount++;
-                    else if (indexTerpilih == 4) PasifCount++;
+                        if (indexTerpilih == 0) NormalCount++;
+                        else if (indexTerpilih == 1) TankCount++;
+                        else if (indexTerpilih == 2) ArcherCount++;
+                        else if (indexTerpilih == 3) MbledosCount++;
+                        else if (indexTerpilih == 4) PasifCount++;
 
-                    SpawnEnemy(indexTerpilih);
+                        SpawnEnemy(indexTerpilih);
+                    }
+                } else if(BridgeBuildingSystem.IsCompleted == false && Inventory.GetItemCount("Scrap") < 5) {
+                    Debug.Log("Musuh tambahan dispawn");
+                    DoRandom();
+                    SpawnEnemy(PickEnemy());
                 }
             }
         }
@@ -134,5 +144,23 @@ public class EnemySpawn : MonoBehaviour
 
     public void StartSpawn() {
         Activate = true;
+    }
+
+    private void DoRandom() {
+        RandomIndex = Random.Range(1, 101);
+    }
+
+    private int PickEnemy() {
+        int cumulativeWeight = 0;
+
+        for (int i = 0; i < data.Length; i++) {
+            cumulativeWeight += data[i].persentase;
+
+            if (RandomIndex <= cumulativeWeight) {
+                return i;
+            }
+        }
+
+        return data.Length - 1; // Fallback to the last enemy
     }
 }

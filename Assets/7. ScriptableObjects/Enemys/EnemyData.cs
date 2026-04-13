@@ -9,6 +9,8 @@ public class EnemyData : ScriptableObject
     public float stopDistance;
     public float Cooldown;
     public int damage;
+    [Header("Pastikan total enemy sampai mbledos 100")]
+    public int persentase;
 
     [HeaderAttribute("Visual")]
     public GameObject prefab;
