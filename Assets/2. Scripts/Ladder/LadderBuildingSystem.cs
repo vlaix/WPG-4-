@@ -162,8 +162,8 @@ public class LadderBuildingSystem : MonoBehaviour
             {
                 // Create box collider dari data
                 BoxCollider boxCol = gameObject.AddComponent<BoxCollider>();
-                boxCol.size = ladderData.colliderSize;
-                boxCol.center = ladderData.colliderCenter;
+                boxCol.size = ladderData.triggerColliderSize; // DIPERBAIKI (sebelumnya colliderSize)
+                boxCol.center = ladderData.triggerColliderCenter; // DIPERBAIKI (sebelumnya colliderCenter)
                 boxCol.isTrigger = true; // PENTING: trigger untuk climbing!
                 ladderCollider = boxCol;
 
@@ -518,7 +518,7 @@ public class LadderBuildingSystem : MonoBehaviour
         // Collider preview
         Gizmos.color = new Color(0, 1, 0, 0.3f);
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.DrawCube(ladderData.colliderCenter, ladderData.colliderSize);
+        Gizmos.DrawCube(ladderData.triggerColliderCenter, ladderData.triggerColliderSize); // DIPERBAIKI
 
         // Progress indicator
         if (Application.isPlaying && buildProgress > 0f && buildProgress < 1f)

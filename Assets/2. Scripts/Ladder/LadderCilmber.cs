@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// LadderClimber yang auto-detect movement script apapun!
-/// Support: PlayerLocomotion, playermovtest, atau script lain
+/// LadderClimber dengan:
+/// - Solid collision (tidak bisa tembus)
+/// - Proper descending (S turun, tidak terbalik)
+/// - Auto-detect movement script
 /// </summary>
 public class LadderClimber : MonoBehaviour
 {
@@ -11,49 +13,41 @@ public class LadderClimber : MonoBehaviour
     public float horizontalSpeed = 3f;
     public KeyCode exitKey = KeyCode.Space;
 
+    [Header("Collision Settings")]
+    [Tooltip("Enable solid collision (can't pass through ladder)?")]
+    public bool solidCollision = true;
+
+    [Tooltip("Layer for ladder solid collider")]
+    public string ladderSolidLayer = "Default";
+
     [Header("Debug")]
-    public bool showDebugLogs = true;
+    public bool showDebugLogs = false;
 
     // Components
-    private MonoBehaviour movementScript; // ✅ Generic MonoBehaviour!
+    private MonoBehaviour movementScript;
     private Rigidbody rb;
+    private InputReader inputReader;
     private InputManagerPlayer1 inputP1;
     private InputManagerPlayer2 inputP2;
-    private InputReader inputReader; // ✅ Support InputReader juga!
+    private CapsuleCollider playerCollider;
+
+    // Ladder reference
+    private GameObject currentLadder;
+    private Collider ladderTrigger;
+    private Collider ladderSolidCollider;
 
     // Status
     private bool isNearLadder = false;
     private bool isClimbing = false;
 
-    // Input properties - support multiple input systems
+    // Input properties
     private float VerticalInput
     {
         get
         {
-            // Try InputReader first (for playermovtest)
-            if (inputReader != null)
-            {
-                if (showDebugLogs && inputReader.Vertical != 0 && Time.frameCount % 30 == 0)
-                    Debug.Log($"[INPUT] InputReader Vertical: {inputReader.Vertical}");
-                return inputReader.Vertical;
-            }
-
-            // Try InputManagerPlayer1
-            if (inputP1 != null)
-            {
-                if (showDebugLogs && inputP1.verticalInput != 0 && Time.frameCount % 30 == 0)
-                    Debug.Log($"[INPUT] InputP1 Vertical: {inputP1.verticalInput}");
-                return inputP1.verticalInput;
-            }
-
-            // Try InputManagerPlayer2
-            if (inputP2 != null)
-            {
-                if (showDebugLogs && inputP2.verticalInput != 0 && Time.frameCount % 30 == 0)
-                    Debug.Log($"[INPUT] InputP2 Vertical: {inputP2.verticalInput}");
-                return inputP2.verticalInput;
-            }
-
+            if (inputReader != null) return inputReader.Vertical;
+            if (inputP1 != null) return inputP1.verticalInput;
+            if (inputP2 != null) return inputP2.verticalInput;
             return 0f;
         }
     }
@@ -72,72 +66,43 @@ public class LadderClimber : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<CapsuleCollider>();
 
-        // ✅ Try find ANY movement script
         FindMovementScript();
-
-        // ✅ Try find ANY input script
         FindInputScript();
 
         if (showDebugLogs)
         {
-            Debug.Log($"[AWAKE] LadderClimber initialized");
-            Debug.Log($"[AWAKE] Movement Script: {(movementScript != null ? movementScript.GetType().Name : "NULL")}");
-            Debug.Log($"[AWAKE] Rigidbody: {rb != null}");
-            Debug.Log($"[AWAKE] Input System: {GetInputSystemName()}");
+            Debug.Log($"[LADDER] Initialized. Movement: {movementScript?.GetType().Name}, Input: {GetInputSystemName()}");
         }
     }
 
     private void FindMovementScript()
     {
-        // Try playermovtest first (most common now!)
         movementScript = GetComponent<playermovtest>();
+        if (movementScript == null) movementScript = GetComponent<PlayerLocomotion>();
 
-        // If not found, try PlayerLocomotion
-        if (movementScript == null)
-        {
-            movementScript = GetComponent<PlayerLocomotion>();
-        }
-
-        // If still not found, try finding ANY MonoBehaviour that might be movement
         if (movementScript == null)
         {
             var allScripts = GetComponents<MonoBehaviour>();
             foreach (var script in allScripts)
             {
                 var typeName = script.GetType().Name.ToLower();
-                if (typeName.Contains("movement") || typeName.Contains("locomotion") || typeName.Contains("move") || typeName.Contains("player"))
+                if ((typeName.Contains("movement") || typeName.Contains("locomotion") || typeName.Contains("move"))
+                    && !typeName.Contains("input"))
                 {
-                    // Skip input scripts
-                    if (typeName.Contains("input")) continue;
-
                     movementScript = script;
-                    if (showDebugLogs)
-                        Debug.Log($"[AWAKE] Auto-detected movement script: {script.GetType().Name}");
                     break;
                 }
             }
-        }
-
-        if (movementScript == null && showDebugLogs)
-        {
-            Debug.LogError("[AWAKE] ❌ No movement script found! Player won't stop moving during climb!");
         }
     }
 
     private void FindInputScript()
     {
-        // Try InputReader first (for playermovtest)
         inputReader = GetComponent<InputReader>();
-
-        // Also try InputManagers (backup)
         inputP1 = GetComponent<InputManagerPlayer1>();
         inputP2 = GetComponent<InputManagerPlayer2>();
-
-        if (inputReader == null && inputP1 == null && inputP2 == null && showDebugLogs)
-        {
-            Debug.LogError("[AWAKE] ❌ No input script found! Climbing input won't work!");
-        }
     }
 
     private string GetInputSystemName()
@@ -150,23 +115,23 @@ public class LadderClimber : MonoBehaviour
 
     private void Update()
     {
+        // Start climbing
         if (isNearLadder && !isClimbing)
         {
             float vInput = VerticalInput;
 
+            // ✅ FIX: Accept both up (W) and down (S) to start climbing
             if (Mathf.Abs(vInput) > 0.1f)
             {
-                if (showDebugLogs)
-                {
-                    Debug.Log($"[UPDATE] ✅ Starting climb. Input: {vInput}");
-                }
+                if (showDebugLogs) Debug.Log($"[LADDER] Starting climb. Input: {vInput}");
                 StartClimbing();
             }
         }
 
+        // Exit climbing
         if (isClimbing && Input.GetKeyDown(exitKey))
         {
-            if (showDebugLogs) Debug.Log($"[UPDATE] Exit key pressed");
+            if (showDebugLogs) Debug.Log($"[LADDER] Exit key pressed");
             StopClimbing();
         }
     }
@@ -175,61 +140,30 @@ public class LadderClimber : MonoBehaviour
     {
         if (isClimbing)
         {
+            // ✅ FIX: Proper vertical movement (W = up, S = down, NOT reversed!)
             float verticalMovement = VerticalInput * climbSpeed;
             float horizontalMovement = HorizontalInput * horizontalSpeed;
 
             Vector3 climbMovement = new Vector3(
                 horizontalMovement,
-                verticalMovement,
+                verticalMovement,  // Direct mapping: positive input = up, negative = down
                 0f
             );
 
             Vector3 worldMovement = transform.TransformDirection(climbMovement);
             rb.linearVelocity = worldMovement;
-
-            if (showDebugLogs && Time.frameCount % 60 == 0)
-            {
-                Debug.Log($"[CLIMB] V:{verticalMovement:F2}, H:{horizontalMovement:F2}");
-            }
         }
     }
 
     private void StartClimbing()
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[START] 🪜 StartClimbing()");
-        }
-
         isClimbing = true;
 
-        // ✅ SAFETY: Only disable if currently enabled!
-        if (movementScript != null)
+        // Disable movement script
+        if (movementScript != null && movementScript.enabled)
         {
-            if (movementScript.enabled)
-            {
-                movementScript.enabled = false;
-                if (showDebugLogs)
-                {
-                    Debug.Log($"[START] ✅ Disabled movement: {movementScript.GetType().Name}");
-                }
-            }
-            else
-            {
-                if (showDebugLogs)
-                {
-                    Debug.LogWarning($"[START] ⚠️ Movement already disabled! (Shield active or other reason)");
-                    Debug.LogWarning($"[START] Allowing climb anyway...");
-                }
-                // Still allow climbing even if movement already disabled
-            }
-        }
-        else
-        {
-            if (showDebugLogs)
-            {
-                Debug.LogWarning($"[START] ⚠️ No movement script found!");
-            }
+            movementScript.enabled = false;
+            if (showDebugLogs) Debug.Log($"[LADDER] Disabled movement: {movementScript.GetType().Name}");
         }
 
         // Disable gravity
@@ -237,116 +171,127 @@ public class LadderClimber : MonoBehaviour
         {
             rb.useGravity = false;
             rb.linearVelocity = Vector3.zero;
-            if (showDebugLogs) Debug.Log($"[START] ✅ Gravity disabled");
-        }
-        else
-        {
-            if (showDebugLogs) Debug.LogError($"[START] ❌ Rigidbody is NULL!");
         }
 
-        if (showDebugLogs)
+        // ✅ NEW: Disable player collider collision with ladder solid collider
+        if (solidCollision && playerCollider != null && ladderSolidCollider != null)
         {
-            Debug.Log($"[START] 🎉 Climbing started!");
+            Physics.IgnoreCollision(playerCollider, ladderSolidCollider, true);
+            if (showDebugLogs) Debug.Log($"[LADDER] Ignoring collision with solid collider");
         }
+
+        if (showDebugLogs) Debug.Log($"[LADDER] 🪜 Climbing started!");
     }
 
     private void StopClimbing()
     {
-        if (showDebugLogs) Debug.Log($"[STOP] ✅ StopClimbing()");
-
         isClimbing = false;
 
-        // ✅ ALWAYS try to re-enable movement (in case it was disabled by us or by shield)
-        if (movementScript != null)
+        // Re-enable movement script
+        if (movementScript != null && !movementScript.enabled)
         {
-            if (!movementScript.enabled)
-            {
-                movementScript.enabled = true;
-                if (showDebugLogs)
-                {
-                    Debug.Log($"[STOP] Re-enabled movement: {movementScript.GetType().Name}");
-                }
-            }
-            else
-            {
-                if (showDebugLogs)
-                {
-                    Debug.Log($"[STOP] Movement already enabled");
-                }
-            }
+            movementScript.enabled = true;
+            if (showDebugLogs) Debug.Log($"[LADDER] Re-enabled movement");
         }
 
         // Re-enable gravity
         if (rb != null)
         {
             rb.useGravity = true;
-            if (showDebugLogs) Debug.Log($"[STOP] Gravity re-enabled");
         }
+
+        // ✅ NEW: Re-enable collision with ladder solid collider
+        if (solidCollision && playerCollider != null && ladderSolidCollider != null)
+        {
+            Physics.IgnoreCollision(playerCollider, ladderSolidCollider, false);
+            if (showDebugLogs) Debug.Log($"[LADDER] Re-enabled collision with solid collider");
+        }
+
+        if (showDebugLogs) Debug.Log($"[LADDER] Stopped climbing");
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[TRIGGER] Enter: {other.name}, Tag: '{other.tag}'");
-        }
-
         if (other.CompareTag("Ladder"))
         {
             isNearLadder = true;
-            if (showDebugLogs)
+            currentLadder = other.gameObject;
+            ladderTrigger = other;
+
+            // ✅ NEW: Find solid collider in ladder
+            if (solidCollision)
             {
-                Debug.Log($"[TRIGGER] ✅ Near ladder! Press W to climb");
+                FindLadderSolidCollider();
             }
+
+            if (showDebugLogs) Debug.Log($"[LADDER] Near ladder. Press W/S to climb");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"[TRIGGER] Exit: {other.name}");
-        }
-
         if (other.CompareTag("Ladder"))
         {
             isNearLadder = false;
-            if (showDebugLogs) Debug.Log($"[TRIGGER] Left ladder area");
+            currentLadder = null;
+            ladderTrigger = null;
+            ladderSolidCollider = null;
 
             if (isClimbing)
             {
-                if (showDebugLogs) Debug.Log($"[TRIGGER] Auto-exit climbing");
+                if (showDebugLogs) Debug.Log($"[LADDER] Auto-exit climbing");
                 StopClimbing();
             }
         }
     }
 
+    // ✅ NEW: Find solid collider on ladder
+    private void FindLadderSolidCollider()
+    {
+        if (currentLadder == null) return;
+
+        // Look for a non-trigger collider on the ladder or its children
+        Collider[] colliders = currentLadder.GetComponentsInChildren<Collider>();
+
+        foreach (Collider col in colliders)
+        {
+            if (!col.isTrigger && col != ladderTrigger)
+            {
+                ladderSolidCollider = col;
+                if (showDebugLogs) Debug.Log($"[LADDER] Found solid collider: {col.name}");
+                return;
+            }
+        }
+
+        // If not found in children, check parent
+        Transform parent = currentLadder.transform.parent;
+        if (parent != null)
+        {
+            Collider[] parentColliders = parent.GetComponentsInChildren<Collider>();
+            foreach (Collider col in parentColliders)
+            {
+                if (!col.isTrigger && col != ladderTrigger)
+                {
+                    ladderSolidCollider = col;
+                    if (showDebugLogs) Debug.Log($"[LADDER] Found solid collider in parent: {col.name}");
+                    return;
+                }
+            }
+        }
+
+        if (showDebugLogs) Debug.LogWarning($"[LADDER] No solid collider found on ladder!");
+    }
+
     // Manual test functions
-    [ContextMenu("Test: Force Start Climbing")]
-    private void TestStartClimbing()
-    {
-        Debug.Log("=== MANUAL TEST: Force Start Climbing ===");
-        isNearLadder = true;
-        StartClimbing();
-    }
-
-    [ContextMenu("Test: Force Stop Climbing")]
-    private void TestStopClimbing()
-    {
-        Debug.Log("=== MANUAL TEST: Force Stop Climbing ===");
-        StopClimbing();
-    }
-
     [ContextMenu("Test: Show Current State")]
     private void TestShowState()
     {
-        Debug.Log("=== CURRENT STATE ===");
-        Debug.Log($"isNearLadder: {isNearLadder}");
-        Debug.Log($"isClimbing: {isClimbing}");
-        Debug.Log($"Movement Script: {(movementScript != null ? movementScript.GetType().Name : "NULL")}");
-        Debug.Log($"Movement Enabled: {(movementScript != null ? movementScript.enabled : false)}");
-        Debug.Log($"Input System: {GetInputSystemName()}");
+        Debug.Log("=== LADDER CLIMBER STATE ===");
+        Debug.Log($"Near Ladder: {isNearLadder}");
+        Debug.Log($"Climbing: {isClimbing}");
+        Debug.Log($"Movement Script: {movementScript?.GetType().Name ?? "NULL"}");
+        Debug.Log($"Movement Enabled: {movementScript?.enabled ?? false}");
         Debug.Log($"Vertical Input: {VerticalInput}");
-        Debug.Log($"Horizontal Input: {HorizontalInput}");
+        Debug.Log($"Has Solid Collider: {ladderSolidCollider != null}");
     }
 }

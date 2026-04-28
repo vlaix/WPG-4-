@@ -4,8 +4,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public class LadderResourceRequirement
 {
-    public string resourceName;     // Nama resource (e.g., "Scrap", "Wood", "Metal")
-    public int amount;              // Jumlah yang dibutuhkan
+    public string resourceName;
+    public int amount;
 }
 
 [CreateAssetMenu(fileName = "LadderData", menuName = "Scriptable Objects/LadderData")]
@@ -52,12 +52,22 @@ public class LadderData : ScriptableObject
     [Tooltip("Sound saat complete")]
     public AudioClip completeSound;
 
-    [Header("Collision Settings")]
-    [Tooltip("Ukuran collider ladder (X, Y, Z) - tinggi ladder di Y")]
-    public Vector3 colliderSize = new Vector3(1f, 5f, 1f);
+    [Header("Collision Settings - Trigger")]
+    [Tooltip("Ukuran trigger collider untuk detect player (X, Y, Z)")]
+    public Vector3 triggerColliderSize = new Vector3(1.2f, 5f, 1.2f);
 
-    [Tooltip("Center offset collider")]
-    public Vector3 colliderCenter = new Vector3(0f, 2.5f, 0f);
+    [Tooltip("Center offset trigger collider")]
+    public Vector3 triggerColliderCenter = new Vector3(0f, 2.5f, 0f);
+
+    [Header("Collision Settings - Solid")]
+    [Tooltip("Enable solid collider? (Prevents player from falling through)")]
+    public bool enableSolidCollider = true;
+
+    [Tooltip("Ukuran solid collider ladder (X, Y, Z) - lebih kecil dari trigger")]
+    public Vector3 solidColliderSize = new Vector3(0.8f, 5f, 0.3f);
+
+    [Tooltip("Center offset solid collider")]
+    public Vector3 solidColliderCenter = new Vector3(0f, 2.5f, 0f);
 
     [Header("Advanced")]
     [Tooltip("Tag yang dibutuhkan untuk build (e.g., 'Player2')")]
