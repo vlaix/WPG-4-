@@ -11,6 +11,14 @@ public class BridgeBuildUI : MonoBehaviour
     public TextMeshProUGUI requirementsText;
     public TextMeshProUGUI actionText;
 
+    // --- TAMBAHAN BARU: Referensi untuk menyembunyikan ikon ---
+    [Tooltip("Masukkan GameObject gambar ikon/lingkaran kayu ke sini")]
+    public GameObject resourceIconObject;
+
+    // (Opsional) Kalau kamu mau menyembunyikan bar merahnya juga saat countdown
+    [Tooltip("Masukkan GameObject Progress Bar ke sini (Opsional)")]
+    public GameObject progressBarObject;
+
     [Header("Settings")]
     public float updateInterval = 0.1f;
 
@@ -47,7 +55,6 @@ public class BridgeBuildUI : MonoBehaviour
     {
         if (bridge == null) return;
 
-        // FIXED: Menggunakan properti 'BridgeName' (bukan bridgeName)
         if (bridgeNameText != null)
         {
             bridgeNameText.text = bridge.BridgeName;
@@ -66,22 +73,55 @@ public class BridgeBuildUI : MonoBehaviour
             progressBarFill.fillAmount = progress;
         }
 
-        // Update requirements
-        if (requirementsText != null)
+        // Update requirements & action text
+        if (bridge.IsCompleted)
         {
-            requirementsText.text = GetRequirementsText();
-        }
-
-        // Update action text
-        if (actionText != null)
-        {
-            if (bridge.IsCompleted)
+            // --- UI SAAT SELESAI (TIMER SAJA) ---
+            if (requirementsText != null)
             {
-                actionText.text = "COMPLETED!";
+                requirementsText.text = $"Countdown: {Mathf.CeilToInt(bridge.currentTimer)}s";
             }
-            else
+
+            if (actionText != null)
+            {
+                actionText.text = "";
+            }
+
+            // Sembunyikan ikon resource
+            if (resourceIconObject != null)
+            {
+                resourceIconObject.SetActive(false);
+            }
+
+            // Sembunyikan progress bar (opsional)
+            if (progressBarObject != null)
+            {
+                progressBarObject.SetActive(false);
+            }
+        }
+        else
+        {
+            // --- UI SAAT BLUEPRINT / BUILDING ---
+            if (requirementsText != null)
+            {
+                requirementsText.text = GetRequirementsText();
+            }
+
+            if (actionText != null)
             {
                 actionText.text = "Hold [Build] to Build";
+            }
+
+            // Tampilkan kembali ikon resource
+            if (resourceIconObject != null)
+            {
+                resourceIconObject.SetActive(true);
+            }
+
+            // Tampilkan kembali progress bar (opsional)
+            if (progressBarObject != null)
+            {
+                progressBarObject.SetActive(true);
             }
         }
     }
@@ -90,8 +130,6 @@ public class BridgeBuildUI : MonoBehaviour
     {
         string text = "";
 
-        // FIXED: Menggunakan properti 'RuntimeResources' (bukan requiredResources)
-        // Dan menyesuaikan nama variabel (totalRequired & currentAmount)
         foreach (var req in bridge.RuntimeResources)
         {
             bool hasEnough = req.currentAmount >= req.totalRequired;

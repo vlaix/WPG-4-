@@ -301,6 +301,7 @@ MonoBehaviour:
   progressBarFill: {fileID: 0}
   requirementsText: {fileID: 2334510215165779032}
   actionText: {fileID: 0}
+  resourceIconObject: {fileID: 1951946734107355656}
   updateInterval: 0.1
 --- !u!1 &4516577464538323136
 GameObject:

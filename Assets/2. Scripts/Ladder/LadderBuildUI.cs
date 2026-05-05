@@ -11,6 +11,10 @@ public class LadderBuildUI : MonoBehaviour
     public TextMeshProUGUI requirementsText;
     public TextMeshProUGUI actionText;
 
+    // --- TAMBAHAN BARU: Referensi untuk menyembunyikan ikon ---
+    [Tooltip("Masukkan GameObject gambar ikon/lingkaran kayu ke sini")]
+    public GameObject resourceIconObject;
+
     [Header("Settings")]
     public float updateInterval = 0.1f;
 
@@ -66,23 +70,45 @@ public class LadderBuildUI : MonoBehaviour
             progressBarFill.fillAmount = progress;
         }
 
-        // Update requirements
-        if (requirementsText != null)
+        // Update requirements & action text
+        if (ladder.IsCompleted)
         {
-            requirementsText.text = GetRequirementsText();
-        }
-
-        // Update action text
-        if (actionText != null)
-        {
-            if (ladder.IsCompleted)
+            // --- UI SAAT SELESAI (TIMER SAJA) ---
+            if (requirementsText != null)
             {
-                actionText.text = "COMPLETED! Can Climb!";
+                requirementsText.text = $"Countdown: {Mathf.CeilToInt(ladder.currentTimer)}s";
             }
-            else
+
+            if (actionText != null)
+            {
+                actionText.text = "";
+            }
+
+            // Sembunyikan ikon resource
+            if (resourceIconObject != null)
+            {
+                resourceIconObject.SetActive(false);
+            }
+        }
+        else
+        {
+            // --- UI SAAT BLUEPRINT / BUILDING ---
+            if (requirementsText != null)
+            {
+                requirementsText.text = GetRequirementsText();
+            }
+
+            if (actionText != null)
             {
                 actionText.text = "Hold [Build] to Build";
             }
+
+            // Tampilkan kembali ikon resource
+            if (resourceIconObject != null)
+            {
+                resourceIconObject.SetActive(true);
+            }
+
         }
     }
 

@@ -51,11 +51,18 @@ public class BridgeBuildingSystem : MonoBehaviour
     [SerializeField] private float hologramMinAlpha = 0.15f;
     [SerializeField] private float hologramMaxAlpha = 0.55f;
 
+    // --- TAMBAHAN TIMER ---
+    [Header("Timer Settings")]
+    [Tooltip("Waktu countdown setelah selesai dibangun (detik)")]
+    public float countdownDuration = 30f;
+    public float currentTimer { get; private set; }
+    // ----------------------
+
     // Runtime data
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     private Animator playerAnimator;
-    
-    [SerializeField]private Transform playerTransform;
+
+    [SerializeField] private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
@@ -72,8 +79,6 @@ public class BridgeBuildingSystem : MonoBehaviour
     public string BridgeName => bridgeData != null ? bridgeData.bridgeName : "Unknown Bridge";
     public List<RuntimeResourceRequirement> RuntimeResources => runtimeResources;
 
-    
-
     private void Start()
     {
         ValidateBridgeData();
@@ -83,15 +88,33 @@ public class BridgeBuildingSystem : MonoBehaviour
         // Jika playerTransform sudah di-assign lewat Inspector
         if (playerTransform != null)
             playerAnimator = playerTransform.GetComponent<Animator>();
+
+        // --- TAMBAHAN TIMER ---
+        currentTimer = countdownDuration;
     }
 
     private void Update()
     {
         CheckPlayerProximity();
         HandleBuildProcess();
+        HandleTimer(); // --- PANGGIL TIMER ---
         UpdateVisual();
     }
 
+    // --- TAMBAHAN TIMER ---
+    private void HandleTimer()
+    {
+        if (IsCompleted && currentTimer > 0)
+        {
+            currentTimer -= Time.deltaTime;
+            if (currentTimer <= 0)
+            {
+                currentTimer = 0;
+                HideBuildUI(); // Sembunyikan UI hanya saat waktu habis
+            }
+        }
+    }
+    // ----------------------
 
     public void OnBuild(InputAction.CallbackContext context)
     {
@@ -216,13 +239,26 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     private void CheckPlayerProximity()
     {
-        if (bridgeData == null || playerTransform == null || IsCompleted) return;
+        if (bridgeData == null || playerTransform == null)
+        {
+            isPlayerInRange = false;
+            HideBuildUI();
+            return;
+        }
+
+        // --- UBAH LOGIKA: Tampilkan UI terus jika sudah selesai dan waktu > 0 ---
+        if (IsCompleted)
+        {
+            if (currentTimer > 0) ShowBuildUI();
+            else HideBuildUI();
+            return;
+        }
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
         isPlayerInRange = distance <= bridgeData.buildRange;
 
         // Show/hide UI
-        if (isPlayerInRange && !IsCompleted)
+        if (isPlayerInRange)
         {
             ShowBuildUI();
         }
@@ -514,8 +550,8 @@ public class BridgeBuildingSystem : MonoBehaviour
             SetBridgeColor(bridgeData.completedColor);
         }
 
-        // Hide UI
-        HideBuildUI();
+        // --- TAMBAHAN TIMER: Set timer penuh & jangan panggil HideBuildUI() ---
+        currentTimer = countdownDuration;
 
         if (showDebugLogs)
         {

@@ -45,13 +45,18 @@ public class LadderBuildingSystem : MonoBehaviour
     [Tooltip("Show debug logs")]
     public bool showDebugLogs = true;
 
-    // --- TAMBAHAN UNTUK HOLOGRAM ---
     [Header("Hologram Settings")]
     [SerializeField] private Color hologramColor = new Color(0f, 0.8f, 1f, 1f); // Cyan default
     [SerializeField] private float hologramPulseSpeed = 2f;
     [SerializeField] private float hologramMinAlpha = 0.15f;
     [SerializeField] private float hologramMaxAlpha = 0.55f;
-    // -------------------------------
+
+    // --- TAMBAHAN TIMER ---
+    [Header("Timer Settings")]
+    [Tooltip("Waktu countdown setelah selesai dibangun (detik)")]
+    public float countdownDuration = 30f;
+    public float currentTimer { get; private set; }
+    // ----------------------
 
     // Runtime data
     private List<RuntimeLadderResourceRequirement> runtimeResources = new List<RuntimeLadderResourceRequirement>();
@@ -96,16 +101,33 @@ public class LadderBuildingSystem : MonoBehaviour
         // Jika playerTransform sudah di-assign lewat Inspector
         if (playerTransform != null)
             playerAnimator = playerTransform.GetComponent<Animator>();
+
+        // --- TAMBAHAN TIMER ---
+        currentTimer = countdownDuration;
     }
 
     private void Update()
     {
         CheckPlayerProximity();
         HandleBuildProcess();
+        HandleTimer(); // --- PANGGIL TIMER ---
         UpdateVisual();
     }
 
-
+    // --- TAMBAHAN TIMER ---
+    private void HandleTimer()
+    {
+        if (IsCompleted && currentTimer > 0)
+        {
+            currentTimer -= Time.deltaTime;
+            if (currentTimer <= 0)
+            {
+                currentTimer = 0;
+                HideBuildUI(); // Sembunyikan UI hanya saat waktu habis
+            }
+        }
+    }
+    // ----------------------
 
     private void ValidateLadderData()
     {
@@ -147,7 +169,7 @@ public class LadderBuildingSystem : MonoBehaviour
             ladderRenderer = GetComponentInChildren<Renderer>();
         }
 
-        // Set initial blueprint color (TIDAK DIUBAH AGAR AMAN)
+        // Set initial blueprint color
         if (ladderRenderer != null)
         {
             SetLadderColor(ladderData.blueprintColor);
@@ -162,9 +184,9 @@ public class LadderBuildingSystem : MonoBehaviour
             {
                 // Create box collider dari data
                 BoxCollider boxCol = gameObject.AddComponent<BoxCollider>();
-                boxCol.size = ladderData.triggerColliderSize; // DIPERBAIKI (sebelumnya colliderSize)
-                boxCol.center = ladderData.triggerColliderCenter; // DIPERBAIKI (sebelumnya colliderCenter)
-                boxCol.isTrigger = true; // PENTING: trigger untuk climbing!
+                boxCol.size = ladderData.triggerColliderSize;
+                boxCol.center = ladderData.triggerColliderCenter;
+                boxCol.isTrigger = true;
                 ladderCollider = boxCol;
 
                 if (showDebugLogs)
@@ -228,10 +250,18 @@ public class LadderBuildingSystem : MonoBehaviour
 
     private void CheckPlayerProximity()
     {
-        if (ladderData == null || playerTransform == null || IsCompleted)
+        if (ladderData == null || playerTransform == null)
         {
             isPlayerInRange = false;
             HideBuildUI();
+            return;
+        }
+
+        // --- UBAH LOGIKA: Tampilkan UI terus jika sudah selesai dan waktu > 0 ---
+        if (IsCompleted)
+        {
+            if (currentTimer > 0) ShowBuildUI();
+            else HideBuildUI();
             return;
         }
 
@@ -340,7 +370,6 @@ public class LadderBuildingSystem : MonoBehaviour
         switch (currentState)
         {
             case LadderBuildState.Blueprint:
-                // KUNCI PERUBAHAN: Memanggil Hologram Effect
                 ApplyHologramEffect();
                 break;
 
@@ -356,7 +385,6 @@ public class LadderBuildingSystem : MonoBehaviour
         }
     }
 
-    // --- FUNGSI BARU KHUSUS VISUAL HOLOGRAM ---
     private void ApplyHologramEffect()
     {
         if (ladderRenderer == null) return;
@@ -383,7 +411,6 @@ public class LadderBuildingSystem : MonoBehaviour
         mat.EnableKeyword("_EMISSION");
         mat.SetColor("_EmissionColor", new Color(hologramColor.r, hologramColor.g, hologramColor.b) * (pulse * 1.5f));
     }
-    // ------------------------------------------
 
     private void SetLadderColor(Color color)
     {
@@ -435,28 +462,25 @@ public class LadderBuildingSystem : MonoBehaviour
         if (ladderCollider != null) ladderCollider.enabled = true;
         if (!string.IsNullOrEmpty(ladderData.ladderTag)) gameObject.tag = ladderData.ladderTag;
 
-        HideBuildUI();
+        // --- TAMBAHAN TIMER: Set timer penuh & jangan panggil HideBuildUI() ---
+        currentTimer = countdownDuration;
     }
 
     private void ShowBuildUI()
     {
         if (buildUI != null && uiInstance == null)
         {
-            // 1. Tambahkan tinggi ubah nilai f nya
             Vector3 spawnPos = transform.position + (Vector3.up * 4.5f);
 
-            // 2. Tarik sedikit UI-nya ke arah luar/kamera agar tidak tenggelam di dalam mesh tangga
             if (Camera.main != null)
             {
                 Vector3 arahKeKamera = (Camera.main.transform.position - spawnPos).normalized;
-                // Tarik sejauh f
                 spawnPos += arahKeKamera * 1f;
             }
 
             uiInstance = Instantiate(buildUI, spawnPos, Quaternion.identity);
             uiInstance.transform.SetParent(transform);
 
-            // Pass reference ke UI script jika ada
             var uiScript = uiInstance.GetComponent<LadderBuildUI>();
             if (uiScript != null)
             {
@@ -511,16 +535,13 @@ public class LadderBuildingSystem : MonoBehaviour
     {
         if (ladderData == null) return;
 
-        // Build range
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, ladderData.buildRange);
 
-        // Collider preview
         Gizmos.color = new Color(0, 1, 0, 0.3f);
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.DrawCube(ladderData.triggerColliderCenter, ladderData.triggerColliderSize); // DIPERBAIKI
+        Gizmos.DrawCube(ladderData.triggerColliderCenter, ladderData.triggerColliderSize);
 
-        // Progress indicator
         if (Application.isPlaying && buildProgress > 0f && buildProgress < 1f)
         {
             Gizmos.matrix = Matrix4x4.identity;
