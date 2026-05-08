@@ -138,6 +138,15 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Ammo"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2a017da-0b9b-436e-8cc6-b13a4e0b84ec"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""26e947cf-3f9b-4081-8a93-f70aa7f3ec12"",
@@ -398,6 +407,28 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Build"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52b33076-e23e-425e-b5a0-272c42b8cec8"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Ammo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a79c6f6c-7373-4393-8354-1db7874e999e"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Ammo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1043,6 +1074,7 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
         m_Player_FireShield = m_Player.FindAction("Fire/Shield", throwIfNotFound: true);
         m_Player_Trap = m_Player.FindAction("Trap", throwIfNotFound: true);
         m_Player_Build = m_Player.FindAction("Build", throwIfNotFound: true);
+        m_Player_Ammo = m_Player.FindAction("Ammo", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1143,6 +1175,7 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_FireShield;
     private readonly InputAction m_Player_Trap;
     private readonly InputAction m_Player_Build;
+    private readonly InputAction m_Player_Ammo;
     private readonly InputAction m_Player_Pause;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -1175,6 +1208,10 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Build".
         /// </summary>
         public InputAction @Build => m_Wrapper.m_Player_Build;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Ammo".
+        /// </summary>
+        public InputAction @Ammo => m_Wrapper.m_Player_Ammo;
         /// <summary>
         /// Provides access to the underlying input action "Player/Pause".
         /// </summary>
@@ -1220,6 +1257,9 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
             @Build.started += instance.OnBuild;
             @Build.performed += instance.OnBuild;
             @Build.canceled += instance.OnBuild;
+            @Ammo.started += instance.OnAmmo;
+            @Ammo.performed += instance.OnAmmo;
+            @Ammo.canceled += instance.OnAmmo;
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
@@ -1249,6 +1289,9 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
             @Build.started -= instance.OnBuild;
             @Build.performed -= instance.OnBuild;
             @Build.canceled -= instance.OnBuild;
+            @Ammo.started -= instance.OnAmmo;
+            @Ammo.performed -= instance.OnAmmo;
+            @Ammo.canceled -= instance.OnAmmo;
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
@@ -1611,6 +1654,13 @@ public partial class @Testinput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuild(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ammo" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAmmo(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

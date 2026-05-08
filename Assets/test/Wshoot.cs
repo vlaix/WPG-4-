@@ -1,8 +1,16 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Wajib ada
+using UnityEngine.InputSystem;
+using UnityEngine.UI; // Wajib untuk mengakses komponen Image
 
 public partial class Wshoot : MonoBehaviour
 {
+    [Header("Ammo Settings")]
+    public int currentAmmo = 10;
+    public int maxAmmo = 20;
+
+    [Header("UI Indicator")]
+    [SerializeField] private Image emptyAmmoWarning; // Tarik Image Warning (misal icon peluru silang) ke sini
+
     [Header("Projectile Settings")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform firePoint;
@@ -25,19 +33,9 @@ public partial class Wshoot : MonoBehaviour
 
     void Start()
     {
-        // Jika player tidak diisi di Inspector, anggap objek ini adalah bagian dari Player
-        if (player == null)
-        {
-            player = this.gameObject;
-        }
+        if (player == null) player = this.gameObject;
+        if (animator == null) animator = player.GetComponent<Animator>();
 
-        // Ambil Animator otomatis dari player jika belum diisi
-        if (animator == null)
-        {
-            animator = player.GetComponent<Animator>();
-        }
-
-        // Setup Firepoint otomatis jika kosong
         if (firePoint == null)
         {
             GameObject firePointObj = new GameObject("FirePoint");
@@ -45,50 +43,50 @@ public partial class Wshoot : MonoBehaviour
             firePointObj.transform.localPosition = new Vector3(0, 0, 1f);
             firePoint = firePointObj.transform;
         }
+
+        // Jalankan pengecekan UI di awal
+        UpdateAmmoIndicator();
     }
 
-    // --- INI FUNGSI CALLBACK UTAMA ---
-    // Hubungkan ini ke Player Input Component di Inspector
     public void OnFire(InputAction.CallbackContext context)
     {
-        // Kita gunakan context.performed agar tembakan terjadi saat tombol ditekan penuh
         if (context.performed && Time.time >= nextFireTime)
         {
-            Shoot();
-            nextFireTime = Time.time + fireRate;
+            if (currentAmmo > 0)
+            {
+                Shoot();
+                nextFireTime = Time.time + fireRate;
+            }
+            else
+            {
+                Debug.Log("Ammo Kosong!");
+                // Opsional: Mainkan suara 'klik' kosong di sini
+            }
         }
     }
 
     void Shoot()
     {
-        if (projectilePrefab == null)
-        {
-            Debug.LogWarning("Projectile prefab belum dipasang!");
-            return;
-        }
+        if (projectilePrefab == null) return;
+
+        currentAmmo--;
+        UpdateAmmoIndicator(); // Update indikator setelah menembak
 
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
         if (rb != null)
         {
-            // Gunakan velocity (linearVelocity untuk Unity versi terbaru)
             rb.linearVelocity = firePoint.forward * projectileSpeed;
         }
 
-        // Jika ada script Projectile untuk identifikasi siapa penembaknya
         if (projectile.TryGetComponent<Projectile>(out Projectile projScript))
         {
             projScript.SetPlayer(player);
         }
 
         Destroy(projectile, projectileLifetime);
-
-        // Trigger animasi Shoot
-        if (animator != null)
-        {
-            animator.SetTrigger("Shoot");
-        }
+        if (animator != null) animator.SetTrigger("Shoot");
 
         ApplyKnockback();
     }
@@ -98,10 +96,25 @@ public partial class Wshoot : MonoBehaviour
         Rigidbody playerRb = player.GetComponent<Rigidbody>();
         if (playerRb != null)
         {
-            // Arah knockback adalah kebalikan dari arah tembakan + efek jump ke atas
             Vector3 knockbackDir = -firePoint.forward;
             Vector3 totalForce = knockbackDir * knockbackForce + Vector3.up * knockbackJumpForce;
             playerRb.AddForce(totalForce, knockbackForceMode);
+        }
+    }
+
+    public void AddAmmo(int amount)
+    {
+        currentAmmo = Mathf.Min(currentAmmo + amount, maxAmmo);
+        UpdateAmmoIndicator(); // Update indikator setelah diisi Builder
+    }
+
+    // --- LOGIKA INDIKATOR GAMBAR ---
+    private void UpdateAmmoIndicator()
+    {
+        if (emptyAmmoWarning != null)
+        {
+            // Jika peluru 0, maka Image AKTIF. Jika masih ada, Image MATI.
+            emptyAmmoWarning.gameObject.SetActive(currentAmmo <= 0);
         }
     }
 }

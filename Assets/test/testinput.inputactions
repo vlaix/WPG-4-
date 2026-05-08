@@ -52,6 +52,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Ammo",
+                    "type": "Button",
+                    "id": "f2a017da-0b9b-436e-8cc6-b13a4e0b84ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Pause",
                     "type": "Button",
                     "id": "26e947cf-3f9b-4081-8a93-f70aa7f3ec12",
@@ -312,6 +321,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Build",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52b33076-e23e-425e-b5a0-272c42b8cec8",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ammo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a79c6f6c-7373-4393-8354-1db7874e999e",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Ammo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

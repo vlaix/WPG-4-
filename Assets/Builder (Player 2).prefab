@@ -196,6 +196,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8473945533145953046}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6201728447162899941}
   m_SourcePrefab: {fileID: 100100000, guid: 16f80bd6a3923e340baad7b500d4b734, type: 3}
 --- !u!4 &6556403619456600814 stripped
 Transform:
@@ -446,6 +449,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 88f9a499-e220-42c5-8908-f052925679e4
     m_ActionName: 'UI/Tips[/XInputControllerWindows/rightTrigger]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -6201728447162899941}
+        m_TargetAssemblyTypeName: BuilderAmmoCraft, Assembly-CSharp
+        m_MethodName: OnCraftAmmo
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f2a017da-0b9b-436e-8cc6-b13a4e0b84ec
+    m_ActionName: 'Player/Ammo[/Keyboard/c]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -496,4 +515,25 @@ MonoBehaviour:
   climbSpeed: 5
   horizontalSpeed: 3
   exitKey: 32
+  solidCollision: 1
+  ladderSolidLayer: Default
   showDebugLogs: 1
+--- !u!114 &-6201728447162899941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8594513441840774039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 385107d2050f2af4cb6d53c50fc32693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceName: Scrap
+  resourceCost: 3
+  ammoPrefab: {fileID: 2953045070004056056, guid: f1ba5a30e66da0b45841474f24203354, type: 3}
+  dropDistance: 1.5
+  animator: {fileID: 0}
+  craftSound: {fileID: 0}
+  craftCooldown: 1
