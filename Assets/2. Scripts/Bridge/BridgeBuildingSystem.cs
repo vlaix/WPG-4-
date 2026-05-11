@@ -45,7 +45,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     private Transform playerTransform;
-    private BridgeBuildState currentState = BridgeBuildState.Blueprint;
+    public BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
 

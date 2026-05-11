@@ -73,7 +73,7 @@ public class EnemySpawn : MonoBehaviour
 
                         SpawnEnemy(indexTerpilih);
                     }
-                } else if(BridgeBuildingSystem.IsCompleted == false && Inventory.GetItemCount("Scrap") < 10) {
+                } else if(BridgeBuildingSystem.IsCompleted == false) {
                     Debug.Log("Musuh tambahan dispawn");
                     DoRandom();
                     SpawnEnemy(PickEnemy());

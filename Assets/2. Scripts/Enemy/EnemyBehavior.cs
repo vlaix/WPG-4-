@@ -37,6 +37,10 @@ public class EnemyBehavior : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float volume = 1f;
 
+    //fitur 11/5/2026
+    private BridgeBuildingSystem BridgeBuildingSystem;
+    public GameObject[] playerObjs2;
+
     // Penanda agar suara tidak tumpang tindih
     private bool hasExploded = false;
 
@@ -50,6 +54,9 @@ public class EnemyBehavior : MonoBehaviour
         animator = GetComponent<Animator>();
         enemyRenderer = GetComponent<Renderer>();
         if (enemyRenderer != null) originalColor = enemyRenderer.material.color;
+        
+        GameObject A = GameObject.Find("Bridge_ASIK");
+        BridgeBuildingSystem = A.GetComponent<BridgeBuildingSystem>();
     }
 
     protected virtual void Start()
@@ -63,7 +70,7 @@ public class EnemyBehavior : MonoBehaviour
 
         // Cari semua player dengan tag "Player" dan "Player2"
         GameObject[] playerObjs1 = GameObject.FindGameObjectsWithTag("Player");
-        GameObject[] playerObjs2 = GameObject.FindGameObjectsWithTag("Player2");
+        playerObjs2 = GameObject.FindGameObjectsWithTag("Player2");
         players = new Transform[playerObjs1.Length + playerObjs2.Length];
         int idx = 0;
         foreach (var p in playerObjs1) players[idx++] = p.transform;
@@ -81,7 +88,12 @@ public class EnemyBehavior : MonoBehaviour
 
         float progress;
 
-        UpdateClosestPlayer();
+        //kejar builder ketika lagi build
+        if(BridgeBuildingSystem.currentState != BridgeBuildState.Building){
+            UpdateClosestPlayer();
+        } else {
+            closestPlayer = playerObjs2[0].transform;
+        }
 
         if (closestPlayer == null) return;
 
