@@ -2,148 +2,65 @@
 using TMPro;
 using UnityEngine.UI;
 
+// Pastikan nama class ini SAMA PERSIS dengan nama file-nya.
+// Jika nama filemu BridgeBluepritUI.cs, ubah kata BridgeBuildUI di bawah ini menjadi BridgeBluepritUI.
 public class BridgeBuildUI : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI bridgeNameText;
-    public TextMeshProUGUI progressText;
-    public Image progressBarFill;
+    public Slider buildProgressSlider;
     public TextMeshProUGUI requirementsText;
     public TextMeshProUGUI actionText;
-
-    // --- TAMBAHAN BARU: Referensi untuk menyembunyikan ikon ---
-    [Tooltip("Masukkan GameObject gambar ikon/lingkaran kayu ke sini")]
-    public GameObject resourceIconObject;
-
-    // (Opsional) Kalau kamu mau menyembunyikan bar merahnya juga saat countdown
-    [Tooltip("Masukkan GameObject Progress Bar ke sini (Opsional)")]
-    public GameObject progressBarObject;
-
-    [Header("Settings")]
-    public float updateInterval = 0.1f;
+    public GameObject resourceIcon;
 
     private BridgeBuildingSystem bridge;
-    private float updateTimer = 0f;
 
-    public void SetBridge(BridgeBuildingSystem bridgeSystem)
+    public void SetBridge(BridgeBuildingSystem system)
     {
-        bridge = bridgeSystem;
-        UpdateUI();
+        bridge = system;
     }
 
     private void Update()
     {
         if (bridge == null) return;
 
-        // Always face camera
+        // UI selalu menghadap kamera
         if (Camera.main != null)
         {
             transform.LookAt(Camera.main.transform);
             transform.Rotate(0, 180, 0);
         }
 
-        // Update UI periodically
-        updateTimer += Time.deltaTime;
-        if (updateTimer >= updateInterval)
-        {
-            updateTimer = 0f;
-            UpdateUI();
-        }
+        UpdateUIDisplay();
     }
 
-    private void UpdateUI()
+    private void UpdateUIDisplay()
     {
-        if (bridge == null) return;
+        if (bridgeNameText != null) bridgeNameText.text = bridge.BridgeName;
 
-        if (bridgeNameText != null)
-        {
-            bridgeNameText.text = bridge.BridgeName;
-        }
+        // Tampilkan Progress Building di Slider (0% ke 100%)
+        if (buildProgressSlider != null)
+            buildProgressSlider.value = bridge.BuildProgress;
 
-        // Update progress
-        float progress = bridge.BuildProgress;
+        if (actionText != null)
+            actionText.text = bridge.State == BridgeBuildState.Building ? "BUILDING..." : "HOLD [E] TO BUILD";
 
-        if (progressText != null)
-        {
-            progressText.text = $"{Mathf.FloorToInt(progress * 100)}%";
-        }
-
-        if (progressBarFill != null)
-        {
-            progressBarFill.fillAmount = progress;
-        }
-
-        // Update requirements & action text
-        if (bridge.IsCompleted)
-        {
-            // --- UI SAAT SELESAI (TIMER SAJA) ---
-            if (requirementsText != null)
-            {
-                requirementsText.text = $"Countdown: {Mathf.CeilToInt(bridge.currentTimer)}s";
-            }
-
-            if (actionText != null)
-            {
-                actionText.text = "";
-            }
-
-            // Sembunyikan ikon resource
-            if (resourceIconObject != null)
-            {
-                resourceIconObject.SetActive(false);
-            }
-
-            // Sembunyikan progress bar (opsional)
-            if (progressBarObject != null)
-            {
-                progressBarObject.SetActive(false);
-            }
-        }
-        else
-        {
-            // --- UI SAAT BLUEPRINT / BUILDING ---
-            if (requirementsText != null)
-            {
-                requirementsText.text = GetRequirementsText();
-            }
-
-            if (actionText != null)
-            {
-                actionText.text = "Hold [Build] to Build";
-            }
-
-            // Tampilkan kembali ikon resource
-            if (resourceIconObject != null)
-            {
-                resourceIconObject.SetActive(true);
-            }
-
-            // Tampilkan kembali progress bar (opsional)
-            if (progressBarObject != null)
-            {
-                progressBarObject.SetActive(true);
-            }
-        }
+        if (requirementsText != null) requirementsText.text = GetRequirements();
+        if (resourceIcon != null) resourceIcon.SetActive(true);
     }
 
-    private string GetRequirementsText()
+    private string GetRequirements()
     {
-        string text = "";
-
+        string t = "";
         foreach (var req in bridge.RuntimeResources)
         {
-            bool hasEnough = req.currentAmount >= req.totalRequired;
-            string checkmark = hasEnough ? "✓" : "○";
+            int current = Inventory.Instance != null ? Inventory.Instance.GetItemCount(req.resourceName) : 0;
 
-            // Show current inventory count
-            int inInventory = Inventory.Instance != null ?
-                             Inventory.Instance.GetItemCount(req.resourceName) : 0;
+            // Jika sedang building, tampilkan angka yang dibutuhkan (karena scrap sudah ditarik)
+            if (bridge.State == BridgeBuildState.Building) current = req.totalRequired;
 
-            text += $"{inInventory}/{req.totalRequired}";
-
-            text += "\n";
+            t += $"{current}/{req.totalRequired} {req.resourceName}\n";
         }
-
-        return text;
+        return t;
     }
 }

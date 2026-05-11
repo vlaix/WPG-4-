@@ -6,110 +6,52 @@ public class LadderBuildUI : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI ladderNameText;
-    public TextMeshProUGUI progressText;
-    public Image progressBarFill;
+
+    // PERHATIKAN: Ini sudah saya ganti jadi Slider
+    public Slider buildProgressSlider;
+
     public TextMeshProUGUI requirementsText;
     public TextMeshProUGUI actionText;
-
-    // --- TAMBAHAN BARU: Referensi untuk menyembunyikan ikon ---
-    [Tooltip("Masukkan GameObject gambar ikon/lingkaran kayu ke sini")]
     public GameObject resourceIconObject;
 
-    [Header("Settings")]
-    public float updateInterval = 0.1f;
-
     private LadderBuildingSystem ladder;
-    private float updateTimer = 0f;
 
     public void SetLadder(LadderBuildingSystem ladderSystem)
     {
         ladder = ladderSystem;
-        UpdateUI();
     }
 
     private void Update()
     {
         if (ladder == null) return;
 
-        // Always face camera
+        // UI selalu menghadap kamera
         if (Camera.main != null)
         {
             transform.LookAt(Camera.main.transform);
             transform.Rotate(0, 180, 0);
         }
 
-        // Update UI periodically
-        updateTimer += Time.deltaTime;
-        if (updateTimer >= updateInterval)
-        {
-            updateTimer = 0f;
-            UpdateUI();
-        }
+        UpdateUIDisplay();
     }
 
-    private void UpdateUI()
+    private void UpdateUIDisplay()
     {
-        if (ladder == null) return;
+        if (ladderNameText != null) ladderNameText.text = ladder.LadderName;
 
-        // Update ladder name
-        if (ladderNameText != null)
+        // Update Slider Bar (0% - 100%)
+        if (buildProgressSlider != null)
         {
-            ladderNameText.text = ladder.LadderName;
+            buildProgressSlider.value = ladder.BuildProgress;
         }
 
-        // Update progress
-        float progress = ladder.buildProgress;
-
-        if (progressText != null)
+        if (actionText != null)
         {
-            progressText.text = $"{Mathf.FloorToInt(progress * 100)}%";
+            actionText.text = ladder.State == LadderBuildState.Building ? "BUILDING..." : "HOLD [E] TO BUILD";
         }
 
-        if (progressBarFill != null)
-        {
-            progressBarFill.fillAmount = progress;
-        }
-
-        // Update requirements & action text
-        if (ladder.IsCompleted)
-        {
-            // --- UI SAAT SELESAI (TIMER SAJA) ---
-            if (requirementsText != null)
-            {
-                requirementsText.text = $"Countdown: {Mathf.CeilToInt(ladder.currentTimer)}s";
-            }
-
-            if (actionText != null)
-            {
-                actionText.text = "";
-            }
-
-            // Sembunyikan ikon resource
-            if (resourceIconObject != null)
-            {
-                resourceIconObject.SetActive(false);
-            }
-        }
-        else
-        {
-            // --- UI SAAT BLUEPRINT / BUILDING ---
-            if (requirementsText != null)
-            {
-                requirementsText.text = GetRequirementsText();
-            }
-
-            if (actionText != null)
-            {
-                actionText.text = "Hold [Build] to Build";
-            }
-
-            // Tampilkan kembali ikon resource
-            if (resourceIconObject != null)
-            {
-                resourceIconObject.SetActive(true);
-            }
-
-        }
+        if (requirementsText != null) requirementsText.text = GetRequirementsText();
+        if (resourceIconObject != null) resourceIconObject.SetActive(true);
     }
 
     private string GetRequirementsText()
@@ -118,16 +60,12 @@ public class LadderBuildUI : MonoBehaviour
 
         foreach (var req in ladder.RuntimeResources)
         {
-            bool hasEnough = req.currentAmount >= req.totalRequired;
-            string checkmark = hasEnough ? "✓" : "○";
+            int current = Inventory.Instance != null ? Inventory.Instance.GetItemCount(req.resourceName) : 0;
 
-            // Show current inventory count
-            int inInventory = Inventory.Instance != null ?
-                             Inventory.Instance.GetItemCount(req.resourceName) : 0;
+            // Jika sedang building, tampilkan max requirement (karena scrap sudah dipotong dari inventory)
+            if (ladder.State == LadderBuildState.Building) current = req.totalRequired;
 
-            text += $"{inInventory}/{req.totalRequired}";
-
-            text += "\n";
+            text += $"{current}/{req.totalRequired} {req.resourceName}\n";
         }
 
         return text;

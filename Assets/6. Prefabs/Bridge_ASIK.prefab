@@ -49,12 +49,9 @@ MonoBehaviour:
   bridgeRenderer: {fileID: 7035792169370385465}
   bridgeCollider: {fileID: 6707557604383391018}
   buildUI: {fileID: 2220282804155163659, guid: b91b9a6613eeedb498eb1e39a9769f67, type: 3}
+  holdDuration: 10
+  countdownDuration: 0
   showDebugLogs: 1
-  hologramColor: {r: 0.3962264, g: 0.1816373, b: 0.06803132, a: 1}
-  hologramPulseSpeed: 2
-  hologramMinAlpha: 0.15
-  hologramMaxAlpha: 0.55
-  playerTransform: {fileID: 0}
 --- !u!1001 &8531420862629896381
 PrefabInstance:
   m_ObjectHideFlags: 0
