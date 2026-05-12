@@ -43,6 +43,13 @@ public class BridgeBuildingSystem : MonoBehaviour
     [Header("Debug")]
     public bool showDebugLogs = true;
 
+    // --- DIKEMBALIKAN: Pengaturan Efek Hologram ---
+    [Header("Hologram Settings")]
+    [SerializeField] private Color hologramColor = new Color(0f, 0.8f, 1f, 1f);
+    [SerializeField] private float hologramPulseSpeed = 2f;
+    [SerializeField] private float hologramMinAlpha = 0.15f;
+    [SerializeField] private float hologramMaxAlpha = 0.55f;
+
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     private Transform playerTransform;
     private BridgeBuildState currentState = BridgeBuildState.Blueprint;
@@ -153,7 +160,7 @@ public class BridgeBuildingSystem : MonoBehaviour
         if (Vector3.Distance(playerTransform.position, buildStartPosition) > 0.1f)
         {
             if (showDebugLogs) Debug.Log("Build batal karena player bergerak dari tempat!");
-            StopHolding(); // Memanggil fungsi batal
+            StopHolding();
             return;
         }
 
@@ -217,7 +224,9 @@ public class BridgeBuildingSystem : MonoBehaviour
         if (bridgeRenderer == null) bridgeRenderer = GetComponentInChildren<Renderer>();
         if (bridgeCollider == null) bridgeCollider = GetComponent<Collider>();
         if (bridgeCollider != null) bridgeCollider.enabled = false;
-        if (bridgeRenderer != null) bridgeRenderer.material.color = bridgeData.blueprintColor;
+
+        // --- DIKEMBALIKAN: Memanggil fungsi SetBridgeColor agar transparansi nyala ---
+        if (bridgeRenderer != null) SetBridgeColor(bridgeData.blueprintColor);
     }
 
     private void SetupAudio()
@@ -238,13 +247,76 @@ public class BridgeBuildingSystem : MonoBehaviour
         else if (!isPlayerInRange && !isHolding && uiInstance != null) HideUI();
     }
 
+    // --- DIKEMBALIKAN: Fungsi UpdateVisual dan Hologram secara lengkap ---
     private void UpdateVisual()
     {
         if (bridgeRenderer == null) return;
-        if (currentState == BridgeBuildState.Building)
-            bridgeRenderer.material.color = Color.Lerp(bridgeData.blueprintColor, bridgeData.buildingColor, BuildProgress);
-        else if (IsCompleted)
-            bridgeRenderer.material.color = bridgeData.completedColor;
+
+        switch (currentState)
+        {
+            case BridgeBuildState.Blueprint:
+                ApplyHologramEffect();
+                break;
+            case BridgeBuildState.Building:
+                Color buildColor = Color.Lerp(bridgeData.blueprintColor, bridgeData.buildingColor, BuildProgress);
+                SetBridgeColor(buildColor);
+                break;
+            case BridgeBuildState.Completed:
+                SetBridgeColor(bridgeData.completedColor);
+                break;
+        }
+    }
+
+    private void ApplyHologramEffect()
+    {
+        if (bridgeRenderer == null) return;
+
+        float pulse = Mathf.Sin(Time.time * hologramPulseSpeed) * 0.5f + 0.5f;
+        float alpha = Mathf.Lerp(hologramMinAlpha, hologramMaxAlpha, pulse);
+        Color hColor = new Color(hologramColor.r, hologramColor.g, hologramColor.b, alpha);
+
+        Material mat = bridgeRenderer.material;
+        mat.color = hColor;
+        mat.SetFloat("_Mode", 3);
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.DisableKeyword("_ALPHATEST_ON");
+        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        mat.renderQueue = 3000;
+        mat.EnableKeyword("_EMISSION");
+        mat.SetColor("_EmissionColor", new Color(hologramColor.r, hologramColor.g, hologramColor.b) * (pulse * 1.5f));
+    }
+
+    private void SetBridgeColor(Color color)
+    {
+        if (bridgeRenderer != null)
+        {
+            bridgeRenderer.material.color = color;
+            if (color.a < 1f)
+            {
+                bridgeRenderer.material.SetFloat("_Mode", 3);
+                bridgeRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                bridgeRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                bridgeRenderer.material.SetInt("_ZWrite", 0);
+                bridgeRenderer.material.DisableKeyword("_ALPHATEST_ON");
+                bridgeRenderer.material.EnableKeyword("_ALPHABLEND_ON");
+                bridgeRenderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                bridgeRenderer.material.renderQueue = 3000;
+            }
+            else
+            {
+                bridgeRenderer.material.SetFloat("_Mode", 0);
+                bridgeRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                bridgeRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                bridgeRenderer.material.SetInt("_ZWrite", 1);
+                bridgeRenderer.material.DisableKeyword("_ALPHATEST_ON");
+                bridgeRenderer.material.DisableKeyword("_ALPHABLEND_ON");
+                bridgeRenderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                bridgeRenderer.material.renderQueue = -1;
+            }
+        }
     }
 
     private void ShowUI()

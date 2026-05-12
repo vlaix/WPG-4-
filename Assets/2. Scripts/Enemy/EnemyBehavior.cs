@@ -89,7 +89,7 @@ public class EnemyBehavior : MonoBehaviour
         float progress;
 
         //kejar builder ketika lagi build
-        if(BridgeBuildingSystem.currentState != BridgeBuildState.Building){
+        if(BridgeBuildingSystem.State != BridgeBuildState.Building){
             UpdateClosestPlayer();
         } else {
             closestPlayer = playerObjs2[0].transform;
