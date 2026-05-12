@@ -16460,7 +16460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8032a3e5330eb854bb6b4170d0324aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevel: 1
+  currentLevel: 0
   totalLevels: 10
   mainMenuScene: MainMenu
   levelSelectScene: LevelSelector
