@@ -45,14 +45,16 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     private List<RuntimeResourceRequirement> runtimeResources = new List<RuntimeResourceRequirement>();
     private Transform playerTransform;
-    public BridgeBuildState currentState = BridgeBuildState.Blueprint;
+    private BridgeBuildState currentState = BridgeBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
 
     private float currentHoldTimer = 0f;
     private bool isHolding = false;
     private bool resourcesConsumed = false;
-    private bool isPlayerInRange = false; // <-- Ditambahkan kembali agar tidak error
+    private bool isPlayerInRange = false;
+
+    private Vector3 buildStartPosition;
 
     public BridgeBuildState State => currentState;
     public float BuildProgress => Mathf.Clamp01(currentHoldTimer / holdDuration);
@@ -74,11 +76,9 @@ public class BridgeBuildingSystem : MonoBehaviour
         UpdateVisual();
     }
 
-    // --- FUNGSI UNTUK INTEGRASI DENGAN PLAYER SPAWNER ---
     public void AssignPlayer(Transform player)
     {
         playerTransform = player;
-        if (showDebugLogs) Debug.Log($"Player berhasil di-assign ke jembatan: {BridgeName}");
     }
 
     public void OnBuild(InputAction.CallbackContext context)
@@ -92,7 +92,6 @@ public class BridgeBuildingSystem : MonoBehaviour
             StopHolding();
         }
     }
-    // -----------------------------------------------------------
 
     private void StartHolding()
     {
@@ -103,7 +102,9 @@ public class BridgeBuildingSystem : MonoBehaviour
             isHolding = true;
             currentState = BridgeBuildState.Building;
 
-            // Tarik resource di awal agar tidak bisa curang
+            // Simpan posisi kaki player saat ini
+            buildStartPosition = playerTransform.position;
+
             ConsumeResources();
             resourcesConsumed = true;
 
@@ -148,6 +149,14 @@ public class BridgeBuildingSystem : MonoBehaviour
     {
         if (!isHolding || IsCompleted) return;
 
+        // Jika player bergeser lebih dari 0.1 unit dari titik awal, batalkan build
+        if (Vector3.Distance(playerTransform.position, buildStartPosition) > 0.1f)
+        {
+            if (showDebugLogs) Debug.Log("Build batal karena player bergerak dari tempat!");
+            StopHolding(); // Memanggil fungsi batal
+            return;
+        }
+
         currentHoldTimer += Time.deltaTime;
 
         if (currentHoldTimer >= holdDuration)
@@ -160,7 +169,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     {
         currentState = BridgeBuildState.Completed;
         isHolding = false;
-        resourcesConsumed = false; // Sudah jadi bangunan, tidak perlu refund lagi
+        resourcesConsumed = false;
 
         if (audioSource != null)
         {
@@ -170,18 +179,13 @@ public class BridgeBuildingSystem : MonoBehaviour
 
         if (bridgeCollider != null) bridgeCollider.enabled = true;
 
-        HideUI(); // <-- Menyembunyikan UI seketika saat jembatan selesai
-        if (showDebugLogs) Debug.Log($"Jembatan {BridgeName} Selesai Dibangun!");
+        HideUI();
     }
 
     private void RefundResources()
     {
         if (Inventory.Instance == null) return;
-
-        foreach (var req in runtimeResources)
-        {
-            Inventory.Instance.AddItem(req.resourceName, req.totalRequired);
-        }
+        foreach (var req in runtimeResources) Inventory.Instance.AddItem(req.resourceName, req.totalRequired);
     }
 
     private bool HasResources()
@@ -197,10 +201,7 @@ public class BridgeBuildingSystem : MonoBehaviour
     private void ConsumeResources()
     {
         if (Inventory.Instance == null) return;
-        foreach (var req in runtimeResources)
-        {
-            Inventory.Instance.RemoveItem(req.resourceName, req.totalRequired);
-        }
+        foreach (var req in runtimeResources) Inventory.Instance.RemoveItem(req.resourceName, req.totalRequired);
     }
 
     private void InitializeResources()
@@ -227,7 +228,7 @@ public class BridgeBuildingSystem : MonoBehaviour
 
     private void CheckPlayerProximity()
     {
-        if (IsCompleted) return; // <-- Mencegah UI muncul lagi kalau jembatan sudah jadi
+        if (IsCompleted) return;
 
         if (playerTransform == null) return;
         float dist = Vector3.Distance(transform.position, playerTransform.position);
@@ -250,8 +251,6 @@ public class BridgeBuildingSystem : MonoBehaviour
     {
         if (buildUI == null) return;
         uiInstance = Instantiate(buildUI, transform.position + Vector3.up * 4f, Quaternion.identity, transform);
-
-        // Memanggil class BridgeBluepritUI sesuai nama file/class terbarumu
         var uiScript = uiInstance.GetComponent<BridgeBuildUI>();
         if (uiScript != null) uiScript.SetBridge(this);
     }

@@ -60,6 +60,9 @@ public class LadderBuildingSystem : MonoBehaviour
     private bool resourcesConsumed = false;
     private bool isPlayerInRange = false;
 
+    // --- TAMBAHAN BARU: Menyimpan posisi awal player ---
+    private Vector3 buildStartPosition;
+
     public LadderBuildState State => currentState;
     public float BuildProgress => Mathf.Clamp01(currentHoldTimer / holdDuration);
     public bool IsCompleted => currentState == LadderBuildState.Completed;
@@ -80,11 +83,9 @@ public class LadderBuildingSystem : MonoBehaviour
         UpdateVisual();
     }
 
-    // --- INTEGRASI PLAYER SPAWNER ---
     public void AssignPlayer(Transform player)
     {
         playerTransform = player;
-        if (showDebugLogs) Debug.Log($"Player di-assign ke tangga: {LadderName}");
     }
 
     public void OnBuild(InputAction.CallbackContext context)
@@ -93,7 +94,6 @@ public class LadderBuildingSystem : MonoBehaviour
         else if (context.canceled) StopHolding();
     }
 
-    // --- LOGIKA HOLD TO BUILD ---
     private void StartHolding()
     {
         if (currentState != LadderBuildState.Blueprint || !isPlayerInRange) return;
@@ -103,10 +103,12 @@ public class LadderBuildingSystem : MonoBehaviour
             isHolding = true;
             currentState = LadderBuildState.Building;
 
+            // Simpan posisi kaki player saat ini
+            buildStartPosition = playerTransform.position;
+
             ConsumeResources();
             resourcesConsumed = true;
 
-            // Trigger animasi player jika ada
             if (playerTransform != null)
             {
                 Animator anim = playerTransform.GetComponent<Animator>();
@@ -149,6 +151,15 @@ public class LadderBuildingSystem : MonoBehaviour
     {
         if (!isHolding || IsCompleted) return;
 
+        // --- TAMBAHAN BARU: Cek apakah player bergerak ---
+        // Jika player bergeser lebih dari 0.1 unit dari titik awal, batalkan build
+        if (Vector3.Distance(playerTransform.position, buildStartPosition) > 0.1f)
+        {
+            if (showDebugLogs) Debug.Log("Build batal karena player bergerak dari tempat!");
+            StopHolding(); // Memanggil fungsi batal
+            return;
+        }
+
         currentHoldTimer += Time.deltaTime;
         if (currentHoldTimer >= holdDuration) CompleteBuild();
     }
@@ -168,11 +179,9 @@ public class LadderBuildingSystem : MonoBehaviour
         if (ladderCollider != null) ladderCollider.enabled = true;
         if (!string.IsNullOrEmpty(ladderData.ladderTag)) gameObject.tag = ladderData.ladderTag;
 
-        HideUI(); // Hilangkan UI selamanya
-        if (showDebugLogs) Debug.Log($"Tangga {LadderName} Selesai Dibangun!");
+        HideUI();
     }
 
-    // --- INVENTORY & RESOURCES ---
     private void RefundResources()
     {
         if (Inventory.Instance == null) return;
@@ -235,7 +244,7 @@ public class LadderBuildingSystem : MonoBehaviour
 
     private void CheckPlayerProximity()
     {
-        if (IsCompleted) return; // UI tidak muncul lagi kalau tangga sudah jadi
+        if (IsCompleted) return;
 
         if (playerTransform == null) return;
         float dist = Vector3.Distance(transform.position, playerTransform.position);
@@ -245,7 +254,6 @@ public class LadderBuildingSystem : MonoBehaviour
         else if (!isPlayerInRange && !isHolding && uiInstance != null) HideUI();
     }
 
-    // --- VISUAL & HOLOGRAM (Tetap Dipertahankan) ---
     private void UpdateVisual()
     {
         if (ladderRenderer == null) return;
