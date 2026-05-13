@@ -51,7 +51,7 @@ public class LadderBuildingSystem : MonoBehaviour
 
     private List<RuntimeLadderResourceRequirement> runtimeResources = new List<RuntimeLadderResourceRequirement>();
     private Transform playerTransform;
-    private LadderBuildState currentState = LadderBuildState.Blueprint;
+    public LadderBuildState currentState = LadderBuildState.Blueprint;
     private AudioSource audioSource;
     private GameObject uiInstance;
 

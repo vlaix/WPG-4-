@@ -17,5 +17,6 @@ MonoBehaviour:
   stopDistance: 50
   Cooldown: 3
   damage: 2
+  persentase: 33
   prefab: {fileID: 6549078209048014017, guid: 895e38d1f66fbdc4b9b589ea5ea46e88, type: 3}
   peluru: {fileID: 1728920494708844429, guid: dd3e66158bd368d408ba5e5d832ee1b5, type: 3}

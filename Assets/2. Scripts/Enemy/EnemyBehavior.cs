@@ -39,6 +39,7 @@ public class EnemyBehavior : MonoBehaviour
 
     //fitur 11/5/2026
     private BridgeBuildingSystem BridgeBuildingSystem;
+    private LadderBuildingSystem LadderBuildingSystem;
     public GameObject[] playerObjs2;
 
     // Penanda agar suara tidak tumpang tindih
@@ -57,6 +58,9 @@ public class EnemyBehavior : MonoBehaviour
         
         GameObject A = GameObject.Find("Bridge_ASIK");
         BridgeBuildingSystem = A.GetComponent<BridgeBuildingSystem>();
+
+        GameObject B = GameObject.Find("BuildAbleLadder_01");
+        LadderBuildingSystem = B.GetComponent<LadderBuildingSystem>();
     }
 
     protected virtual void Start()
@@ -89,7 +93,7 @@ public class EnemyBehavior : MonoBehaviour
         float progress;
 
         //kejar builder ketika lagi build
-        if(BridgeBuildingSystem.State != BridgeBuildState.Building){
+        if(BridgeBuildingSystem.State != BridgeBuildState.Building || LadderBuildingSystem.State != LadderBuildState.Building){
             UpdateClosestPlayer();
         } else {
             closestPlayer = playerObjs2[0].transform;

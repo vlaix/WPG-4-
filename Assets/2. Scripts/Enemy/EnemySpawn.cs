@@ -23,7 +23,8 @@ public class EnemySpawn : MonoBehaviour
 
     [Header("Fitur Baru")]
     [SerializeField] private BridgeBuildingSystem BridgeBuildingSystem;
-    [SerializeField] private Inventory Inventory;
+    [SerializeField] private LadderBuildingSystem LadderBuildingSystem;
+    //[SerializeField] private Inventory Inventory;
     private int RandomIndex;
 
     void Start()
@@ -73,11 +74,33 @@ public class EnemySpawn : MonoBehaviour
 
                         SpawnEnemy(indexTerpilih);
                     }
-                } else if(BridgeBuildingSystem.IsCompleted == false) {
-                    Debug.Log("Musuh tambahan dispawn");
-                    DoRandom();
-                    SpawnEnemy(PickEnemy());
                 }
+
+                if(BridgeBuildingSystem == null) 
+                { 
+                    return;
+                } else {
+                    if(BridgeBuildingSystem.IsCompleted == false) 
+                    {
+                        Debug.Log("Musuh tambahan dispawn");
+                        DoRandom();
+                        SpawnEnemy(PickEnemy());
+                    }
+                }
+
+                if(LadderBuildingSystem == null) 
+                { 
+                    return;
+                } else {
+                    if(LadderBuildingSystem.IsCompleted == false) 
+                    {
+                        Debug.Log("Musuh tambahan dispawn");
+                        DoRandom();
+                        SpawnEnemy(PickEnemy());
+                    }
+                }
+
+                    
             }
         }
         // float randomizer;            spawn metode if
