@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/1. Scenes/Level/LVL 1 Lama.unity
     guid: 5e393a6c958ab294cbbb0ce6c9301608
   - enabled: 1
-    path: Assets/2. Scripts/MainMenu/MainMenu.unity
+    path: Assets/1. Scenes/MainMenu.unity
     guid: acae5aab730123c4292382ede275bc5a
   - enabled: 1
     path: Assets/1. Scenes/LevelSelector.unity
