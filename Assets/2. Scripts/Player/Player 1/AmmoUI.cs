@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro; // Wajib untuk TextMeshPro
 
 public class AmmoUI : MonoBehaviour
 {
     [Header("UI Reference")]
     [SerializeField] private TextMeshProUGUI ammoText;
+    [SerializeField] private Image fillImage;
+    [SerializeField] private int MaxAmmo;
 
     [Header("Player Search")]
     [SerializeField] private string playerTag = "Player"; // Sesuaikan dengan tag player kamu
@@ -50,6 +53,8 @@ public class AmmoUI : MonoBehaviour
         {
             // Menampilkan format: "Ammo: 10 / 20"
             ammoText.SetText(""+playerWeapon.currentAmmo);
+
+            fillImage.fillAmount = playerWeapon.currentAmmo / MaxAmmo;
 
             // Opsional: Beri warna merah jika peluru habis
             ammoText.color = (playerWeapon.currentAmmo <= 0) ? Color.red : Color.white;
