@@ -651,7 +651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammoText: {fileID: 5173613524184164043}
   fillImage: {fileID: 0}
-  MaxAmmo: 0
+  MaxAmmo: 50
   playerTag: Player
 --- !u!1 &2967328472834357690
 GameObject:

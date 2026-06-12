@@ -39978,6 +39978,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 924569349047290938, guid: fe23e668eca1b264fac8d5aa7f171219, type: 3}
+      propertyPath: MaxAmmo
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 924569349047290938, guid: fe23e668eca1b264fac8d5aa7f171219, type: 3}
       propertyPath: fillImage
       value: 
       objectReference: {fileID: 852639987230757030}
